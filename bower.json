@@ -10,6 +10,7 @@
     "type": "git",
     "url": "git://github.com/daniel-nagy/md-data-table.git"
   },
+  "ignore": [],
   "dependencies": {
     "angular": "~1.4.0",
     "angular-material": "~0.9.7"

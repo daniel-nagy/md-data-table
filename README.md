@@ -8,6 +8,15 @@ Specification for Material Design data tables can be found [here](http://www.goo
 
 http://danielnagy.me/md-data-table/
 
+## Installation
+This package is installable through the Bower package manager.
+
+```
+bower install angular-material-data-table --save
+```
+
+> This module is experimental technology.
+
 ## usage
 
 ```html
@@ -65,9 +74,9 @@ Column ordering is automatically enabled when `ng-repeat` is used to display the
 
 This repository contains a nice demo application for developing features. As you modify files the package will automatically be generated. If you decide to add templates to the module, uncomment the `html2js` task in the `Gruntfile` to have templates automatically included in the build and stored in the template cache.
 
-### installation
+#### Running the App Locally
 
-clone this repository to your local machine
+Clone this repository to your local machine.
 
 ```
 git clone https://github.com/daniel-nagy/md-data-table.git
@@ -87,3 +96,4 @@ run the application and visit `127.0.0.1:8000` in the browser
 grunt
 ```
 
+> If you're unfamiliar with Grunt, you may need to install the grunt-cli globally to use grunt from the command-line.

@@ -3,14 +3,12 @@ angular.module('md.data.table', [])
 .directive('mdDataTable', ['$compile', '$timeout', function ($compile, $timeout) {
   'use strict';
   
-  return {
-    scope: true,
-    restrict: 'A',
-    compile: compile
-  };
-  
-  function postLink(scope, element, attrs) {
+  function postLink(scope, element, attrs, controller, transclude) {
     var head, body;
+    
+    transclude(scope, function (clone) {
+      element.wrap('<md-data-table-container></md-data-table-container>').append(clone);
+    });
     
     function createCheckbox(label, model) {
       return $compile(angular.element('<md-checkbox></md-checkbox>')
@@ -123,8 +121,6 @@ angular.module('md.data.table', [])
   }
   
   function compile(iElement) {
-    iElement.wrap('<md-data-table-container></md-data-table-container>');
-    
     var body = iElement.find('tbody').find('tr');
     var head = {
       cells: iElement.find('th')
@@ -140,6 +136,15 @@ angular.module('md.data.table', [])
       });
     }
     
-    return postLink;
+    return {
+      post: postLink
+    };
   }
+  
+  return {
+    scope: true,
+    restrict: 'A',
+    transclude: true,
+    compile: compile
+  };
 }]);

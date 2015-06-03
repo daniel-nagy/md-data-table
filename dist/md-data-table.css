@@ -28,8 +28,8 @@ table[md-data-table] {
   border-spacing: 0;
   background-color: #fff;
 }
-table[md-data-table][select] > thead > tr > th:nth-child(2),
-table[md-data-table][select] > tbody > tr > td:nth-child(2) {
+table[md-data-table][md-row-select] > thead > tr > th:nth-child(2),
+table[md-data-table][md-row-select] > tbody > tr > td:nth-child(2) {
   padding-left: 24px;
 }
 table[md-data-table] > thead + tbody > tr:first-Child > td {

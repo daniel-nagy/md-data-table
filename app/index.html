@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="nutritionApp">
+
+  <head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Nutrition</title>
+    
+    <link href="angular-material/angular-material.css" rel="stylesheet" type="text/css"/>
+    <link href="md-data-table.css" rel="stylesheet" type="text/css"/>
+    <link href="app.css" rel="stylesheet" type="text/css"/>
+    
+  </head>
+
+  <body layout="column">
+    
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <div class="md-title">Material Design Data Table</div>
+      </div>
+    </md-toolbar>
+    
+    <md-content laout="column" flex>
+      <md-card ng-include="'templates/nutrition-table.html'">
+    </md-content>
+    
+    <script type="text/javascript" src="dependencies/angular.min.js"></script>
+    <script type="text/javascript" src="dependencies/angular-animate.min.js"></script>
+    <script type="text/javascript" src="dependencies/angular-aria.min.js"></script>
+    <script type="text/javascript" src="dependencies/angular-material.min.js"></script>
+    <script type="text/javascript" src="dependencies/md-data-table.js"></script>
+    
+    <script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript" src="scripts/nutritionController.js"></script>
+    
+  </body>
+</html>

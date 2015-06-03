@@ -20,32 +20,34 @@ bower install angular-material-data-table --save
 ## usage
 
 ```html
-<table md-data-table md-row-select ng-controller="nutritionController">
-  <thead>
-    <tr>
-      <th order-by="name">Dessert (100g serving)</th>
-      <th numeric>Calories</th>
-      <th numeric unit="g" precision="1">Fat</th>
-      <th numeric unit="g">Carbs</th>
-      <th numeric unit="g" precision="1">Protein</th>
-      <th numeric unit="mg">Sodium</th>
-      <th numeric unit="%">Calcium</th>
-      <th numeric unit="%">Iron</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr ng-repeat="dessert in desserts">
-      <td>{{dessert.name}}</td>
-      <td>{{dessert.calories}}</td>
-      <td>{{dessert.fat}}</td>
-      <td>{{dessert.carbs}}</td>
-      <td>{{dessert.protein}}</td>
-      <td>{{dessert.sodium}}</td>
-      <td show-unit>{{dessert.calcium}}</td>
-      <td show-unit>{{dessert.iron}}</td>
-    </tr>
-  </tbody>
-</table>
+<md-data-table-container>
+  <table md-data-table md-row-select ng-controller="nutritionController">
+    <thead>
+      <tr>
+        <th order-by="name">Dessert (100g serving)</th>
+        <th numeric>Calories</th>
+        <th numeric unit="g" precision="1">Fat</th>
+        <th numeric unit="g">Carbs</th>
+        <th numeric unit="g" precision="1">Protein</th>
+        <th numeric unit="mg">Sodium</th>
+        <th numeric unit="%">Calcium</th>
+        <th numeric unit="%">Iron</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="dessert in desserts">
+        <td>{{dessert.name}}</td>
+        <td>{{dessert.calories}}</td>
+        <td>{{dessert.fat}}</td>
+        <td>{{dessert.carbs}}</td>
+        <td>{{dessert.protein}}</td>
+        <td>{{dessert.sodium}}</td>
+        <td show-unit>{{dessert.calcium}}</td>
+        <td show-unit>{{dessert.iron}}</td>
+      </tr>
+    </tbody>
+  </table>
+</md-data-table-container>
 ```
 
 ## Numeric Columns

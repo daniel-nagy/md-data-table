@@ -3,12 +3,8 @@ angular.module('md.data.table', [])
 .directive('mdDataTable', ['$compile', '$timeout', function ($compile, $timeout) {
   'use strict';
   
-  function postLink(scope, element, attrs, controller, transclude) {
+  function postLink(scope, element, attrs) {
     var head, body;
-    
-    transclude(scope, function (clone) {
-      element.wrap('<md-data-table-container></md-data-table-container>').append(clone);
-    });
     
     function createCheckbox(label, model) {
       return $compile(angular.element('<md-checkbox></md-checkbox>')
@@ -80,6 +76,11 @@ angular.module('md.data.table', [])
       
       angular.forEach(head.row.children(), function (cell, index) {
         if(body.rows.attr('ng-repeat')) {
+          
+          if(!cell.attributes['order-by']) {
+            cell.setAttribute('order-by', cell.textContent.toLowerCase());
+          }
+          
           cell.addEventListener('click', function () {
             scope.$apply(setOrder(this.attributes['order-by'].value));
           });
@@ -122,29 +123,17 @@ angular.module('md.data.table', [])
   
   function compile(iElement) {
     var body = iElement.find('tbody').find('tr');
-    var head = {
-      cells: iElement.find('th')
-    };
     
     if(body.attr('ng-repeat')) {
       body.attr('ng-repeat', body.attr('ng-repeat') + ' | orderBy: order');
-      
-      angular.forEach(head.cells, function (cell) {
-        if(!cell.attributes['order-by']) {
-          cell.setAttribute('order-by', cell.textContent.toLowerCase());
-        }
-      });
     }
     
-    return {
-      post: postLink
-    };
+    return postLink;
   }
   
   return {
     scope: true,
     restrict: 'A',
-    transclude: true,
     compile: compile
   };
 }]);

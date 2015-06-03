@@ -1,0 +1,13 @@
+{
+  "name": "md-table",
+  "version": "0.0.0",
+  "description": "Material Design data table.",
+  "main": [
+    "dist/md-data-table.min.js",
+    "dist/md-data-table.min.css"
+  ],
+  "dependencies": {
+    "angular": "~1.4.0",
+    "angular-material": "~0.9.7"
+  }
+}

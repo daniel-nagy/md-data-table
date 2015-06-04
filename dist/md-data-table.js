@@ -65,9 +65,26 @@ angular.module('md.data.table', [])
       };
     }
     
+    function trimColumnNames() {
+      // get the natural width of the table
+      element.css('width', 'auto');
+      
+      // don't allow the table to shrink beyound its natural width,
+      // but allow it to grow
+      element.css({
+        'min-width': element.prop('scrollWidth') + 'px',
+        'width': '100%',
+        'table-layout': 'fixed'
+      });
+    }
+    
     function config() {
       head = new Header();
       body = new Body();
+      
+      if(attrs.hasOwnProperty('trimColumnNames')) {
+        trimColumnNames();
+      }
       
       if(attrs.hasOwnProperty('mdRowSelect')) {
         head.enableRowSelect();

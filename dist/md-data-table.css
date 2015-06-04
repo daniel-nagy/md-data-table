@@ -22,15 +22,32 @@ md-card > md-data-table-container + md-data-table-toolbar {
 md-data-table-container {
   max-width: 100%;
   overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
 }
 table[md-data-table] {
   width: 100%;
   border-spacing: 0;
   background-color: #fff;
 }
+table[md-data-table][md-row-select] > thead > tr > th:first-child,
+table[md-data-table][md-row-select] > tbody > tr > td:first-child {
+  width: 18px;
+}
 table[md-data-table][md-row-select] > thead > tr > th:nth-child(2),
 table[md-data-table][md-row-select] > tbody > tr > td:nth-child(2) {
   padding-left: 24px;
+}
+table[md-data-table][trim-column-names] > thead > tr > th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s;
+}
+table[md-data-table][trim-column-names] > thead > tr > th:hover {
+  color: rgba(0, 0, 0, 0.87);
+  overflow: visible;
+}
+table[md-data-table][trim-column-names] > tbody > tr > td {
+  white-space: nowrap;
 }
 table[md-data-table] > thead + tbody > tr:first-Child > td {
   border-top: 1px rgba(0, 0, 0, 0.12) solid;

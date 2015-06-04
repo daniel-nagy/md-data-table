@@ -68,6 +68,12 @@ Note that the `numeric` attribute must be present for other numeric attributes t
 
 Automatic row selection is enabled using the `md-row-select` attribute. Checkboxes will be prepended to each row. Rows can be selected by clicking anywhere in the row or directly on the checkbox. In addition, a master toggle is prepended to the header.
 
+## Long Header Titles
+
+Column names can be configured to shorten and display ellipses if they do not fit, with the recommended padding of `56px`, using the `trim-column-names` attribute.
+
+> Bug in Safari that prohibits header cells from overflowing properly
+
 ## Column Ordering
 
 Column ordering is automatically enabled when `ng-repeat` is used to display the contents of a table. The order property defaults to the header cell text (in lowercase) but is able to be set using the `order-by` attribute which will specify the property for that column to sort on.

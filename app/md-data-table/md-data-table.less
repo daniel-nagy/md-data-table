@@ -40,6 +40,7 @@ md-card {
 md-data-table-container {
   max-width: 100%;
   overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
 }
 
 table[md-data-table] {
@@ -48,9 +49,33 @@ table[md-data-table] {
   background-color: #fff;
   
   &[md-row-select] {
-    > thead > tr > th:nth-child(2),
-    > tbody > tr > td:nth-child(2) {
-      padding-left: 24px;
+    > thead > tr > th,
+    > tbody > tr > td {
+      &:first-child {
+        width: 18px;
+      }
+      &:nth-child(2) {
+        padding-left: 24px;
+      }
+    }
+  }
+  
+  &[trim-column-names] {
+    > thead > tr > th {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color 0.2s;
+      
+      &:hover {
+        color: @md-dark;
+        overflow: visible;
+      }
+    }
+    
+    // the specification doesn't say if body cells may wrap
+    // or not, this prevents them from wrapping
+    > tbody > tr > td {
+      white-space: nowrap;
     }
   }
 

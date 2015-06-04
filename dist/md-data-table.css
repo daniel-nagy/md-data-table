@@ -32,10 +32,11 @@ table[md-data-table] {
 table[md-data-table][md-row-select] > thead > tr > th:first-child,
 table[md-data-table][md-row-select] > tbody > tr > td:first-child {
   width: 18px;
+  padding-right: 24px;
 }
 table[md-data-table][md-row-select] > thead > tr > th:nth-child(2),
 table[md-data-table][md-row-select] > tbody > tr > td:nth-child(2) {
-  padding-left: 24px;
+  padding-left: 0;
 }
 table[md-data-table][trim-column-names] > thead > tr > th {
   overflow: hidden;

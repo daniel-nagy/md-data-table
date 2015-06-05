@@ -6,6 +6,14 @@ angular.module('md.data.table', [])
   function postLink(scope, element, attrs) {
     var head, body;
     
+    scope.setOrder = function(prop) {
+      scope.order = scope.order === prop ? '-' + prop : prop;
+    }
+    
+    scope.isActive = function(prop) {
+      return scope.order === prop || scope.order === '-' + prop;
+    }
+    
     function createCheckbox(label, model) {
       return $compile(angular.element('<md-checkbox></md-checkbox>')
         .attr('aria-label', label)
@@ -15,10 +23,6 @@ angular.module('md.data.table', [])
     
     function toggleRow(row, value) {
       scope.select[row.id] = value !== undefined ? value : !scope.select[row.id];
-    }
-    
-    function setOrder(prop) {
-      scope.order = scope.order === prop ? '-' + prop : prop;
     }
     
     function Header() {
@@ -65,7 +69,28 @@ angular.module('md.data.table', [])
       };
     }
     
+    function addNumericColumn(columnHeader, column) {
+      var unit = columnHeader.attributes.unit || { value: undefined };
+      var precision = columnHeader.attributes.precision || { value: 0 };
+      
+      columnHeader.style.textAlign = 'right';
+      
+      if(unit.value) {
+        columnHeader.innerHTML += ' ' + '(' + unit.value + ')';
+      }
+      
+      body.column(column, function (cell) {
+        cell.style.textAlign = 'right';
+        cell.innerHTML = parseInt(cell.innerHTML).toFixed(precision.value);
+        if(cell.attributes.hasOwnProperty('show-unit')) {
+          cell.innerHTML += unit.value;
+        }
+      });
+    }
+    
     function trimColumnNames() {
+      head.row.children().addClass('trim animate');
+      
       // get the natural width of the table
       element.css('width', 'auto');
       
@@ -76,6 +101,18 @@ angular.module('md.data.table', [])
         'width': '100%',
         'table-layout': 'fixed'
       });
+    }
+    
+    function setOrderByAttr(columnHeader) {
+      var order = columnHeader.attributes['order-by'] || {
+        value: columnHeader.textContent.toLowerCase()
+      };
+      
+      columnHeader.setAttribute('order-by', order.value);
+      columnHeader.setAttribute('ng-class', '{\'md-active\': isActive(\'' + order.value + '\')}');
+      columnHeader.setAttribute('ng-click', 'setOrder(\'' + order.value + '\')');
+      
+      $compile(columnHeader)(scope);
     }
     
     function config() {
@@ -92,59 +129,53 @@ angular.module('md.data.table', [])
       }
       
       angular.forEach(head.row.children(), function (cell, index) {
-        if(body.rows.attr('ng-repeat')) {
-          
-          if(!cell.attributes['order-by']) {
-            cell.setAttribute('order-by', cell.textContent.toLowerCase());
-          }
-          
-          cell.addEventListener('click', function () {
-            scope.$apply(setOrder(this.attributes['order-by'].value));
-          });
-        }
-        
-        if(!cell.attributes.numeric) {
+        // we want to avoid applying these functoions to checkboxes
+        if(attrs.hasOwnProperty('mdRowSelect') && index === 0) {
           return;
         }
         
-        var unit = cell.attributes.unit || { value: undefined };
-        var precision = cell.attributes.precision || { value: 0 };
-        
-        cell.style.textAlign = 'right';
-        
-        if(unit.value) {
-          cell.innerHTML += ' ' + '(' + unit.value + ')';
+        if(attrs.hasOwnProperty('mdColumnSort')) {
+          setOrderByAttr(cell);
         }
         
-        body.column(index, function (cell) {
-          cell.style.textAlign = 'right';
-          cell.innerHTML = parseInt(cell.innerHTML).toFixed(precision.value);
-          if(cell.attributes.hasOwnProperty('show-unit')) {
-            cell.innerHTML += unit.value;
-          }
-        });
+        if(cell.attributes.numeric) {
+          addNumericColumn(cell, index);
+        }
+        
+        // I've exhausted all of the CSS magic I can think of to get
+        // column names to overflow properly in Safari. My solution
+        // is to wrap collumn names in a container.
+        if(attrs.hasOwnProperty('trimColumnNames')) {
+          cell.innerHTML = '<div>' + cell.innerHTML + '</div>';
+        }
       });
     }
     
     function ready() {
+      // we need to wait for ng-repeat and interpolate strings to be
+      // compiled
       return element.find('tbody').children().length;
     }
     
     var listener = scope.$watch(ready, function (ready) {
       if(ready) {
         listener();
+        
+        // at this point Firefox is still not ready so we need to
+        // wait for the next digest cycle
         $timeout(config);
       }
     });
   }
   
-  function compile(iElement) {
-    var body = iElement.find('tbody').find('tr');
-    
-    if(body.attr('ng-repeat')) {
-      body.attr('ng-repeat', body.attr('ng-repeat') + ' | orderBy: order');
+  function compile(iElement, iAttrs) {
+    if(iAttrs.hasOwnProperty('mdColumnSort')) {
+      var body = iElement.find('tbody').find('tr');
+      
+      if(body.attr('ng-repeat')) {
+        body.attr('ng-repeat', body.attr('ng-repeat') + ' | orderBy: order');
+      }
     }
-    
     return postLink;
   }
   

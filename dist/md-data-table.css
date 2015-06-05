@@ -20,14 +20,16 @@ md-card > md-data-table-container + md-data-table-toolbar {
   border-top: 1px rgba(0, 0, 0, 0.12) solid;
 }
 md-data-table-container {
+  display: block;
   max-width: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 table[md-data-table] {
   width: 100%;
   border-spacing: 0;
   background-color: #fff;
+  overflow: hidden;
 }
 table[md-data-table][md-row-select] > thead > tr > th:first-child,
 table[md-data-table][md-row-select] > tbody > tr > td:first-child {
@@ -38,17 +40,12 @@ table[md-data-table][md-row-select] > thead > tr > th:nth-child(2),
 table[md-data-table][md-row-select] > tbody > tr > td:nth-child(2) {
   padding-left: 0;
 }
-table[md-data-table][trim-column-names] > thead > tr > th {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: color 0.2s;
+table[md-data-table][md-row-select] > thead > tr > th.trim:nth-child(2) > div {
+  margin-left: 0;
 }
-table[md-data-table][trim-column-names] > thead > tr > th:hover {
+table[md-data-table][md-column-sort] > thead > tr > th:hover {
   color: rgba(0, 0, 0, 0.87);
-  overflow: visible;
-}
-table[md-data-table][trim-column-names] > tbody > tr > td {
-  white-space: nowrap;
+  cursor: pointer;
 }
 table[md-data-table] > thead + tbody > tr:first-Child > td {
   border-top: 1px rgba(0, 0, 0, 0.12) solid;
@@ -60,6 +57,32 @@ table[md-data-table] > thead > tr > th {
   font-size: 12px;
   color: rgba(0, 0, 0, 0.54);
   white-space: nowrap;
+}
+table[md-data-table] > thead > tr > th.md-active {
+  color: rgba(0, 0, 0, 0.87);
+}
+table[md-data-table] > thead > tr > th.animate {
+  transition: color 0.2s;
+}
+table[md-data-table] > thead > tr > th.trim {
+  overflow: hidden;
+  min-width: 120px;
+}
+table[md-data-table] > thead > tr > th.trim > div {
+  margin-left: 56px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color;
+}
+table[md-data-table] > thead > tr > th.trim:hover {
+  color: rgba(0, 0, 0, 0.87);
+}
+table[md-data-table] > thead > tr > th.trim:hover > div {
+  margin-left: 0;
+}
+table[md-data-table] > thead > tr > th:not(.trim) + th {
+  padding-left: 56px;
 }
 table[md-data-table] > tbody > tr {
   height: 48px;
@@ -78,9 +101,13 @@ table[md-data-table] > tbody > tr > td {
   font-size: 13px;
   color: rgba(0, 0, 0, 0.87);
 }
+table[md-data-table] > tbody > tr > td + td {
+  padding-left: 56px;
+}
 table[md-data-table] > thead > tr > th,
 table[md-data-table] > tbody > tr > td {
-  text-align: left;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 table[md-data-table] > thead > tr > th:first-child,
 table[md-data-table] > tbody > tr > td:first-child {
@@ -94,11 +121,11 @@ table[md-data-table] > thead > tr > th:hover,
 table[md-data-table] > tbody > tr > td:hover {
   cursor: default;
 }
+table[md-data-table] > thead > tr > th:focus,
+table[md-data-table] > tbody > tr > td:focus {
+  outline: none;
+}
 table[md-data-table] > thead > tr > th > md-checkbox,
 table[md-data-table] > tbody > tr > td > md-checkbox {
   margin: 0;
-}
-table[md-data-table] > thead > tr > th + th,
-table[md-data-table] > tbody > tr > td + td {
-  padding-left: 56px;
 }

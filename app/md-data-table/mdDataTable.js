@@ -8,11 +8,11 @@ angular.module('md.data.table', [])
     
     scope.setOrder = function(prop) {
       scope.order = scope.order === prop ? '-' + prop : prop;
-    }
+    };
     
     scope.isActive = function(prop) {
       return scope.order === prop || scope.order === '-' + prop;
-    }
+    };
     
     function createCheckbox(label, model) {
       return $compile(angular.element('<md-checkbox></md-checkbox>')

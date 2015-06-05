@@ -16,7 +16,7 @@ bower install angular-material-data-table --save
 ```
 
 > This module is experimental technology.
-> tested in IE 10 and on IOS 7
+> Tested in IE 10 and on IOS 7.
 
 ## usage
 
@@ -97,7 +97,7 @@ I see three different use cases for column ordering.
 
 2. **Using ngRepeat to display data**
 
-   I've implemented a naive way of handling this by checking for an `ng-repeat` directive during the compile phase and attaching on an `orderBy` variable that I can then use to sort the columns from within the directive. It would be better to first check if an `orderBy` variable exists and then parse it or maybe reserve an attribute for two way data-binding. That way the developer has access to the orderBy variable in their controller.
+   I've implemented a naive way of handling this by checking for an `ng-repeat` directive during the compile phase and attaching on an `orderBy` variable that I can then use to sort the columns from within the directive. It would be better to first check if an `orderBy` variable exists and then parse it or maybe reserve an attribute for two way data-binding. That way the developer has access to the `orderBy` variable in their controller.
 
 3. **Using ngRepeat to display paginated chunks of data from the server**
 
@@ -141,6 +141,6 @@ Make your modifications and update the build.
 grunt build
 ```
 
-create a pull request!
+Create a pull request!
 
 > If you're unfamiliar with Grunt, you may need to install the grunt-cli globally to use grunt from the command-line.

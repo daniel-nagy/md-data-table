@@ -7,25 +7,25 @@
     <thead>
       <tr>
         <th order-by="name">Dessert (100g serving)</th>
-        <th numeric>Calories</th>
-        <th numeric unit="g" precision="1">Fat</th>
-        <th numeric unit="g">Carbs</th>
-        <th numeric unit="g" precision="1">Protein</th>
-        <th numeric unit="mg">Sodium</th>
-        <th numeric unit="%">Calcium</th>
-        <th numeric unit="%">Iron</th>
+        <th numeric order-by="calories.value">Calories</th>
+        <th numeric unit="g" precision="1" order-by="fat.value">Fat</th>
+        <th numeric unit="g" order-by="carbs.value">Carbs</th>
+        <th numeric unit="g" precision="1" order-by="fat.value">Protein</th>
+        <th numeric unit="mg" order-by="sodium.value">Sodium</th>
+        <th numeric unit="%" order-by="calcium.value">Calcium</th>
+        <th numeric unit="%" order-by="iron.value">Iron</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="dessert in desserts">
         <td>{{dessert.name}}</td>
-        <td>{{dessert.calories}}</td>
-        <td>{{dessert.fat}}</td>
-        <td>{{dessert.carbs}}</td>
-        <td>{{dessert.protein}}</td>
-        <td>{{dessert.sodium}}</td>
-        <td show-unit>{{dessert.calcium}}</td>
-        <td show-unit>{{dessert.iron}}</td>
+        <td>{{dessert.calories.value}}</td>
+        <td>{{dessert.fat.value}}</td>
+        <td>{{dessert.carbs.value}}</td>
+        <td>{{dessert.protein.value}}</td>
+        <td>{{dessert.sodium.value}}</td>
+        <td show-unit>{{dessert.calcium.value}}</td>
+        <td show-unit>{{dessert.iron.value}}</td>
       </tr>
     </tbody>
   </table>

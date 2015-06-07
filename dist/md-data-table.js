@@ -1,187 +1,368 @@
-angular.module('md.data.table', [])
+angular.module('md.data.table', []).directive('mdTableBody', function () {
+  'use strict';
 
-.directive('mdDataTable', ['$compile', '$timeout', function ($compile, $timeout) {
+  return {
+    require: '^mdDataTable',
+    link: function (scope, element, attrs, ctrl) {
+      scope.isSelected = function (item) {
+        return ctrl.selectedItems.indexOf(item) !== -1;
+      };
+      
+      scope.toggleRow = function (item) {
+        if(scope.isSelected(item)) {
+          ctrl.selectedItems.splice(ctrl.selectedItems.indexOf(item), 1);
+        } else {
+          ctrl.selectedItems.push(item);
+        }
+      };
+    }
+  };
+});
+
+angular.module('md.data.table')
+
+.controller('mdDataTableController', ['$attrs', '$parse', '$scope', function ($attrs, $parse, $scope) {
+  'use strict';
+
+  this.selectedItems = [];
+  
+  /*
+   * Ensures two things.
+   *
+   * 1. If the scope variable does not exist, at the time of table
+   *    creation, it will be created in the proper scope.
+   *
+   * 2. If the variable is not an array, it will be converted to an
+   *    array.
+   */
+  if($attrs.mdRowSelect) {
+    $parse($attrs.mdRowSelect).assign($scope.$parent.$parent, this.selectedItems);
+  }
+}]);
+
+angular.module('md.data.table')
+
+.directive('mdDataTable', ['$mdTableRepeat', '$timeout', function ($mdTableRepeat, $timeout) {
   'use strict';
   
-  function postLink(scope, element, attrs) {
-    var head, body;
+  function postLink(scope, element, attrs, controller) {
+    var head, body, columns = [];
     
-    scope.setOrder = function(prop) {
-      scope.order = scope.order === prop ? '-' + prop : prop;
-    };
-    
-    scope.isActive = function(prop) {
-      return scope.order === prop || scope.order === '-' + prop;
-    };
-    
-    function createCheckbox(label, model) {
-      return $compile(angular.element('<md-checkbox></md-checkbox>')
-        .attr('aria-label', label)
-        .attr('ng-click', '$event.stopPropagation()')
-        .attr('ng-model', model))(scope);
-    }
-    
-    function toggleRow(row, value) {
-      scope.select[row.id] = value !== undefined ? value : !scope.select[row.id];
-    }
-    
-    function Header() {
-      this.row = element.find('thead').find('tr');
-      
-      this.toggleAll = function () {
-        angular.forEach(body.rows, function (row) {
-          toggleRow(row, scope.selectAll);
-        });
-      };
-      
-      this.enableRowSelect = function () {
-        var checkbox = createCheckbox('Toggle All', 'selectAll')
-          .on('click', this.toggleAll);
-        this.row.prepend(angular.element('<th></th>').append(checkbox));
-      };
-    }
-    
-    function Body() {
-      this.rows = element.find('tbody').find('tr');
-      
-      this.column = function (index, callback) {
-        angular.forEach(this.rows, function(row) {
-          callback(row.children[index]);
-        });
-      };
-      
-      this.enableRowSelect = function () {
-        scope.select = [];
-        
-        angular.forEach(this.rows, function(row, index) {
-          row.id = index;
-          
-          scope.select.push(false);
-          
-          var checkbox = createCheckbox('Toggle Row', 'select[' + index + ']');
-          
-          angular.element(row).prepend(angular.element('<td></td>').append(checkbox));
-          
-          row.addEventListener('click', function () {
-            scope.$apply(toggleRow(this));
-          });
-        });
-      };
-    }
-    
-    function addNumericColumn(columnHeader, column) {
-      var unit = columnHeader.attributes.unit || { value: undefined };
-      var precision = columnHeader.attributes.precision || { value: 0 };
-      
-      columnHeader.style.textAlign = 'right';
-      
-      if(unit.value) {
-        columnHeader.innerHTML += ' ' + '(' + unit.value + ')';
-      }
-      
-      body.column(column, function (cell) {
-        cell.style.textAlign = 'right';
-        cell.innerHTML = parseInt(cell.innerHTML).toFixed(precision.value);
-        if(cell.attributes.hasOwnProperty('show-unit')) {
-          cell.innerHTML += unit.value;
-        }
+    function column(index, callback) {
+      angular.forEach(body.rows, function(row) {
+        callback(row.children[index]);
       });
     }
     
+    function isCheckbox(cell) {
+      return (attrs.hasOwnProperty('mdRowSelect') && cell === 0);
+    }
+    
+    function addNumericColumn(cell, index) {
+      if(isCheckbox(index) || !cell.attributes.numeric) {
+        return columns.push({ isNumeric: false });
+      }
+      
+      cell.style.textAlign = 'right';
+      
+      columns.push({
+        isNumeric: true,
+        unit: cell.attributes.unit ? cell.attributes.unit.value : undefined,
+        precision: cell.attributes.precision ? cell.attributes.precision.value : undefined
+      });
+      
+      if(columns[index].unit) {
+        cell.innerHTML += ' ' + '(' + columns[index].unit + ')';
+      }
+    }
+    
     function trimColumnNames() {
-      head.row.children().addClass('trim animate');
+      head.children().addClass('trim animate');
       
-      // get the natural width of the table
-      element.css('width', 'auto');
+      // cross browser text overflow ellipsis
+      angular.forEach(head.children(), function (cell, index) {
+        if(isCheckbox(index)) {
+          return;
+        }
+        cell.innerHTML = '<div>' + cell.innerHTML + '</div>';
+      });
       
-      // don't allow the table to shrink beyound its natural width,
-      // but allow it to grow
+      // enforce a minimum width of 100px per column
       element.css({
-        'min-width': element.prop('scrollWidth') + 'px',
-        'width': '100%',
+        'min-width': 100 * head.children().length + 'px',
         'table-layout': 'fixed'
       });
     }
     
-    function setOrderByAttr(columnHeader) {
-      var order = columnHeader.attributes['order-by'] || {
-        value: columnHeader.textContent.toLowerCase()
-      };
+    function once() {
+      head = element.find('thead').find('tr');
       
-      columnHeader.setAttribute('order-by', order.value);
-      columnHeader.setAttribute('ng-class', '{\'md-active\': isActive(\'' + order.value + '\')}');
-      columnHeader.setAttribute('ng-click', 'setOrder(\'' + order.value + '\')');
-      
-      $compile(columnHeader)(scope);
-    }
-    
-    function config() {
-      head = new Header();
-      body = new Body();
+      angular.forEach(head.children(), addNumericColumn);
       
       if(attrs.hasOwnProperty('trimColumnNames')) {
         trimColumnNames();
       }
+    }
+    
+    controller.ready = function() {
+      body = { rows: element.find('tbody').find('tr') };
       
-      if(attrs.hasOwnProperty('mdRowSelect')) {
-        head.enableRowSelect();
-        body.enableRowSelect();
+      if(!head) {
+        this.setFilter(body.rows);
+        once();
       }
       
-      angular.forEach(head.row.children(), function (cell, index) {
-        // we want to avoid applying these functoions to checkboxes
-        if(attrs.hasOwnProperty('mdRowSelect') && index === 0) {
-          return;
-        }
-        
-        if(attrs.hasOwnProperty('mdColumnSort')) {
-          setOrderByAttr(cell);
-        }
-        
-        if(cell.attributes.numeric) {
-          addNumericColumn(cell, index);
-        }
-        
-        // I've exhausted all of the CSS magic I can think of to get
-        // column names to overflow properly in Safari. My solution
-        // is to wrap collumn names in a container.
-        if(attrs.hasOwnProperty('trimColumnNames')) {
-          cell.innerHTML = '<div>' + cell.innerHTML + '</div>';
-        }
+      $timeout(function () {
+        angular.forEach(head.children(), function (cell, index) {
+          if(isCheckbox(index)) {
+            return;
+          }
+          
+          if(columns[index].isNumeric) {
+            column(index, function (cell) {
+              cell.style.textAlign = 'right';
+              cell.innerHTML = parseInt(cell.innerHTML).toFixed(columns[index].precision);
+              
+              if(cell.attributes.hasOwnProperty('show-unit')) {
+                cell.innerHTML += columns[index].unit;
+              }
+            });
+          }
+        });
       });
-    }
-    
-    function ready() {
-      // we need to wait for ng-repeat and interpolate strings to be
-      // compiled
-      return element.find('tbody').children().length;
-    }
-    
-    var listener = scope.$watch(ready, function (ready) {
-      if(ready) {
-        listener();
-        
-        // at this point Firefox is still not ready so we need to
-        // wait for the next digest cycle
-        $timeout(config);
-      }
-    });
+    };
   }
   
   function compile(iElement, iAttrs) {
-    if(iAttrs.hasOwnProperty('mdColumnSort')) {
-      var body = iElement.find('tbody').find('tr');
+    var head = iElement.find('thead');
+    var body = iElement.find('tbody');
+    
+    if(!head.length) {
+      // see if we can add the element
+      head = iElement.find('tbody').eq(0);
       
-      if(body.attr('ng-repeat')) {
-        body.attr('ng-repeat', body.attr('ng-repeat') + ' | orderBy: order');
+      if(head.children().find('th').length) {
+        head.replaceWith('<thead>' + head.html() + '</thead>');
+      } else {
+        throw new Error('mdDataTable', 'Expecting <thead></thead> element.');
       }
+      
+      head = iElement.find('thead');
+      body = iElement.find('tbody');
     }
+    
+    head = head.attr('md-table-head', '').find('tr');
+    body = body.attr('md-table-body', '').find('tr');
+    
+    if(!body.attr('ng-repeat')) {
+      // log rudimentary warnings for the developer
+      if(iAttrs.hasOwnProperty('mdRowSelect')) {
+        return console.warn('Use ngRepeat to enable automatic row selection.');
+      }
+      if(iAttrs.hasOwnProperty('mdColumnSort')) {
+        if(!iAttrs.mdFilter) {
+          console.warn('Use ngRepeat to enable automatic column sorting.');
+        } else {
+          console.warn('Manual sorting may be difficult without ngRepeat.');
+        }
+      }
+    } else {
+      var repeat = $mdTableRepeat.parse(body.attr('ng-repeat'));
+      
+      if(iAttrs.hasOwnProperty('mdRowSelect')) {
+        head.checkbox = angular.element('<md-checkbox></md-checkbox>');
+        body.checkbox = angular.element('<md-checkbox></md-checkbox>');
+        
+        head.checkbox.attr('aria-label', 'Select All');
+        head.checkbox.attr('ng-click', 'toggleAll(' + repeat.items + ')');
+        head.checkbox.attr('ng-class', '{\'md-checked\': allSelected(' + repeat.items + ')}');
+        
+        body.checkbox.attr('aria-label', 'Select Row');
+        body.checkbox.attr('ng-click', 'toggleRow(' + repeat.item + ')');
+        body.checkbox.attr('ng-class', '{\'md-checked\': isSelected(' + repeat.item + ')}');
+        
+        head.prepend(angular.element('<th></th>').append(head.checkbox));
+        body.prepend(angular.element('<td></td>').append(body.checkbox));
+      }
+      
+      if(iAttrs.hasOwnProperty('mdColumnSort')) {
+        if(!head.attr('md-filter') && !repeat.orderBy) {
+          body.attr('ng-repeat', repeat.insertOrderBy('order'));
+        }
+      }
+      
+      body.attr('md-table-repeat', '');
+    }
+    
     return postLink;
   }
   
   return {
-    scope: true,
     restrict: 'A',
-    compile: compile
+    scope: {
+      filter: '=mdFilter',
+      selectedItems: '=mdRowSelect'
+    },
+    compile: compile,
+    controller: 'mdDataTableController'
   };
 }]);
+
+angular.module('md.data.table')
+
+.directive('mdTableHead', ['$compile', '$mdTableRepeat', '$parse', function ($compile, $mdTableRepeat, $parse) {
+  'use strict';
+
+  return {
+    require: '^mdDataTable',
+    link: function (scope, element, attrs, ctrl) {
+      var order;
+      
+      function setOrderBy(cell, index) {
+        if(element.parent().attr('md-row-select') && index === 0) {
+          return;
+        }
+        
+        var orderBy = cell.attributes['order-by'] || {
+          value: cell.textContent.toLowerCase()
+        };
+        
+        cell.setAttribute('order-by', orderBy.value);
+        cell.setAttribute('ng-class', '{\'md-active\': isActive(\'' + orderBy.value + '\')}');
+        cell.setAttribute('ng-click', 'orderBy(\'' + orderBy.value + '\')');
+        
+        $compile(cell)(scope);
+      }
+      
+      function autoSort(body) {
+        order = $parse($mdTableRepeat.parse(body.attr('ng-repeat')).orderBy);
+        
+        scope.isActive = function (prop) {
+          return order(scope) === prop || order(scope) === '-' + prop;
+        };
+        
+        scope.orderBy = function (prop) {
+          order.assign(scope, order(scope) === prop ? '-' + prop : prop);
+        };
+      }
+      
+      function manualSort() {
+        scope.isActive = function (prop) {
+          return order === prop || order === '-' + prop;
+        };
+        
+        scope.orderBy = function (prop) {
+          ctrl.selectedItems.splice(0);
+          scope.filter(order = order === prop ? '-' + prop : prop);
+        };
+      }
+      
+      ctrl.setFilter = function (body) {
+        if(element.parent().attr('md-column-sort') !== undefined) {
+          angular.forEach(element.find('tr').children(), setOrderBy);
+          
+          if(element.parent().attr('md-filter')) {
+            manualSort();
+          } else {
+            autoSort(body);
+          }
+        }
+      };
+      
+      scope.allSelected = function (items) {
+        return items ? items.length === ctrl.selectedItems.length : false;
+      };
+      
+      scope.toggleAll = function (items) {
+        if(scope.allSelected(items)) {
+          ctrl.selectedItems.splice(0);
+        } else {
+          angular.forEach(items, function (item) {
+            if(ctrl.selectedItems.indexOf(item) === -1) {
+              ctrl.selectedItems.push(item);
+            }
+          });
+        }
+      };
+    }
+  };
+}]);
+
+angular.module('md.data.table').directive('mdTableRepeat', function () {
+  'use strict';
+  
+  return {
+    require: '^mdDataTable',
+    link: function (scope, element, attrs, ctrl) {
+      if(scope.$last) {
+        ctrl.ready();
+      }
+    }
+  };
+});
+
+angular.module('md.data.table').factory('$mdTableRepeat', function () {
+  'use strict';
+  
+  var cache = {};
+  
+  function Repeat(ngRepeat) {
+    this._tokens = ngRepeat.split(' ');
+    this._iterator = 0;
+    
+    this.item = this.current();
+    while(this.hasNext() && this.getNext() !== 'in') {
+      this.item += this.current();
+    }
+    
+    this.items = this.getNext();
+    while(this.hasNext() && ['|', 'track'].indexOf(this.getNext()) === -1) {
+      this.items += this.current();
+    }
+    
+    this.orderBy = undefined;
+    if(this.hasNext() && this.getNext() === 'orderBy:') {
+      this.orderBy = this.getNext();
+    }
+    
+    this.trackBy = undefined;
+    if(this.hasNext()) {
+      this.trackBy = this.getNext() === 'by' ? this.getNext() : this.current();
+    }
+  }
+  
+  Repeat.prototype.current = function () {
+    return this._tokens[this._iterator];
+  };
+  
+  Repeat.prototype.getNext = function() {
+    return this._tokens[++this._iterator];
+  };
+  
+  Repeat.prototype.getValue = function() {
+    return this._tokens.join(' ');
+  };
+  
+  Repeat.prototype.hasNext = function () {
+    return this._iterator < this._tokens.length - 1;
+  };
+  
+  Repeat.prototype.insertOrderBy = function (property) {
+    this.orderBy = property;
+    this._iterator = this.trackBy ? this._tokens.indexOf(this.trackBy) : this._tokens.length;
+    this._tokens.splice(this._iterator, 0, '|', 'orderBy:', property);
+    return this._tokens.join(' ');
+  };
+  
+  function parse(ngRepeat) {
+    if(!cache.hasOwnProperty(ngRepeat)) {
+      return (cache[ngRepeat] = new Repeat(ngRepeat));
+    }
+    return cache[ngRepeat];
+  }
+  
+  return {
+    parse: parse
+  };
+  
+});

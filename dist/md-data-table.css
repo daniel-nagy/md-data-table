@@ -15,6 +15,12 @@ md-card > md-data-table-toolbar {
 md-card > md-data-table-toolbar > .md-title {
   font-size: 20px;
 }
+md-card > md-data-table-toolbar > .md-button:first-child {
+  margin-left: -6px;
+}
+md-card > md-data-table-toolbar > .md-button:last-child {
+  margin-right: -6px;
+}
 md-card > md-data-table-container + md-data-table-toolbar {
   height: 56px;
   border-top: 1px rgba(0, 0, 0, 0.12) solid;
@@ -40,12 +46,18 @@ table[md-data-table][md-row-select] > thead > tr > th:nth-child(2),
 table[md-data-table][md-row-select] > tbody > tr > td:nth-child(2) {
   padding-left: 0;
 }
+table[md-data-table][md-row-select] > thead > tr > th.trim:first-child {
+  min-width: auto;
+}
 table[md-data-table][md-row-select] > thead > tr > th.trim:nth-child(2) > div {
   margin-left: 0;
 }
 table[md-data-table][md-column-sort] > thead > tr > th:hover {
   color: rgba(0, 0, 0, 0.87);
   cursor: pointer;
+}
+table[md-data-table][md-filter] > tbody > tr.ng-leave {
+  display: none;
 }
 table[md-data-table] > thead + tbody > tr:first-Child > td {
   border-top: 1px rgba(0, 0, 0, 0.12) solid;
@@ -66,7 +78,7 @@ table[md-data-table] > thead > tr > th.animate {
 }
 table[md-data-table] > thead > tr > th.trim {
   overflow: hidden;
-  min-width: 120px;
+  min-width: 100px;
 }
 table[md-data-table] > thead > tr > th.trim > div {
   margin-left: 56px;
@@ -109,6 +121,10 @@ table[md-data-table] > tbody > tr > td {
   text-align: left;
   padding-top: 8px;
   padding-bottom: 8px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 table[md-data-table] > thead > tr > th:first-child,
 table[md-data-table] > tbody > tr > td:first-child {

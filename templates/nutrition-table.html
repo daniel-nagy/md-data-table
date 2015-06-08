@@ -8,11 +8,11 @@
       <tr>
         <th order-by="name">Dessert (100g serving)</th>
         <th numeric order-by="calories">Calories</th>
-        <th numeric unit="g" precision="1" order-by="iron">Fat</th>
-        <th numeric unit="g" order-by="iron">Carbs</th>
-        <th numeric unit="g" precision="1" order-by="iron">Protein</th>
-        <th numeric unit="mg" order-by="iron">Sodium</th>
-        <th numeric unit="%" order-by="iron">Calcium</th>
+        <th numeric unit="g" precision="1" order-by="fat">Fat</th>
+        <th numeric unit="g" order-by="carbs">Carbs</th>
+        <th numeric unit="g" precision="1" order-by="protein">Protein</th>
+        <th numeric unit="mg" order-by="sodium">Sodium</th>
+        <th numeric unit="%" order-by="calcium">Calcium</th>
         <th numeric unit="%" order-by="iron">Iron</th>
       </tr>
     </thead>
@@ -32,4 +32,5 @@
 </md-data-table-container>
 
 <md-data-table-toolbar>
+  <md-button class="md-primary" ng-disabled="!selected.length" ng-click="logItems()">Log Selected Items</md-button>
 </md-data-table-toolbar>

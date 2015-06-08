@@ -3,17 +3,17 @@
 </md-data-table-toolbar>
 
 <md-data-table-container>
-  <table md-data-table md-row-select md-column-sort trim-column-names ng-controller="nutritionController">
+  <table md-data-table md-row-select md-column-sort  md-filter="filter" trim-column-names>
     <thead>
       <tr>
         <th order-by="name">Dessert (100g serving)</th>
-        <th numeric>Calories</th>
-        <th numeric unit="g" precision="1">Fat</th>
-        <th numeric unit="g">Carbs</th>
-        <th numeric unit="g" precision="1">Protein</th>
-        <th numeric unit="mg">Sodium</th>
-        <th numeric unit="%">Calcium</th>
-        <th numeric unit="%">Iron</th>
+        <th numeric order-by="calories">Calories</th>
+        <th numeric unit="g" precision="1" order-by="iron">Fat</th>
+        <th numeric unit="g" order-by="iron">Carbs</th>
+        <th numeric unit="g" precision="1" order-by="iron">Protein</th>
+        <th numeric unit="mg" order-by="iron">Sodium</th>
+        <th numeric unit="%" order-by="iron">Calcium</th>
+        <th numeric unit="%" order-by="iron">Iron</th>
       </tr>
     </thead>
     <tbody>

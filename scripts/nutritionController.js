@@ -1,7 +1,18 @@
-angular.module('nutritionApp').controller('nutritionController', ['$http', '$scope', function ($http, $scope) {
+angular.module('nutritionApp').controller('nutritionController', ['$nutrition', '$scope', function ($nutrition, $scope) {
   'use strict';
-  
-  $http.get('desserts.json').success(function (desserts) {
+
+  $scope.logItems = function () {
+    console.log($scope.selected);
+  };
+
+  $nutrition.desserts.query(function (desserts) {
     $scope.desserts = desserts;
   });
+
+  $scope.filter = function (filter) {
+    $nutrition.desserts.query({filter: filter}, function (desserts) {
+      $scope.desserts = desserts;
+    });
+  };
+
 }]);

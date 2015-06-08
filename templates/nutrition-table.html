@@ -19,13 +19,13 @@
     <tbody>
       <tr ng-repeat="dessert in desserts">
         <td>{{dessert.name}}</td>
-        <td>{{dessert.calories}}</td>
-        <td>{{dessert.fat}}</td>
-        <td>{{dessert.carbs}}</td>
-        <td>{{dessert.protein}}</td>
-        <td>{{dessert.sodium}}</td>
-        <td show-unit>{{dessert.calcium}}</td>
-        <td show-unit>{{dessert.iron}}</td>
+        <td>{{dessert.calories.value}}</td>
+        <td>{{dessert.fat.value}}</td>
+        <td>{{dessert.carbs.value}}</td>
+        <td>{{dessert.protein.value}}</td>
+        <td>{{dessert.sodium.value}}</td>
+        <td show-unit>{{dessert.calcium.value}}</td>
+        <td show-unit>{{dessert.iron.value}}</td>
       </tr>
     </tbody>
   </table>

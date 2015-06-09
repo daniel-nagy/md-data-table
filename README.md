@@ -26,22 +26,21 @@ bower install angular-material-data-table --save
 angular.module('nutritionApp').controller('nutritionController', ['$nutrition', '$scope', function ($nutrition, $scope) {
   'use strict';
   
-  $nutrition.desserts.query(function (desserts) {
-    $scope.desserts = desserts;
-  });
+  $scope.query = {
+    filter: 'name',
+    limit: 5,
+    page: 1
+  };
   
-  /* 
-   * This function will execute every time a table column name is
-   * selected. (notice md-filter="filter" in the template)
-   *
-   * @param filter Either the value of the order-by attribute or
-   *               the inner text of the cell.
-   */
-  $scope.filter = function (filter) {
-    $nutrition.desserts.query({filter: filter}, function (desserts) {
+  $scope.$watchCollection('query', function (newValue, oldValue) {
+    if(newValue === oldValue) {
+      return;
+    }
+    
+    $nutrition.desserts.query($scope.query, function (desserts) {
       $scope.desserts = desserts;
     });
-  };
+  });
 
 }]);
 ```
@@ -49,99 +48,124 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 **markup**
 
 ```html
-<md-data-table-container ng-controller="nutritionController">
-  <table md-data-table md-row-select md-column-sort md-filter="filter" trim-column-names>
-    <thead>
+<md-data-table-toolbar>
+  <h2 class="md-title">Nutrition</h2>
+</md-data-table-toolbar>
+
+<md-data-table-container>
+  <table md-data-table md-row-select="selected">
+    <thead md-filter="query.filter" md-trim-column-names>
       <tr>
         <th order-by="name">Dessert (100g serving)</th>
-        <th numeric>Calories</th>
-        <th numeric unit="g" precision="1">Fat</th>
-        <th numeric unit="g">Carbs</th>
-        <th numeric unit="g" precision="1">Protein</th>
-        <th numeric unit="mg">Sodium</th>
-        <th numeric unit="%">Calcium</th>
-        <th numeric unit="%">Iron</th>
+        <th numeric order-by="calories.value">Calories</th>
+        <th numeric unit="g" precision="1" order-by="fat.value">Fat</th>
+        <th numeric unit="g" order-by="carbs.value">Carbs</th>
+        <th numeric unit="g" precision="1" order-by="protein.value">Protein</th>
+        <th numeric unit="mg" order-by="sodium.value">Sodium</th>
+        <th numeric unit="%" order-by="calcium.value">Calcium</th>
+        <th numeric unit="%" order-by="iron.value">Iron</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="dessert in desserts">
         <td>{{dessert.name}}</td>
-        <td>{{dessert.calories}}</td>
-        <td>{{dessert.fat}}</td>
-        <td>{{dessert.carbs}}</td>
-        <td>{{dessert.protein}}</td>
-        <td>{{dessert.sodium}}</td>
-        <td show-unit>{{dessert.calcium}}</td>
-        <td show-unit>{{dessert.iron}}</td>
+        <td>{{dessert.calories.value}}</td>
+        <td>{{dessert.fat.value}}</td>
+        <td>{{dessert.carbs.value}}</td>
+        <td>{{dessert.protein.value}}</td>
+        <td>{{dessert.sodium.value}}</td>
+        <td show-unit>{{dessert.calcium.value}}</td>
+        <td show-unit>{{dessert.iron.value}}</td>
       </tr>
+    </tbody>
+  </table>
+</md-data-table-container>
+
+<md-data-table-toolbar layout-align="end">
+  <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="9"></md-data-table-pagination>
+</md-data-table-toolbar>
+```
+
+## Numeric Columns
+
+Numeric columns align to the right of table cells. Column headers support the following attributes for numeric data.
+
+#### Header Cells
+
+| :Attribute | :Target | :type    | :Description |
+| ---------- | ------- | -------- | ------------ |
+| numeric    | `<th>`  | `NULL`   | Informs the directive the column is numeric in nature. |
+| unit       | `<th>`  | `String` | Specifies the unit. Providing a unit will automatically add the unit, wrapped in parenthesis, to the header cell. |
+| precision  | `<th>`  | `Number` | Specifies the number of decimal places to display. The default is none. |
+
+#### Body Cells
+
+| :Attribute | :Target | :type  | :Description |
+| show-unit  | `<td>`  | `NULL` | Displays the unit in the body cell; `unit` must be specified on the header cell. |
+
+
+> Note that the `numeric` attribute must be present for other attributes to take effect.
+
+## Row Selection
+
+> Requires `ng-repeat`.
+
+| :Attribute      | :Target   | :type   | :Description |
+| --------------- | --------- | ------- | ------------ |
+| `md-row-select` | `<table>` | `Array` | Two-way data binding of selected items |
+
+## Long Header Titles
+
+| :Attribute             | :Target   | :type  | :Description |
+| ---------------------- | --------- | ------ | ------------ |
+| `md-trim-column-names` | `<thead>` | `NULL` | Enable truncating of column names. |
+
+Column names will be shortened if they exceed the width of the cell minus the `56px` of padding between cells. If the name exceeds the width of the cell plus the `56px` of padding between cells, then only an additional `56px` of text will be shown the rest will remain truncated.
+
+## Column Ordering
+
+| :Attribute             | :Target   | :type    | :Description |
+| ---------------------- | --------- | -------- | ------------ |
+| `md-filter`            | `<thead>` | `String` | Two-way data binding filter. |
+
+The filter will update when the user clicks on a `<th>` cell. The filter will take on the value supplied to the `order-by` attribute or default the cell's inner text. The filter can be used in to do manual sorting or automatic sorting.
+
+> This directive does not support filtering of in-place data, i.e. data included directly in the markup, nor do I plan on supporting this.
+
+#### Manual Sorting
+
+The provided usage example takes adverting of manual sorting by submitting a query to the server.
+
+#### Automatic Sorting
+
+Just add an `orderBy:` property to the `ng-repeat` attribute that matches the filter.
+
+```html
+<md-data-table-container>
+  <table md-data-table>
+    <thead md-filter="filter">
+      <!-- this cell will order by the name property -->
+      <th order-by="name">Dessert (100g serving)</th>
+      <!-- this cell will order by the calories property -->
+      <th numeric>Calories</th>
+    </thead>
+    <tbody>
+      <tr ng-repeat="dessert in desserts | orderBy: filter"></tr>
     </tbody>
   </table>
 </md-data-table-container>
 ```
 
-## Numeric Columns
-
-Numeric columns, as defined by the specification, align to the right of table cells. Column headers support the following attributes for numeric data.
-
-| Attribute | Target Cell | Description |
-| --------- | ----------- | ----------- |
-| numeric   | header cell | Informs the directive the current column is numeric in nature. |
-| unit      | header cell | Specifies the unit of the content. Providing a unit will automatically add the unit, wrapped in parenthesis, to the header cell. |
-| precision | header cell | Specifies the number of decimal places to display. The default is none. |
-| show-unit | body cell   | Displays the unit in the body cell. |
-
-
-Note that the `numeric` attribute must be present for other numeric attributes to take effect.
-
-## Row Selection
-
-> Automatic row selection requires `ng-repeat`.
-
-Automatic row selection is enabled using the `md-row-select` attribute. Selected items will appear in the variable assigned to the `md-row-select` attribute in the form of an array.
-
-## Long Header Titles
-
-Column names can be configured to shorten and display ellipses if they do not fit, with the recommended padding of `56px`, using the `trim-column-names` attribute.
-
-#### observations
-
-Finding a cross browser solution for this was more challenging then anticipated. I was unable to style the `<th>` element itself to achieve this effect. My solution was to wrap the cell's contents in an additional container.
-
-The specification does not declare a minimum width for table cells. When the width of the largest cell defines the width of the column this is not an issue, however, with this feature enabled this becomes a concern. For example, if you have a numeric cell, the width of the cell may be very small. Without a minimum width on the header cell, the cell will shrink to a point that is unreadable. In fact, the cell needs a minimum width of 12px just to display the ellipsis. I decided a minimum width for header cells, when this feature is enabled, is necessary. Currently the minimum width of header cells is `100px` which leaves `44px` for the column name (`100px - 56px`). There is one noncritical problem with this, the first table cell will have more space (`56px - 24px || 56px`) and the last table cell will have less space (`-24px`). This is due to the way the table is padded. Is it correctable? Maybe, I'm not entirely sure about the `24px` padding on the sides because `<tr>` elements are un-style-able. This blemish is not really noticeable but is a flaw none the less.
-
-Furthermore on hover, header names will only display an addition `56px` worth of text. Additional text will still overflow. I made this decision because otherwise the title would bleed over into its neighbor cell. I imagine this issue will be solved with tooltips.
-
-## Column Ordering
-
-As of version 0.0.2 you must now opt into column ordering by specifying the `md-column-sort` attribute.
-
-Column ordering is automatically enabled when `ng-repeat` is used to display the contents of a table. The order property defaults to the header cell text (in lowercase) but is configurable using the `order-by` attribute which will specify the property for that column to sort on.
-
-You may tell the directive you would like to perform manual sorting by specifying the `md-filter` attribute. The `md-filter` attribute takes a function that will executed when the user clicks a column name.
-
-#### observations
-
-I see three different use cases for column ordering.
-
-1. **Data that is included directly in the markup.**
-
-  Currently there is no support for this.
-
-2. **Using ngRepeat to display data**
-
-  Done automatically when the `md-column-sort` attribute is specified.
-
-3. **Using ngRepeat to display paginated chunks of data from the server**
-
-  The developer must assign a function to the `md-filter` attribute to filter the columns manually.
-
 ## Contributing
 
-This repository contains a nice demo application for developing features. As you modify files the package will automatically be generated. If you decide to add templates to the module, uncomment the `html2js` task in the `Gruntfile` to have templates automatically included in the build and stored in the template cache.
+**Requires**
 
-**update**
+* node
+* grunt-cli
+* (nutrion-app)[https://github.com/daniel-nagy/nutrition-app]
+  * mongodb
 
-The demo application is now configured to use a companion application [nutrition-app](https://github.com/daniel-nagy/nutrition-app) for developing server side filtering and pagination.
+This repository contains a demo application for developing features. As you make changes the application will live reload itself.
 
 #### Running the App Locally
 
@@ -178,5 +202,3 @@ grunt build
 ```
 
 Create a pull request!
-
-> If you're unfamiliar with Grunt, you may need to install the grunt-cli globally to use grunt from the command-line.

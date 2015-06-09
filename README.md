@@ -92,16 +92,17 @@ Numeric columns align to the right of table cells. Column headers support the fo
 
 #### Header Cells
 
-| :Attribute | :Target | :type    | :Description |
-| ---------- | ------- | -------- | ------------ |
+| Attribute  | Target  | Type     | Description |
+| :--------- | :------ | :------- | :---------- |
 | numeric    | `<th>`  | `NULL`   | Informs the directive the column is numeric in nature. |
 | unit       | `<th>`  | `String` | Specifies the unit. Providing a unit will automatically add the unit, wrapped in parenthesis, to the header cell. |
 | precision  | `<th>`  | `Number` | Specifies the number of decimal places to display. The default is none. |
 
 #### Body Cells
 
-| :Attribute | :Target | :type  | :Description |
-| show-unit  | `<td>`  | `NULL` | Displays the unit in the body cell; `unit` must be specified on the header cell. |
+| Attribute  | Target  | Type     | Description |
+| :--------- | :------ | :------- | :---------- |
+| show-unit  | `<td>`  | `NULL`   | Displays the unit in the body cell; `unit` must be specified on the header cell. |
 
 
 > Note that the `numeric` attribute must be present for other attributes to take effect.
@@ -110,31 +111,31 @@ Numeric columns align to the right of table cells. Column headers support the fo
 
 > Requires `ng-repeat`.
 
-| :Attribute      | :Target   | :type   | :Description |
-| --------------- | --------- | ------- | ------------ |
+| Attribute       | Target    | Type    | Description |
+| :-------------- | :-------- | :------ | :---------- |
 | `md-row-select` | `<table>` | `Array` | Two-way data binding of selected items |
 
 ## Long Header Titles
 
-| :Attribute             | :Target   | :type  | :Description |
-| ---------------------- | --------- | ------ | ------------ |
-| `md-trim-column-names` | `<thead>` | `NULL` | Enable truncating of column names. |
+| Attribute              | Target    | Type   | Description |
+| :--------------------- | :-------- | :----- | :---------- |
+| `md-trim-column-names` | `<thead>` | `NULL` | Enable truncating column names. |
 
 Column names will be shortened if they exceed the width of the cell minus the `56px` of padding between cells. If the name exceeds the width of the cell plus the `56px` of padding between cells, then only an additional `56px` of text will be shown the rest will remain truncated.
 
 ## Column Ordering
 
-| :Attribute             | :Target   | :type    | :Description |
-| ---------------------- | --------- | -------- | ------------ |
+| Attribute              | Target    | Type     | Description |
+| :--------------------- | :-------- | :------- | :---------- |
 | `md-filter`            | `<thead>` | `String` | Two-way data binding filter. |
 
-The filter will update when the user clicks on a `<th>` cell. The filter will take on the value supplied to the `order-by` attribute or default the cell's inner text. The filter can be used in to do manual sorting or automatic sorting.
+The filter will update when the user clicks on a `<th>` cell. The filter will take on the value supplied to the `order-by` attribute or the cell's inner text. The filter can be used in to do manual sorting or automatic sorting.
 
 > This directive does not support filtering of in-place data, i.e. data included directly in the markup, nor do I plan on supporting this.
 
 #### Manual Sorting
 
-The provided usage example takes adverting of manual sorting by submitting a query to the server.
+The provided usage example takes advantage of manual sorting by submitting a query to the server.
 
 #### Automatic Sorting
 
@@ -162,7 +163,7 @@ Just add an `orderBy:` property to the `ng-repeat` attribute that matches the fi
 
 * node
 * grunt-cli
-* (nutrion-app)[https://github.com/daniel-nagy/nutrition-app]
+* [nutrion-app](https://github.com/daniel-nagy/nutrition-app)
   * mongodb
 
 This repository contains a demo application for developing features. As you make changes the application will live reload itself.

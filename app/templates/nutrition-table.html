@@ -17,7 +17,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="dessert in desserts | orderBy: query.filter">
+      <tr ng-repeat="dessert in desserts">
         <td>{{dessert.name}}</td>
         <td>{{dessert.calories.value}}</td>
         <td>{{dessert.fat.value}}</td>

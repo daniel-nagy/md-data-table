@@ -47,7 +47,6 @@ md-data-table-pagination .md-button.arrow {
           justify-content: center;
   min-height: 24px;
   min-width: 24px;
-  cursor: pointer;
   -webkit-transform: translateZ(0);
 }
 md-data-table-pagination .md-button.arrow:first-of-type {

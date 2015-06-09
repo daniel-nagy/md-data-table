@@ -157,6 +157,17 @@ Just add an `orderBy:` property to the `ng-repeat` attribute that matches the fi
 </md-data-table-container>
 ```
 
+## Pagination
+
+To use pagination add a `md-data-table-pagination` element to the `md-data-table-toolbar`.
+
+| Attribute       | Type     | Description |
+| :---------------| :------- | :---------- |
+| `md-limit`      | `Number` | A row limit. |
+| `md-page`       | `Number` | Page number. |
+| `md-total`      | `Number` | Total number of items. |
+| `md-row-select` | `Array`  | Row limit options. The default is `[5, 10, 15]` |
+
 ## Contributing
 
 **Requires**

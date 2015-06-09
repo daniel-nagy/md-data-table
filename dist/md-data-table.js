@@ -4,6 +4,8 @@ angular.module('md.data.table', ['md.table.templates'])
   'use strict';
   
   function postLink(scope, element, attrs, ctrl) {
+    var listener;
+    
     // enable row selection
     if(element.parent().attr('md-row-select')) {
       scope.isSelected = function (item) {
@@ -21,6 +23,17 @@ angular.module('md.data.table', ['md.table.templates'])
     
     ctrl.ready = function () {
       var self = this;
+      
+      if(!listener) {
+        var items = $mdTableRepeat.parse(element.find('tr').attr('ng-repeat')).items;
+        
+        // clear the selected items (incase of server side filtering or pagination)
+        listener = scope.$watch(items, function (newValue, oldValue) {
+          if(newValue !== oldValue) {
+            ctrl.selectedItems.splice(0);
+          }
+        });
+      }
       
       // set numeric cells
       this.columns.forEach(function (column, index) {
@@ -110,7 +123,7 @@ angular.module('md.data.table')
   }
   
   angular.forEach($element.find('th'), self.setColumns);
-  
+
 }]);
 
 angular.module('md.data.table')
@@ -177,9 +190,6 @@ angular.module('md.data.table')
       };
       
       scope.$parent.orderBy = function (prop) {
-        if(attrs.hasOwnProperty('mdFilterClear')) {
-          ctrl.selectedItems.splice(0);
-        }
         scope.filter = scope.filter === prop ? '-' + prop : prop;
       };
     }
@@ -349,6 +359,20 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
         }
       }
       
+      scope.min = function () {
+        return (((scope.page - 1) * scope.limit) + 1);
+      };
+      
+      scope.max = function () {
+        return scope.hasNext() ? scope.page * scope.limit : scope.total;
+      }
+      
+      scope.onSelect = function () {
+        if(scope.min() > scope.total) {
+          scope.page--;
+        }
+      };
+      
       scope.previous = function () {
         if(scope.hasPrevious()) {
           scope.page--;
@@ -444,10 +468,10 @@ angular.module('templates.md-data-table-pagination.html', []).run(['$templateCac
   'use strict';
   $templateCache.put('templates.md-data-table-pagination.html',
     '<span>Rows per page:</span>\n' +
-    '<md-select ng-model="limit" aria-label="Row Count" placeholder="{{rowSelect ? rowSelect[0] : 5}}">\n' +
+    '<md-select ng-model="limit" ng-change="onSelect()" aria-label="Row Count" placeholder="{{rowSelect ? rowSelect[0] : 5}}">\n' +
     '  <md-option ng-repeat="rows in rowSelect ? rowSelect : [5, 10, 15]" value="{{rows}}">{{rows}}</md-option>\n' +
     '</md-select>\n' +
-    '<span>{{((page - 1) * limit) + 1}} - {{page * limit < total ? page * limit : total}} of {{total}}</span>\n' +
+    '<span>{{min()}} - {{max()}} of {{total}}</span>\n' +
     '<md-button class="arrow left" ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous"></md-button>\n' +
     '<md-button class="arrow right" ng-click="next()" ng-disabled="!hasNext()" aria-label="Next"></span></md-button>');
 }]);

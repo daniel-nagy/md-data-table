@@ -25,6 +25,20 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
         }
       }
       
+      scope.min = function () {
+        return (((scope.page - 1) * scope.limit) + 1);
+      };
+      
+      scope.max = function () {
+        return scope.hasNext() ? scope.page * scope.limit : scope.total;
+      }
+      
+      scope.onSelect = function () {
+        if(scope.min() > scope.total) {
+          scope.page--;
+        }
+      };
+      
       scope.previous = function () {
         if(scope.hasPrevious()) {
           scope.page--;

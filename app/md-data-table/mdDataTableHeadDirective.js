@@ -13,9 +13,6 @@ angular.module('md.data.table')
       };
       
       scope.$parent.orderBy = function (prop) {
-        if(attrs.hasOwnProperty('mdFilterClear')) {
-          ctrl.selectedItems.splice(0);
-        }
         scope.filter = scope.filter === prop ? '-' + prop : prop;
       };
     }

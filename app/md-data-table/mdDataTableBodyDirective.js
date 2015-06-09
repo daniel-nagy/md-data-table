@@ -4,6 +4,8 @@ angular.module('md.data.table', ['md.table.templates'])
   'use strict';
   
   function postLink(scope, element, attrs, ctrl) {
+    var listener;
+    
     // enable row selection
     if(element.parent().attr('md-row-select')) {
       scope.isSelected = function (item) {
@@ -21,6 +23,17 @@ angular.module('md.data.table', ['md.table.templates'])
     
     ctrl.ready = function () {
       var self = this;
+      
+      if(!listener) {
+        var items = $mdTableRepeat.parse(element.find('tr').attr('ng-repeat')).items;
+        
+        // clear the selected items (incase of server side filtering or pagination)
+        listener = scope.$watch(items, function (newValue, oldValue) {
+          if(newValue !== oldValue) {
+            ctrl.selectedItems.splice(0);
+          }
+        });
+      }
       
       // set numeric cells
       this.columns.forEach(function (column, index) {

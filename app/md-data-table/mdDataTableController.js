@@ -35,5 +35,5 @@ angular.module('md.data.table')
   }
   
   angular.forEach($element.find('th'), self.setColumns);
-  
+
 }]);

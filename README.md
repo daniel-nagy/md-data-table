@@ -92,17 +92,17 @@ Numeric columns align to the right of table cells. Column headers support the fo
 
 #### Header Cells
 
-| Attribute  | Target  | Type     | Description |
-| :--------- | :------ | :------- | :---------- |
-| numeric    | `<th>`  | `NULL`   | Informs the directive the column is numeric in nature. |
-| unit       | `<th>`  | `String` | Specifies the unit. Providing a unit will automatically add the unit, wrapped in parenthesis, to the header cell. |
-| precision  | `<th>`  | `Number` | Specifies the number of decimal places to display. The default is none. |
+| Attribute    | Target  | Type     | Description |
+| :----------- | :------ | :------- | :---------- |
+| `numeric`    | `<th>`  | `NULL`   | Informs the directive the column is numeric in nature. |
+| `unit`       | `<th>`  | `String` | Specifies the unit. Providing a unit will automatically add the unit, wrapped in parenthesis, to the header cell. |
+| `precision`  | `<th>`  | `Number` | Specifies the number of decimal places to display. The default is none. |
 
 #### Body Cells
 
-| Attribute  | Target  | Type     | Description |
-| :--------- | :------ | :------- | :---------- |
-| show-unit  | `<td>`  | `NULL`   | Displays the unit in the body cell; `unit` must be specified on the header cell. |
+| Attribute   | Target  | Type     | Description |
+| :---------- | :------ | :------- | :---------- |
+| `show-unit` | `<td>`  | `NULL`   | Displays the unit in the body cell; `unit` must be specified on the header cell. |
 
 
 > Note that the `numeric` attribute must be present for other attributes to take effect.

@@ -3,17 +3,17 @@
 </md-data-table-toolbar>
 
 <md-data-table-container>
-  <table md-data-table md-row-select="selected" md-column-sort  md-filter="filter" trim-column-names>
-    <thead>
+  <table md-data-table md-row-select="selected">
+    <thead md-filter="query.filter" md-filter-clear md-trim-column-names>
       <tr>
         <th order-by="name">Dessert (100g serving)</th>
-        <th numeric order-by="calories">Calories</th>
-        <th numeric unit="g" precision="1" order-by="fat">Fat</th>
-        <th numeric unit="g" order-by="carbs">Carbs</th>
-        <th numeric unit="g" precision="1" order-by="protein">Protein</th>
-        <th numeric unit="mg" order-by="sodium">Sodium</th>
-        <th numeric unit="%" order-by="calcium">Calcium</th>
-        <th numeric unit="%" order-by="iron">Iron</th>
+        <th numeric order-by="calories.value">Calories</th>
+        <th numeric unit="g" precision="1" order-by="fat.value">Fat</th>
+        <th numeric unit="g" order-by="carbs.value">Carbs</th>
+        <th numeric unit="g" precision="1" order-by="protein.value">Protein</th>
+        <th numeric unit="mg" order-by="sodium.value">Sodium</th>
+        <th numeric unit="%" order-by="calcium.value">Calcium</th>
+        <th numeric unit="%" order-by="iron.value">Iron</th>
       </tr>
     </thead>
     <tbody>
@@ -31,6 +31,6 @@
   </table>
 </md-data-table-container>
 
-<md-data-table-toolbar>
-  <md-button class="md-primary" ng-disabled="!selected.length" ng-click="logItems()">Log Selected Items</md-button>
+<md-data-table-toolbar layout-align="end">
+  <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="9"></md-data-table-pagination>
 </md-data-table-toolbar>

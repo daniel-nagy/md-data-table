@@ -1,18 +1,20 @@
 angular.module('nutritionApp').controller('nutritionController', ['$nutrition', '$scope', function ($nutrition, $scope) {
   'use strict';
 
-  $scope.logItems = function () {
-    console.log($scope.selected);
+  $scope.query = {
+    filter: 'name',
+    limit: 5,
+    page: 1
   };
 
-  $nutrition.desserts.query(function (desserts) {
-    $scope.desserts = desserts;
-  });
+  $scope.$watchCollection('query', function (newValue, oldValue) {
+    if(newValue === oldValue) {
+      return;
+    }
 
-  $scope.filter = function (filter) {
-    $nutrition.desserts.query({filter: filter}, function (desserts) {
+    $nutrition.desserts.query($scope.query, function (desserts) {
       $scope.desserts = desserts;
     });
-  };
+  });
 
 }]);

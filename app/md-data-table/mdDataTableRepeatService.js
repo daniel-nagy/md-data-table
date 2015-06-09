@@ -55,6 +55,7 @@ angular.module('md.data.table').factory('$mdTableRepeat', function () {
     if(!cache.hasOwnProperty(ngRepeat)) {
       return (cache[ngRepeat] = new Repeat(ngRepeat));
     }
+    
     return cache[ngRepeat];
   }
   

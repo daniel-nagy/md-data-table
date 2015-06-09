@@ -1,0 +1,7 @@
+<span>Rows per page:</span>
+<md-select ng-model="limit" aria-label="Row Count" placeholder="{{rowSelect ? rowSelect[0] : 5}}">
+  <md-option ng-repeat="rows in rowSelect ? rowSelect : [5, 10, 15]" value="{{rows}}">{{rows}}</md-option>
+</md-select>
+<span>{{((page - 1) * limit) + 1}} - {{page * limit < total ? page * limit : total}} of {{total}}</span>
+<md-button class="arrow left" ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous"></md-button>
+<md-button class="arrow right" ng-click="next()" ng-disabled="!hasNext()" aria-label="Next"></span></md-button>

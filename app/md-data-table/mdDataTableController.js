@@ -1,20 +1,39 @@
 angular.module('md.data.table')
 
-.controller('mdDataTableController', ['$attrs', '$parse', '$scope', function ($attrs, $parse, $scope) {
+.controller('mdDataTableController', ['$attrs', '$element', '$parse', '$scope', function ($attrs, $element, $parse, $scope) {
   'use strict';
-
-  this.selectedItems = [];
   
-  /*
-   * Ensures two things.
-   *
-   * 1. If the scope variable does not exist, at the time of table
-   *    creation, it will be created in the proper scope.
-   *
-   * 2. If the variable is not an array, it will be converted to an
-   *    array.
-   */
+  var self = this;
+  
+  self.selectedItems = [];
+  self.columns = [];
+  
   if($attrs.mdRowSelect) {
-    $parse($attrs.mdRowSelect).assign($scope.$parent.$parent, this.selectedItems);
+    $parse($attrs.mdRowSelect).assign($scope.$parent.$parent, self.selectedItems);
   }
+  
+  if($attrs.mdFilter) {
+    self.filter = $scope.filter;
+  }
+  
+  self.column = function (index, callback) {
+    angular.forEach($element.find('tbody').find('tr'), function(row) {
+      callback(row.children[index]);
+    });
+  };
+
+  self.setColumns = function (cell) {
+    if(!cell.attributes.numeric) {
+      return self.columns.push({ isNumeric: false });
+    }
+    
+    self.columns.push({
+      isNumeric: true,
+      unit: cell.attributes.unit ? cell.attributes.unit.value : undefined,
+      precision: cell.attributes.precision ? cell.attributes.precision.value : undefined
+    });
+  }
+  
+  angular.forEach($element.find('th'), self.setColumns);
+  
 }]);

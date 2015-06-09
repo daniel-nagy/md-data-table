@@ -1,3 +1,82 @@
+md-data-table-pagination {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+md-data-table-pagination:last-child {
+  margin-right: -6px;
+}
+md-data-table-pagination > *:not(.md-button) {
+  margin-right: 16px;
+}
+md-data-table-pagination > *:not(:first-child):not(.md-button) {
+  margin-left: 16px;
+}
+md-data-table-pagination > md-select {
+  padding: 0;
+}
+md-data-table-pagination > md-select > .md-select-label {
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.54) !important;
+  border-bottom: 0 !important;
+}
+md-data-table-pagination > md-select > .md-select-label > * {
+  -webkit-transform: none !important;
+          transform: none !important;
+}
+md-data-table-pagination > md-select > .md-select-label > .md-select-icon {
+  width: 12px;
+}
+md-data-table-pagination > md-select > .md-select-label > .md-select-icon:after {
+  top: 1px;
+}
+md-data-table-pagination .md-button.arrow {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  min-height: 24px;
+  min-width: 24px;
+  cursor: pointer;
+  -webkit-transform: translateZ(0);
+}
+md-data-table-pagination .md-button.arrow:first-of-type {
+  margin: 0 10px;
+}
+md-data-table-pagination .md-button.arrow:last-of-type {
+  margin: 0 0 0 10px;
+}
+md-data-table-pagination .md-button.arrow:disabled:before {
+  border-color: rgba(0, 0, 0, 0.26);
+}
+md-data-table-pagination .md-button.arrow:before {
+  content: '';
+  display: block;
+  height: 7px;
+  width: 7px;
+  border-top: 2px rgba(0, 0, 0, 0.54) solid;
+  border-left: 2px rgba(0, 0, 0, 0.54) solid;
+}
+md-data-table-pagination .md-button.arrow.left:before {
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+  margin-left: 4px;
+}
+md-data-table-pagination .md-button.arrow.right:before {
+  -webkit-transform: rotate(135deg);
+          transform: rotate(135deg);
+  margin-right: 4px;
+}
 md-card {
   overflow: hidden;
 }
@@ -24,6 +103,15 @@ md-card > md-data-table-toolbar > .md-button:last-child {
 md-card > md-data-table-container + md-data-table-toolbar {
   height: 56px;
   border-top: 1px rgba(0, 0, 0, 0.12) solid;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.54);
+}
+md-card > md-data-table-container + md-data-table-toolbar > *:not(:first-child) {
+  margin-left: 16px;
+}
+md-card > md-data-table-container + md-data-table-toolbar > *:not(:last-child) {
+  margin-right: 16px;
 }
 md-data-table-container {
   display: block;
@@ -52,20 +140,18 @@ table[md-data-table][md-row-select] > thead > tr > th.trim:first-child {
 table[md-data-table][md-row-select] > thead > tr > th.trim:nth-child(2) > div {
   margin-left: 0;
 }
-table[md-data-table][md-column-sort] > thead > tr > th:hover {
-  color: rgba(0, 0, 0, 0.87);
-  cursor: pointer;
-}
-table[md-data-table][md-filter] > tbody > tr.ng-leave {
-  display: none;
-}
 table[md-data-table] > thead + tbody > tr:first-Child > td {
   border-top: 1px rgba(0, 0, 0, 0.12) solid;
+}
+table[md-data-table] > thead[md-filter] > tr > th:hover {
+  color: rgba(0, 0, 0, 0.87);
+  cursor: pointer;
 }
 table[md-data-table] > thead > tr {
   height: 56px;
 }
 table[md-data-table] > thead > tr > th {
+  padding-left: 0;
   font-size: 12px;
   color: rgba(0, 0, 0, 0.54);
   white-space: nowrap;
@@ -90,9 +176,6 @@ table[md-data-table] > thead > tr > th.trim > div {
 table[md-data-table] > thead > tr > th.trim:hover {
   color: rgba(0, 0, 0, 0.87);
 }
-table[md-data-table] > thead > tr > th.trim:hover > div {
-  margin-left: 0;
-}
 table[md-data-table] > thead > tr > th:not(.trim) + th {
   padding-left: 56px;
 }
@@ -105,6 +188,9 @@ table[md-data-table] > tbody > tr:not(:last-Child) > td {
 }
 table[md-data-table] > tbody > tr:hover {
   background-color: #eeeeee;
+}
+table[md-data-table] > tbody > tr[ng-repeat].ng-leave {
+  display: none;
 }
 table[md-data-table] > tbody > tr.md-selected {
   background-color: #f5f5f5;
@@ -129,6 +215,10 @@ table[md-data-table] > tbody > tr > td {
 table[md-data-table] > thead > tr > th:first-child,
 table[md-data-table] > tbody > tr > td:first-child {
   padding-left: 24px;
+}
+table[md-data-table] > thead > tr > th:not(:last-child),
+table[md-data-table] > tbody > tr > td:not(:last-child) {
+  padding-right: 0;
 }
 table[md-data-table] > thead > tr > th:last-child,
 table[md-data-table] > tbody > tr > td:last-child {

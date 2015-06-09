@@ -1,19 +1,5 @@
-// dark text on light backgrounds
-@md-dark: rgba(0, 0, 0, 87%);
-@md-dark-secondary: rgba(0, 0, 0, 54%);
-@md-dark-disabled: rgba(0, 0, 0, 26%);
-@md-dark-icon: @md-dark-secondary;
-@md-dark-divider: rgba(0, 0, 0, 12%);
-
-// white text on dark backgrounds
-@md-light: rgba(255, 255, 255, 100%);
-@md-light-secondary: rgba(255, 255, 255, 70%);
-@md-light-disabled: rgba(255, 255, 255, 30%);
-@md-light-icon: @md-light;
-@md-light-divider: rgba(255, 255, 255, 12%);
-
-@md-dark-row-hover: #eee;
-@md-dark-row-select: #f5f5f5;
+@import 'variables';
+@import 'md-data-table-pagination';
 
 md-card {
   // for border radius
@@ -43,6 +29,17 @@ md-card {
   > md-data-table-container + md-data-table-toolbar {
     height: 56px;
     border-top: 1px @md-dark-divider solid;
+    font-size: 12px;
+    font-weight: 500;
+    color: @md-dark-secondary;
+    
+    > *:not(:first-child) {
+      margin-left: 16px;
+    }
+    
+    > *:not(:last-child) {
+      margin-right: 16px;
+    }
   }
 }
 
@@ -79,61 +76,54 @@ table[md-data-table] {
     }
   }
   
-  &[md-column-sort] > thead > tr > th:hover {
-    color: @md-dark;
-    cursor: pointer;
-  }
-  
-  &[md-filter] > tbody > tr {
-    // just to avoid awkwardness for now
-    &.ng-leave {
-      display: none;
-    }
-  }
-  
   > thead + tbody > tr:first-Child > td {
     border-top: 1px @md-dark-divider solid;
   }
 
-  > thead > tr {
-    height: 56px;
+  > thead {
     
-    > th {
-      font-size: 12px;
-      color: @md-dark-secondary;
-      white-space: nowrap;
+    &[md-filter] > tr > th:hover {
+      color: @md-dark;
+      cursor: pointer;
+    }
+    
+    > tr {
+      height: 56px;
       
-      &.md-active {
-        color: @md-dark;
-      }
-      
-      &.animate {
-        transition: color 0.2s;
-      }
-      
-      &.trim {
-        overflow: hidden;
-        min-width: 100px;
+      > th {
+        padding-left: 0;
+        font-size: 12px;
+        color: @md-dark-secondary;
+        white-space: nowrap;
         
-        > div {
-          margin-left: 56px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          transition: color;
+        &.md-active {
+          color: @md-dark;
         }
         
-        &:hover {
-          color: @md-dark;
+        &.animate {
+          transition: color 0.2s;
+        }
+        
+        &.trim {
+          overflow: hidden;
+          min-width: 100px;
           
           > div {
-            margin-left: 0;
+            margin-left: 56px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color;
+          }
+          
+          &:hover {
+            color: @md-dark;
           }
         }
-      }
-      
-      &:not(.trim) + th {
-        padding-left: 56px;
+        
+        &:not(.trim) + th {
+          padding-left: 56px;
+        }
       }
     }
   }
@@ -148,6 +138,10 @@ table[md-data-table] {
     
     &:hover {
       background-color: @md-dark-row-hover;
+    }
+    
+    &[ng-repeat].ng-leave {
+      display: none;
     }
     
     &.md-selected {
@@ -173,6 +167,10 @@ table[md-data-table] {
     
     &:first-child {
       padding-left: 24px;
+    }
+    
+    &:not(:last-child) {
+      padding-right: 0;
     }
     
     &:last-child {

@@ -41,8 +41,8 @@ module.exports = function (grunt) {
       },
       build: {
         files: {
-          // 'dist/md-data-table.js': ['app/md-data-table/*.js', '.temp/templates.js']
-          'dist/md-data-table.js': 'app/md-data-table/*.js'
+          'dist/md-data-table.js': ['app/md-data-table/*.js', '.temp/templates.js']
+          // 'dist/md-data-table.js': 'app/md-data-table/*.js'
         }
       }
     },
@@ -68,26 +68,26 @@ module.exports = function (grunt) {
         }
       }
     },
-
+    
     // convert templates to javascript and load them into
     // the template cache
-    // html2js: {
-    //   build: {
-    //     options: {
-    //       base: 'app/md-data-table',
-    //       module: 'md.table.templates',
-    //       quoteChar: '\'',
-    //       rename: function(moduleName) {
-    //         return 'templates.' + moduleName.split('/', 1);
-    //       },
-    //       useStrict: true,
-    //     },
-    //     files: {
-    //       '.temp/templates.js': 'app/md-data-table/*.html'
-    //     }
-    //   }
-    // },
-
+    html2js: {
+      build: {
+        options: {
+          base: 'app/md-data-table',
+          module: 'md.table.templates',
+          quoteChar: '\'',
+          rename: function(moduleName) {
+            return 'templates.' + moduleName.split('/', 1);
+          },
+          useStrict: true,
+        },
+        files: {
+          '.temp/templates.js': 'app/md-data-table/*.html'
+        }
+      }
+    },
+    
     // report bad javascript syntax, uses jshint-stylish for
     // more readable logging to the console
     jshint: {
@@ -149,8 +149,8 @@ module.exports = function (grunt) {
       },
       buildTemplates: {
         files: 'app/md-data-table/*.html',
-        // tasks: ['html2js:build', 'concat:build'],
-        tasks: ['concat:build']
+        tasks: ['html2js:build', 'concat:build'],
+        // tasks: ['concat:build']
       },
       gruntfile: {
         files: 'Gruntfile.js'
@@ -175,7 +175,7 @@ module.exports = function (grunt) {
     'less:build',
     'autoprefixer:build',
     'cssmin:build',
-    // 'html2js:build',
+    'html2js:build',
     'concat:build',
     'uglify:build'
   ]);

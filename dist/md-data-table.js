@@ -207,7 +207,7 @@ angular.module('md.data.table')
     // row selection
     if(element.parent().attr('md-row-select')) {
       scope.$parent.allSelected = function (items) {
-        return items ? items.length === ctrl.selectedItems.length : false;
+        return items && items.length ? items.length === ctrl.selectedItems.length : false;
       };
       
       scope.$parent.toggleAll = function (items) {
@@ -367,7 +367,7 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
         if(scope.hasNext()) {
           scope.page++;
         }
-      }
+      };
       
       scope.min = function () {
         return (((scope.page - 1) * scope.limit) + 1);
@@ -375,7 +375,7 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
       
       scope.max = function () {
         return scope.hasNext() ? scope.page * scope.limit : scope.total;
-      }
+      };
       
       scope.onSelect = function () {
         if(scope.min() > scope.total) {
@@ -387,7 +387,7 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
         if(scope.hasPrevious()) {
           scope.page--;
         }
-      }
+      };
     }
   };
 });

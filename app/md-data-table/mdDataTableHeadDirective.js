@@ -20,7 +20,7 @@ angular.module('md.data.table')
     // row selection
     if(element.parent().attr('md-row-select')) {
       scope.$parent.allSelected = function (items) {
-        return items ? items.length === ctrl.selectedItems.length : false;
+        return items && items.length ? items.length === ctrl.selectedItems.length : false;
       };
       
       scope.$parent.toggleAll = function (items) {

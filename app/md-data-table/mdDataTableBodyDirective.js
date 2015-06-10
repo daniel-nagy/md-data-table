@@ -59,7 +59,7 @@ angular.module('md.data.table', ['md.table.templates'])
           }
         });
       });
-    }
+    };
   }
   
   function compile(iElement) {

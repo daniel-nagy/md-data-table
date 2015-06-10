@@ -12,7 +12,7 @@ angular.module('md.data.table')
   // support theming
   ['md-primary', 'md-hue-1', 'md-hue-2', 'md-hue-3'].forEach(function(mdClass) {
     if($element.hasClass(mdClass)) {
-      self.classes.push(mdClass)
+      self.classes.push(mdClass);
     }
   });
   
@@ -40,7 +40,7 @@ angular.module('md.data.table')
       unit: cell.attributes.unit ? cell.attributes.unit.value : undefined,
       precision: cell.attributes.precision ? cell.attributes.precision.value : undefined
     });
-  }
+  };
   
   angular.forEach($element.find('th'), self.setColumns);
 

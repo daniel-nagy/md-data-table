@@ -120,7 +120,7 @@ angular.module('md.data.table')
     });
     
     if(iAttrs.hasOwnProperty('mdTrimColumnNames')) {
-      // enforce a minimum width of 100px per column
+      // enforce a minimum width of 120px per column
       iElement.parent().css({
         'min-width': 120 * iElement.find('th').length + 'px',
         'table-layout': 'fixed'
@@ -137,7 +137,7 @@ angular.module('md.data.table')
         
         checkbox.attr('aria-label', 'Select All');
         checkbox.attr('ng-click', 'toggleAll(' + items + ')');
-        checkbox.attr('ng-class', '{\'md-checked\': allSelected(' + items + ')}');
+        checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': allSelected(' + items + ')}]');
         
         iElement.find('tr').prepend(angular.element('<th></th>').append(checkbox));
       }

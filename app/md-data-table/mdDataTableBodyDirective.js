@@ -6,6 +6,8 @@ angular.module('md.data.table', ['md.table.templates'])
   function postLink(scope, element, attrs, ctrl) {
     var listener;
     
+    scope.mdClasses = ctrl.classes;
+    
     // enable row selection
     if(element.parent().attr('md-row-select')) {
       scope.isSelected = function (item) {
@@ -71,7 +73,7 @@ angular.module('md.data.table', ['md.table.templates'])
         
         checkbox.attr('aria-label', 'Select Row');
         checkbox.attr('ng-click', 'toggleRow(' + item + ')');
-        checkbox.attr('ng-class', '{\'md-checked\': isSelected(' + item + ')}');
+        checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': isSelected(' + item + ')}]');
         
         iElement.find('tr').prepend(angular.element('<td></td>').append(checkbox)).attr('md-table-repeat', '');
       }

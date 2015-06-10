@@ -7,6 +7,14 @@ angular.module('md.data.table')
   
   self.selectedItems = [];
   self.columns = [];
+  self.classes = [];
+  
+  // support theming
+  ['md-primary', 'md-hue-1', 'md-hue-2', 'md-hue-3'].forEach(function(mdClass) {
+    if($element.hasClass(mdClass)) {
+      self.classes.push(mdClass)
+    }
+  });
   
   if($attrs.mdRowSelect) {
     $parse($attrs.mdRowSelect).assign($scope.$parent.$parent, self.selectedItems);

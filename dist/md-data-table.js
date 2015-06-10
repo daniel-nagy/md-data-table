@@ -6,6 +6,8 @@ angular.module('md.data.table', ['md.table.templates'])
   function postLink(scope, element, attrs, ctrl) {
     var listener;
     
+    scope.mdClasses = ctrl.classes;
+    
     // enable row selection
     if(element.parent().attr('md-row-select')) {
       scope.isSelected = function (item) {
@@ -71,7 +73,7 @@ angular.module('md.data.table', ['md.table.templates'])
         
         checkbox.attr('aria-label', 'Select Row');
         checkbox.attr('ng-click', 'toggleRow(' + item + ')');
-        checkbox.attr('ng-class', '{\'md-checked\': isSelected(' + item + ')}');
+        checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': isSelected(' + item + ')}]');
         
         iElement.find('tr').prepend(angular.element('<td></td>').append(checkbox)).attr('md-table-repeat', '');
       }
@@ -95,6 +97,14 @@ angular.module('md.data.table')
   
   self.selectedItems = [];
   self.columns = [];
+  self.classes = [];
+  
+  // support theming
+  ['md-primary', 'md-hue-1', 'md-hue-2', 'md-hue-3'].forEach(function(mdClass) {
+    if($element.hasClass(mdClass)) {
+      self.classes.push(mdClass)
+    }
+  });
   
   if($attrs.mdRowSelect) {
     $parse($attrs.mdRowSelect).assign($scope.$parent.$parent, self.selectedItems);
@@ -297,7 +307,7 @@ angular.module('md.data.table')
     });
     
     if(iAttrs.hasOwnProperty('mdTrimColumnNames')) {
-      // enforce a minimum width of 100px per column
+      // enforce a minimum width of 120px per column
       iElement.parent().css({
         'min-width': 120 * iElement.find('th').length + 'px',
         'table-layout': 'fixed'
@@ -314,7 +324,7 @@ angular.module('md.data.table')
         
         checkbox.attr('aria-label', 'Select All');
         checkbox.attr('ng-click', 'toggleAll(' + items + ')');
-        checkbox.attr('ng-class', '{\'md-checked\': allSelected(' + items + ')}');
+        checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': allSelected(' + items + ')}]');
         
         iElement.find('tr').prepend(angular.element('<th></th>').append(checkbox));
       }
@@ -388,6 +398,7 @@ angular.module('md.data.table').directive('mdTableRepeat', function () {
   return {
     require: '^mdDataTable',
     link: function (scope, element, attrs, ctrl) {
+      // notifies the parent directive everytime ngRepeat changes
       if(scope.$last) {
         ctrl.ready();
       }
@@ -414,15 +425,15 @@ angular.module('md.data.table').factory('$mdTableRepeat', function () {
       this.items += this.current();
     }
     
-    this.orderBy = undefined;
-    if(this.hasNext() && this.getNext() === 'orderBy:') {
-      this.orderBy = this.getNext();
-    }
-    
-    this.trackBy = undefined;
-    if(this.hasNext()) {
-      this.trackBy = this.getNext() === 'by' ? this.getNext() : this.current();
-    }
+    // this.orderBy = undefined;
+    // if(this.hasNext() && this.getNext() === 'orderBy:') {
+    //   this.orderBy = this.getNext();
+    // }
+    //
+    // this.trackBy = undefined;
+    // if(this.hasNext()) {
+    //   this.trackBy = this.getNext() === 'by' ? this.getNext() : this.current();
+    // }
   }
   
   Repeat.prototype.current = function () {
@@ -441,12 +452,12 @@ angular.module('md.data.table').factory('$mdTableRepeat', function () {
     return this._iterator < this._tokens.length - 1;
   };
   
-  Repeat.prototype.insertOrderBy = function (property) {
-    this.orderBy = property;
-    this._iterator = this.trackBy ? this._tokens.indexOf(this.trackBy) : this._tokens.length;
-    this._tokens.splice(this._iterator, 0, '|', 'orderBy:', property);
-    return this._tokens.join(' ');
-  };
+  // Repeat.prototype.insertOrderBy = function (property) {
+  //   this.orderBy = property;
+  //   this._iterator = this.trackBy ? this._tokens.indexOf(this.trackBy) : this._tokens.length;
+  //   this._tokens.splice(this._iterator, 0, '|', 'orderBy:', property);
+  //   return this._tokens.join(' ');
+  // };
   
   function parse(ngRepeat) {
     if(!cache.hasOwnProperty(ngRepeat)) {

@@ -476,7 +476,7 @@ angular.module('md.table.templates', ['templates.md-data-table-pagination.html']
 angular.module('templates.md-data-table-pagination.html', []).run(['$templateCache', function($templateCache) {
   'use strict';
   $templateCache.put('templates.md-data-table-pagination.html',
-    '<span>Rows per page:</span>\n' +
+    '<span class="label">Rows per page:</span>\n' +
     '<md-select ng-model="limit" ng-change="onSelect()" aria-label="Row Count" placeholder="{{rowSelect ? rowSelect[0] : 5}}">\n' +
     '  <md-option ng-repeat="rows in rowSelect ? rowSelect : [5, 10, 15]" value="{{rows}}">{{rows}}</md-option>\n' +
     '</md-select>\n' +

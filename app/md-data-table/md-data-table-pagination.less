@@ -2,6 +2,12 @@ md-data-table-pagination {
   display: flex;
   align-items: center;
   
+  @media all and (max-width: @md-media-sm) {
+    > .label {
+      display: none;
+    }
+  }
+  
   &:last-child {
     margin-right: -6px;
   }

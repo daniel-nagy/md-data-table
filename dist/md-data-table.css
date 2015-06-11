@@ -6,6 +6,11 @@ md-data-table-pagination {
       -ms-flex-align: center;
           align-items: center;
 }
+@media all and (max-width: 600px) {
+  md-data-table-pagination > .label {
+    display: none;
+  }
+}
 md-data-table-pagination:last-child {
   margin-right: -6px;
 }

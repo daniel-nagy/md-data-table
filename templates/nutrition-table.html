@@ -1,5 +1,9 @@
-<md-data-table-toolbar>
+<md-data-table-toolbar ng-show="!selected.length">
   <h2 class="md-title">Nutrition</h2>
+</md-data-table-toolbar>
+
+<md-data-table-toolbar class="alternate" ng-show="selected.length">
+  <div>{{selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</div>
 </md-data-table-toolbar>
 
 <md-data-table-container>
@@ -17,7 +21,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="dessert in desserts">
+      <tr ng-repeat="dessert in desserts.data">
         <td>{{dessert.name}}</td>
         <td>{{dessert.calories.value}}</td>
         <td>{{dessert.fat.value}}</td>
@@ -32,5 +36,5 @@
 </md-data-table-container>
 
 <md-data-table-toolbar layout-align="end">
-  <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="9"></md-data-table-pagination>
+  <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}"></md-data-table-pagination>
 </md-data-table-toolbar>

@@ -12,7 +12,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
       return;
     }
 
-    $nutrition.desserts.query($scope.query, function (desserts) {
+    $nutrition.desserts.get($scope.query, function (desserts) {
       $scope.desserts = desserts;
     });
   });

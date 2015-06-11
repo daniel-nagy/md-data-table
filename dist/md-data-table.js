@@ -59,7 +59,7 @@ angular.module('md.data.table', ['md.table.templates'])
           }
         });
       });
-    }
+    };
   }
   
   function compile(iElement) {
@@ -102,7 +102,7 @@ angular.module('md.data.table')
   // support theming
   ['md-primary', 'md-hue-1', 'md-hue-2', 'md-hue-3'].forEach(function(mdClass) {
     if($element.hasClass(mdClass)) {
-      self.classes.push(mdClass)
+      self.classes.push(mdClass);
     }
   });
   
@@ -130,7 +130,7 @@ angular.module('md.data.table')
       unit: cell.attributes.unit ? cell.attributes.unit.value : undefined,
       precision: cell.attributes.precision ? cell.attributes.precision.value : undefined
     });
-  }
+  };
   
   angular.forEach($element.find('th'), self.setColumns);
 
@@ -223,26 +223,12 @@ angular.module('md.data.table')
       };
     }
     
-    function onMouseEnter() {
-      if((this.firstChild.width + 56) > this.clientWidth) {
-        this.firstChild.style.textAlign = 'right';
-        this.firstChild.style.marginLeft = Math.max(0, (this.clientWidth - this.firstChild.width)) + 'px';
-      }
-    }
-    
-    function onMouseLeave() {
-      this.firstChild.style.marginLeft = '56px';
-      if(!this.classList.contains('trim')) {
-        this.firstChild.style.textAlign = 'left';
-      }
-    }
-    
     // trim column names
     if(attrs.hasOwnProperty('mdTrimColumnNames')) {
       angular.forEach(element.find('th'), function(cell, index) {
         if(cell.classList.contains('trim')) {
           // the first cell doesn't have any margining
-          if(this.parent().attr('md-row-select') && index == 1) {
+          if(this.parent().attr('md-row-select') && index === 1) {
             return;
           }
           
@@ -266,8 +252,20 @@ angular.module('md.data.table')
           
           element.remove();
           
-          cell.addEventListener('mouseenter', onMouseEnter);
-          cell.addEventListener('mouseleave', onMouseLeave);
+          cell.addEventListener('mouseenter', function () {
+            if(this.firstChild.width > (this.clientWidth - 56)) {
+              var marginLeft = Math.max(0, (this.clientWidth - this.firstChild.width));
+              this.firstChild.style.textAlign = 'right';
+              this.firstChild.style.marginLeft = marginLeft + 'px';
+            }
+          });
+          
+          cell.addEventListener('mouseleave', function () {
+            this.firstChild.style.marginLeft = '56px';
+            if(!this.classList.contains('trim')) {
+              this.firstChild.style.textAlign = 'left';
+            }
+          });
         }
       }, element);
     }
@@ -291,7 +289,7 @@ angular.module('md.data.table')
       
       // right align numeric cells
       if(cell.hasAttribute('numeric')) {
-        cell.style.textAlign = 'right'
+        cell.style.textAlign = 'right';
         
         // append unit to column name
         if(cell.hasAttribute('unit')) {
@@ -319,7 +317,7 @@ angular.module('md.data.table')
       var ngRepeat = iElement.parent().find('tbody').find('tr').attr('ng-repeat');
       
       if(ngRepeat) {
-        var items = $mdTableRepeat.parse(ngRepeat).items
+        var items = $mdTableRepeat.parse(ngRepeat).items;
         var checkbox = angular.element('<md-checkbox></md-checkbox>');
         
         checkbox.attr('aria-label', 'Select All');
@@ -379,7 +377,7 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
       
       scope.onSelect = function () {
         if(scope.min() > scope.total) {
-          scope.page--;
+          scope.previous();
         }
       };
       

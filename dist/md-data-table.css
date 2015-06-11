@@ -159,7 +159,7 @@ table[md-data-table] > thead > tr > th.md-active {
   color: rgba(0, 0, 0, 0.87);
 }
 table[md-data-table] > thead > tr > th.animate {
-  transition: color 0.2s;
+  transition: color 0.25s;
 }
 table[md-data-table] > thead > tr > th.trim {
   overflow: hidden;
@@ -170,7 +170,6 @@ table[md-data-table] > thead > tr > th.trim > div {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  transition: color;
 }
 table[md-data-table] > thead > tr > th.trim:hover {
   color: rgba(0, 0, 0, 0.87);

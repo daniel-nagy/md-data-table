@@ -1,6 +1,4 @@
-angular.module('md.data.table')
-
-.controller('mdDataTableController', ['$attrs', '$element', '$parse', '$scope', function ($attrs, $element, $parse, $scope) {
+angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '$element', '$parse', '$scope', function ($attrs, $element, $parse, $scope) {
   'use strict';
   
   var self = this;

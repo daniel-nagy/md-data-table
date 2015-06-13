@@ -3,5 +3,9 @@
   <md-option ng-repeat="rows in rowSelect ? rowSelect : [5, 10, 15]" value="{{rows}}">{{rows}}</md-option>
 </md-select>
 <span>{{min()}} - {{max()}} of {{total}}</span>
-<md-button class="arrow left" ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous"></md-button>
-<md-button class="arrow right" ng-click="next()" ng-disabled="!hasNext()" aria-label="Next"></span></md-button>
+<md-button ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">
+  <md-icon md-svg-icon="templates.navigate-before.html"><md-icon>
+</md-button>
+<md-button ng-click="next()" ng-disabled="!hasNext()" aria-label="Next">
+  <md-icon md-svg-icon="templates.navigate-next.html"><md-icon>
+</md-button>

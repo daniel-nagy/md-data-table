@@ -1,6 +1,6 @@
-angular.module('md.data.table', ['md.table.templates'])
+angular.module('md.data.table', ['md.table.templates']);
 
-.directive('mdTableBody', ['$mdTableRepeat', '$timeout', function ($mdTableRepeat, $timeout) {
+angular.module('md.data.table').directive('mdTableBody', ['$mdTableRepeat', '$timeout', function ($mdTableRepeat, $timeout) {
   'use strict';
   
   function postLink(scope, element, attrs, ctrl) {
@@ -63,11 +63,11 @@ angular.module('md.data.table', ['md.table.templates'])
   }
   
   function compile(iElement) {
-    // enable row selection
-    if(iElement.parent().attr('md-row-select')) {
-      var ngRepeat = iElement.find('tr').attr('ng-repeat');
-      
-      if(ngRepeat) {
+    var ngRepeat = iElement.find('tr').attr('ng-repeat');
+    
+    if(ngRepeat) {
+      // enable row selection
+      if(iElement.parent().attr('md-row-select')) {
         var item = $mdTableRepeat.parse(ngRepeat).item;
         var checkbox = angular.element('<md-checkbox></md-checkbox>');
         
@@ -75,8 +75,10 @@ angular.module('md.data.table', ['md.table.templates'])
         checkbox.attr('ng-click', 'toggleRow(' + item + ')');
         checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': isSelected(' + item + ')}]');
         
-        iElement.find('tr').prepend(angular.element('<td></td>').append(checkbox)).attr('md-table-repeat', '');
+        iElement.find('tr').prepend(angular.element('<td></td>').append(checkbox));
       }
+      
+      iElement.find('tr').attr('md-table-repeat', '');
     }
     
     return postLink;
@@ -88,9 +90,7 @@ angular.module('md.data.table', ['md.table.templates'])
   };
 }]);
 
-angular.module('md.data.table')
-
-.controller('mdDataTableController', ['$attrs', '$element', '$parse', '$scope', function ($attrs, $element, $parse, $scope) {
+angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '$element', '$parse', '$scope', function ($attrs, $element, $parse, $scope) {
   'use strict';
   
   var self = this;
@@ -136,9 +136,7 @@ angular.module('md.data.table')
 
 }]);
 
-angular.module('md.data.table')
-
-.directive('mdDataTable', function () {
+angular.module('md.data.table').directive('mdDataTable', function () {
   'use strict';
   
   function compile(iElement, iAttrs) {
@@ -185,22 +183,27 @@ angular.module('md.data.table')
   };
 });
 
-angular.module('md.data.table')
-
-.directive('mdTableHead', ['$mdTableRepeat', function ($mdTableRepeat) {
+angular.module('md.data.table').directive('mdTableHead', ['$mdTableRepeat', function ($mdTableRepeat) {
   'use strict';
 
 
   function postLink(scope, element, attrs, ctrl) {
     
     // column filtering
-    if(attrs.mdFilter) {
+    if(attrs.mdOrder) {
       scope.$parent.isActive = function (prop) {
-        return scope.filter === prop || scope.filter === '-' + prop;
+        return scope.order === prop || scope.order === '-' + prop;
       };
       
       scope.$parent.orderBy = function (prop) {
-        scope.filter = scope.filter === prop ? '-' + prop : prop;
+        scope.order = scope.order === prop ? '-' + prop : prop;
+      };
+      
+      scope.$parent.getDirection = function (prop) {
+        if(scope.$parent.isActive(prop)) {
+          return scope.order[0] === '-' ? 'down' : 'up';
+        }
+        return 'up';
       };
     }
     
@@ -226,66 +229,53 @@ angular.module('md.data.table')
     // trim column names
     if(attrs.hasOwnProperty('mdTrimColumnNames')) {
       angular.forEach(element.find('th'), function(cell, index) {
-        if(cell.classList.contains('trim')) {
-          // the first cell doesn't have any margining
-          if(this.parent().attr('md-row-select') && index === 1) {
-            return;
-          }
-          
-          // we need to add an element to the DOM and measure it
-          // to get the width of the cell
-          var element = angular.element('<div></div>');
-          
-          element.html(cell.firstChild.innerHTML).css({
-            position: 'absolute',
-            visibility: 'hidden'
-          });
-          
-          angular.element(document).find('body').append(element);
-          
-          cell.firstChild.width = element.prop('clientWidth');
-          
-          // 24px padding at the end of the table
-          if(!cell.nextElementSibling) {
-            cell.firstChild.width += 24;
-          }
-          
-          element.remove();
-          
-          cell.addEventListener('mouseenter', function () {
-            if(this.firstChild.width > (this.clientWidth - 56)) {
-              var marginLeft = Math.max(0, (this.clientWidth - this.firstChild.width));
-              this.firstChild.style.textAlign = 'right';
-              this.firstChild.style.marginLeft = marginLeft + 'px';
-            }
-          });
-          
-          cell.addEventListener('mouseleave', function () {
-            this.firstChild.style.marginLeft = '56px';
-            if(!this.classList.contains('trim')) {
-              this.firstChild.style.textAlign = 'left';
-            }
-          });
+        if(index === 0 || element.parent().attr('md-row-select') && index === 1) {
+          return;
         }
-      }, element);
+        
+        var trim = cell.querySelector('trim');
+        
+        // we need to add an element to the DOM and measure it
+        // to get the width of the cell
+        var div = angular.element('<div></div>');
+        
+        div.html(trim.innerText).css({
+          position: 'absolute',
+          visibility: 'hidden'
+        });
+        
+        angular.element(document).find('body').append(div);
+        
+        cell.firstChild.width = div.prop('clientWidth');
+        
+        div.remove();
+        
+        // 24px padding at the end of the table
+        if(!cell.nextElementSibling) {
+          cell.firstChild.width += 24;
+        }
+        
+        cell.addEventListener('mouseenter', function () {
+          var marginLeft = this.firstChild.localName === 'trim' ? '56' : '22';
+          
+          if(this.firstChild.width > (this.clientWidth - marginLeft)) {
+            marginLeft = Math.max(0, (this.clientWidth - this.firstChild.width));
+            this.firstChild.style.textAlign = 'right';
+            this.firstChild.style.marginLeft = marginLeft + 'px';
+          }
+        });
+        
+        cell.addEventListener('mouseleave', function () {
+          this.firstChild.style.marginLeft = '';
+          this.firstChild.style.textAlign = '';
+        });
+      });
     }
   }
   
   function compile(iElement, iAttrs) {
     
     angular.forEach(iElement.find('th'), function (cell) {
-      // enable column filtering
-      if(iAttrs.mdFilter) {
-        var orderBy = cell.getAttribute('order-by');
-        
-        // use the cell's text as the filter property
-        if(!orderBy) {
-          cell.setAttribute('order-by', orderBy = cell.textContent.toLowerCase());
-        }
-        
-        cell.setAttribute('ng-class', '{\'md-active\': isActive(\'' + orderBy + '\')}');
-        cell.setAttribute('ng-click', 'orderBy(\'' + orderBy + '\')');
-      }
       
       // right align numeric cells
       if(cell.hasAttribute('numeric')) {
@@ -299,7 +289,32 @@ angular.module('md.data.table')
       
       // trim long column names
       if(iAttrs.hasOwnProperty('mdTrimColumnNames')) {
-        cell.classList.add('trim', 'animate');
+        cell.innerHTML = '<trim>' + cell.innerHTML + '</trim>';
+      }
+      
+      // enable column filtering
+      if(iAttrs.mdOrder) {
+        var orderBy = cell.getAttribute('order-by');
+        
+        // use the cell's text as the filter property
+        if(!orderBy) {
+          cell.setAttribute('order-by', orderBy = cell.textContent.toLowerCase());
+        }
+        
+        cell.setAttribute('ng-class', '{\'md-active\': isActive(\'' + orderBy + '\')}');
+        cell.setAttribute('ng-click', 'orderBy(\'' + orderBy + '\')');
+        
+        var sortIcon = angular.element('<md-icon></md-icon>');
+        
+        sortIcon.attr('md-svg-icon', 'templates.arrow.html');
+        sortIcon.attr('ng-class', 'getDirection(\''  + orderBy + '\')');
+        
+        if(cell.hasAttribute('numeric')) {
+          angular.element(cell).prepend(sortIcon);
+        } else {
+          angular.element(cell).append(sortIcon);
+        }
+        
         cell.innerHTML = '<div>' + cell.innerHTML + '</div>';
       }
     });
@@ -334,7 +349,7 @@ angular.module('md.data.table')
   return {
     require: '^mdDataTable',
     scope: {
-      filter: '=mdFilter'
+      order: '=mdOrder'
     },
     compile: compile
   };
@@ -471,7 +486,27 @@ angular.module('md.data.table').factory('$mdTableRepeat', function () {
   
 });
 
-angular.module('md.table.templates', ['templates.md-data-table-pagination.html']);
+angular.module('md.table.templates', ['templates.arrow.html', 'templates.navigate-before.html', 'templates.navigate-next.html', 'templates.md-data-table-pagination.html']);
+
+angular.module('templates.arrow.html', []).run(['$templateCache', function($templateCache) {
+  'use strict';
+  $templateCache.put('templates.arrow.html',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"><path d="M3,9 L4.06,10.06 L8.25,5.87 L8.25,15 L9.75,15 L9.75,5.87 L13.94,10.06 L15,9 L9,3 L3,9 L3,9 Z"/></svg>');
+}]);
+
+angular.module('templates.navigate-before.html', []).run(['$templateCache', function($templateCache) {
+  'use strict';
+  $templateCache.put('templates.navigate-before.html',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>\n' +
+    '');
+}]);
+
+angular.module('templates.navigate-next.html', []).run(['$templateCache', function($templateCache) {
+  'use strict';
+  $templateCache.put('templates.navigate-next.html',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>\n' +
+    '');
+}]);
 
 angular.module('templates.md-data-table-pagination.html', []).run(['$templateCache', function($templateCache) {
   'use strict';
@@ -481,6 +516,10 @@ angular.module('templates.md-data-table-pagination.html', []).run(['$templateCac
     '  <md-option ng-repeat="rows in rowSelect ? rowSelect : [5, 10, 15]" value="{{rows}}">{{rows}}</md-option>\n' +
     '</md-select>\n' +
     '<span>{{min()}} - {{max()}} of {{total}}</span>\n' +
-    '<md-button class="arrow left" ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous"></md-button>\n' +
-    '<md-button class="arrow right" ng-click="next()" ng-disabled="!hasNext()" aria-label="Next"></span></md-button>');
+    '<md-button ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">\n' +
+    '  <md-icon md-svg-icon="templates.navigate-before.html"><md-icon>\n' +
+    '</md-button>\n' +
+    '<md-button ng-click="next()" ng-disabled="!hasNext()" aria-label="Next">\n' +
+    '  <md-icon md-svg-icon="templates.navigate-next.html"><md-icon>\n' +
+    '</md-button>');
 }]);

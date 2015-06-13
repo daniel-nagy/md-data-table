@@ -1,0 +1,67 @@
+@import 'md-variables';
+@import 'md-card';
+@import 'md-data-table-toolbar';
+@import 'md-data-table-head';
+@import 'md-data-table-body';
+@import 'md-data-table-pagination';
+
+.column-padding(@skip) {
+  &:nth-child(n + @{skip}):not(:last-child) {
+    padding-right: 0;
+  }
+}
+
+md-data-table-container {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table[md-data-table] {
+  width: 100%;
+  border-spacing: 0;
+  background-color: #fff;
+  overflow: hidden;
+  
+  // checkboxes
+  &[md-row-select] > thead > tr > th,
+  &[md-row-select] > tbody > tr > td {
+    &:first-child {
+      width: 18px;
+      padding-right: 24px;
+    }
+  }
+  
+  > thead > tr > th,
+  > tbody > tr > td {
+    text-align: left;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    user-select: none;
+    
+    &:first-child {
+      padding-left: 24px;
+    }
+    
+    &:not(:last-child) {
+      padding-right: 0;
+    }
+    
+    &:last-child {
+      padding-right: 24px;
+    }
+    
+    &:hover {
+      cursor: default;
+    }
+    
+    &:focus {
+      outline: none;
+    }
+    
+    > md-checkbox {
+      margin: 0;
+    }
+  }
+}

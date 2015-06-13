@@ -1,6 +1,4 @@
-angular.module('md.data.table')
-
-.directive('mdDataTable', function () {
+angular.module('md.data.table').directive('mdDataTable', function () {
   'use strict';
   
   function compile(iElement, iAttrs) {

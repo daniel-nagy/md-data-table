@@ -41,8 +41,7 @@ module.exports = function (grunt) {
       },
       build: {
         files: {
-          'dist/md-data-table.js': ['app/md-data-table/*.js', '.temp/templates.js']
-          // 'dist/md-data-table.js': 'app/md-data-table/*.js'
+          'dist/md-data-table.js': ['app/md-data-table/**/*.js', '.temp/templates.js']
         }
       }
     },
@@ -78,12 +77,12 @@ module.exports = function (grunt) {
           module: 'md.table.templates',
           quoteChar: '\'',
           rename: function(moduleName) {
-            return 'templates.' + moduleName.split('/', 1);
+            return 'templates.' + moduleName.split('/').pop();
           },
           useStrict: true,
         },
         files: {
-          '.temp/templates.js': 'app/md-data-table/*.html'
+          '.temp/templates.js': 'app/md-data-table/**/*.html'
         }
       }
     },
@@ -96,7 +95,7 @@ module.exports = function (grunt) {
         reporter: require('jshint-stylish'),
         force: true
       },
-      build: 'app/md-data-table/*.js',
+      build: 'app/md-data-table/**/*.js',
       app: ['app/app.js', 'app/scripts/**/*.js']
     },
 
@@ -109,7 +108,7 @@ module.exports = function (grunt) {
       },
       build: {
         files: {
-          'dist/md-data-table.css': 'app/md-data-table/md-data-table.less'
+          'dist/md-data-table.css': 'app/md-data-table/styles/md-data-table.less'
         }
       }
     },
@@ -140,15 +139,15 @@ module.exports = function (grunt) {
         files: 'app/templates/**/*.html'
       },
       buildLess: {
-        files: 'app/md-data-table/*.less',
+        files: 'app/md-data-table/**/*.less',
         tasks: ['less:build', 'autoprefixer:build'],
       },
       buildScripts: {
-        files: 'app/md-data-table/*.js',
+        files: 'app/md-data-table/**/*.js',
         tasks: ['jshint:build', 'concat:build'],
       },
       buildTemplates: {
-        files: 'app/md-data-table/*.html',
+        files: 'app/md-data-table/**/*.html',
         tasks: ['html2js:build', 'concat:build'],
         // tasks: ['concat:build']
       },

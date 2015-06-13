@@ -1,0 +1,119 @@
+// condition column padding based on table attributes
+.column-padding(@skip) {
+  // not trimming column names and not sorting
+  &:not([md-trim-column-names]):not([md-order]) > tr > th:nth-child(n + @{skip}) {
+    padding-left: 56px;
+  }
+  // trimming column names but not sorting
+  &[md-trim-column-names]:not([md-order]) > tr > th:nth-child(n + @{skip}) > div {
+    margin-left: 56px;
+  }
+  // sorting and possibly trimming column names; doesn't matter
+  &[md-order] > tr > th:nth-child(n + @{skip}) {
+    &:not([numeric]) > div {
+      margin-left: 56px;
+    }
+    &[numeric] > div {
+      margin-left: 22px;
+    }
+  }
+}
+
+table[md-data-table] {
+
+  // no checkboxes
+  &:not([md-row-select]) > thead {
+    // skip the first column
+    .column-padding(@skip: 2);
+  }
+  
+  // checkboxes
+  &[md-row-select] > thead {
+    // skip the first two columns
+    .column-padding(@skip: 3);
+  }
+
+  > thead {
+    
+    > tr {
+      height: 56px;
+      
+      > th {
+        font-size: 12px;
+        color: @md-dark-secondary;
+        white-space: nowrap;
+        
+        &.md-active {
+          color: @md-dark;
+        }
+      }
+    }
+    
+    // trimming column names or sorting rows
+    &[md-trim-column-names], &[md-order] > tr > th {
+      padding-left: 0;
+      
+      &:hover {
+        color: @md-dark;
+        transition: color 0.25s;
+      }
+    }
+    
+    // trimming column names
+    &[md-trim-column-names] > tr > th {
+      trim {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+    
+    // sorting rows
+    &[md-order] > tr > th {
+    
+      &:hover {
+        cursor: pointer;
+      }
+      
+      &[numeric] > div {
+        justify-content: flex-end;
+      }
+      
+      &.md-active > div > md-icon {
+        fill: @md-dark;
+      }
+      
+      &:not(.md-active) {
+        > div > md-icon {
+          fill: @md-dark-disabled;
+        }
+        
+        &:not(:hover) > div > md-icon {
+          display: none;
+        }
+      }
+      
+      > div {
+        display: flex;
+        align-items: center;
+        line-height: 18px;
+        
+        > md-icon {
+          flex: 0 0 auto;
+          height: 18px;
+          width: 18px;
+          margin: 0 8px;
+          transition: fill 0.25s, transform 0.25s;
+          
+          &.down {
+            transform: rotate(180deg);
+          }
+          &.up {
+            transform: rotate(0deg);
+          }
+        }
+      }
+    }
+  }
+}

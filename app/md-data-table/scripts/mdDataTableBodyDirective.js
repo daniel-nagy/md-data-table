@@ -1,6 +1,4 @@
-angular.module('md.data.table', ['md.table.templates'])
-
-.directive('mdTableBody', ['$mdTableRepeat', '$timeout', function ($mdTableRepeat, $timeout) {
+angular.module('md.data.table').directive('mdTableBody', ['$mdTableRepeat', '$timeout', function ($mdTableRepeat, $timeout) {
   'use strict';
   
   function postLink(scope, element, attrs, ctrl) {
@@ -63,11 +61,11 @@ angular.module('md.data.table', ['md.table.templates'])
   }
   
   function compile(iElement) {
-    // enable row selection
-    if(iElement.parent().attr('md-row-select')) {
-      var ngRepeat = iElement.find('tr').attr('ng-repeat');
-      
-      if(ngRepeat) {
+    var ngRepeat = iElement.find('tr').attr('ng-repeat');
+    
+    if(ngRepeat) {
+      // enable row selection
+      if(iElement.parent().attr('md-row-select')) {
         var item = $mdTableRepeat.parse(ngRepeat).item;
         var checkbox = angular.element('<md-checkbox></md-checkbox>');
         
@@ -75,8 +73,10 @@ angular.module('md.data.table', ['md.table.templates'])
         checkbox.attr('ng-click', 'toggleRow(' + item + ')');
         checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': isSelected(' + item + ')}]');
         
-        iElement.find('tr').prepend(angular.element('<td></td>').append(checkbox)).attr('md-table-repeat', '');
+        iElement.find('tr').prepend(angular.element('<td></td>').append(checkbox));
       }
+      
+      iElement.find('tr').attr('md-table-repeat', '');
     }
     
     return postLink;

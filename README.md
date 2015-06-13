@@ -27,7 +27,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
   'use strict';
   
   $scope.query = {
-    filter: 'name',
+    order: 'name',
     limit: 5,
     page: 1
   };
@@ -54,7 +54,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 <md-data-table-container>
   <table md-data-table md-row-select="selected">
-    <thead md-filter="query.filter" md-trim-column-names>
+    <thead md-order="query.order" md-trim-column-names>
       <tr>
         <th order-by="name">Dessert (100g serving)</th>
         <th numeric order-by="calories.value">Calories</th>
@@ -86,11 +86,22 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 </md-data-table-toolbar>
 ```
 
-## Numeric Columns
+## Change Log
+
+**Version 0.3.0**
+
+* The working directory has been restructured at an attempt to be more organized.
+* `md-filter` has been renamed to `md-order` for better naming convention.
+* Column headers now display sort icons when column ordering is enabled.
+* Bug Fix: Numeric columns will now right align without column ordering enabled.
+
+## API Documentation
+
+### Numeric Columns
 
 Numeric columns align to the right of table cells. Column headers support the following attributes for numeric data.
 
-#### Header Cells
+##### Header Cells
 
 | Attribute    | Target  | Type     | Description |
 | :----------- | :------ | :------- | :---------- |
@@ -98,7 +109,7 @@ Numeric columns align to the right of table cells. Column headers support the fo
 | `unit`       | `<th>`  | `String` | Specifies the unit. Providing a unit will automatically add the unit, wrapped in parenthesis, to the header cell. |
 | `precision`  | `<th>`  | `Number` | Specifies the number of decimal places to display. The default is none. |
 
-#### Body Cells
+##### Body Cells
 
 | Attribute   | Target  | Type     | Description |
 | :---------- | :------ | :------- | :---------- |
@@ -107,7 +118,7 @@ Numeric columns align to the right of table cells. Column headers support the fo
 
 > Note that the `numeric` attribute must be present for other attributes to take effect.
 
-## Row Selection
+### Row Selection
 
 > Requires `ng-repeat`.
 
@@ -115,7 +126,7 @@ Numeric columns align to the right of table cells. Column headers support the fo
 | :-------------- | :-------- | :------ | :---------- |
 | `md-row-select` | `<table>` | `Array` | Two-way data binding of selected items |
 
-## Long Header Titles
+### Long Header Titles
 
 | Attribute              | Target    | Type   | Description |
 | :--------------------- | :-------- | :----- | :---------- |
@@ -123,21 +134,21 @@ Numeric columns align to the right of table cells. Column headers support the fo
 
 Column names will be shortened if they exceed the width of the cell minus the `56px` of padding between cells. If the name exceeds the width of the cell plus the `56px` of padding between cells, then only an additional `56px` of text will be shown the rest will remain truncated.
 
-## Column Ordering
+### Column Ordering
 
 | Attribute              | Target    | Type     | Description |
 | :--------------------- | :-------- | :------- | :---------- |
-| `md-filter`            | `<thead>` | `String` | Two-way data binding filter. |
+| `md-order`             | `<thead>` | `String` | Two-way data binding filter. |
 
 The filter will update when the user clicks on a `<th>` cell. The filter will take on the value supplied to the `order-by` attribute or the cell's inner text. The filter can be used in to do manual sorting or automatic sorting.
 
 > This directive does not support filtering of in-place data, i.e. data included directly in the markup, nor do I plan on supporting this.
 
-#### Manual Sorting
+##### Server Side Ordering
 
 The provided usage example takes advantage of manual sorting by submitting a query to the server.
 
-#### Automatic Sorting
+##### Client Side Sorting
 
 Just add an `orderBy:` property to the `ng-repeat` attribute that matches the filter.
 
@@ -157,7 +168,7 @@ Just add an `orderBy:` property to the `ng-repeat` attribute that matches the fi
 </md-data-table-container>
 ```
 
-## Pagination
+### Pagination
 
 To use pagination add a `md-data-table-pagination` element to the `md-data-table-toolbar`.
 
@@ -179,7 +190,7 @@ To use pagination add a `md-data-table-pagination` element to the `md-data-table
 
 This repository contains a demo application for developing features. As you make changes the application will live reload itself.
 
-#### Running the App Locally
+##### Running the App Locally
 
 Clone this repository to your local machine.
 

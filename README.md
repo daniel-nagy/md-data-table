@@ -150,7 +150,7 @@ The provided usage example takes advantage of manual sorting by submitting a que
 
 ##### Client Side Sorting
 
-Just add an `orderBy:` property to the `ng-repeat` attribute that matches the filter.
+Just add an `orderBy:` property to the `ng-repeat` attribute that matches the `md-order` attribute.
 
 ```html
 <md-data-table-container>

@@ -2,7 +2,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
   'use strict';
 
   $scope.query = {
-    filter: 'name',
+    order: 'name',
     limit: 5,
     page: 1
   };

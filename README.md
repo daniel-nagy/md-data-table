@@ -155,14 +155,14 @@ Just add an `orderBy:` property to the `ng-repeat` attribute that matches the fi
 ```html
 <md-data-table-container>
   <table md-data-table>
-    <thead md-filter="filter">
+    <thead md-order="order">
       <!-- this cell will order by the name property -->
       <th order-by="name">Dessert (100g serving)</th>
       <!-- this cell will order by the calories property -->
       <th numeric>Calories</th>
     </thead>
     <tbody>
-      <tr ng-repeat="dessert in desserts | orderBy: filter"></tr>
+      <tr ng-repeat="dessert in desserts | orderBy: order"></tr>
     </tbody>
   </table>
 </md-data-table-container>

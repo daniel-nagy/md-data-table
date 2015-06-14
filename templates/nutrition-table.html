@@ -1,14 +1,22 @@
-<md-data-table-toolbar ng-show="!selected.length">
+<md-data-table-toolbar ng-show="!selected.length" layout-align="space-between">
   <h2 class="md-title">Nutrition</h2>
+  <md-button class="md-icon-button" href="https://github.com/daniel-nagy/md-data-table" target="_blank">
+    <i class="material-icons md-dark">code</i>
+  </md-button>
 </md-data-table-toolbar>
 
-<md-data-table-toolbar class="alternate" ng-show="selected.length">
+<md-data-table-toolbar class="alternate" ng-show="selected.length" layout-align="space-between">
   <div>{{selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</div>
+  <md-button class="md-icon-button" ng-click="delete($event)">
+    <i class="material-icons md-dark">delete</i>
+  </md-button>
 </md-data-table-toolbar>
+
+<md-progress-linear ng-if="loading" md-mode="indeterminate"></md-progress-linear>
 
 <md-data-table-container>
   <table md-data-table md-row-select="selected">
-    <thead md-order="query.order">
+    <thead ng-show="desserts.data.length" md-order="query.order">
       <tr>
         <th order-by="name">Dessert (100g serving)</th>
         <th numeric order-by="calories.value">Calories</th>

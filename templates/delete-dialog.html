@@ -1,0 +1,16 @@
+<md-dialog delete-dialog>
+  <md-dialog-content>
+    <h2 class="md-title">Delete Items</h2>
+    <p>Sorry, I don't want to have to repopulate the database every time someone deletes everything.</p>
+    <form name="authorise.form">
+      <md-input-container>
+        <label>Secret</label>
+        <input name="password" type="password" ng-model="authorise.Secret">
+      </md-input-container>
+    </form>
+  </md-dialog-content>
+  <div class="md-actions">
+    <md-button class="md-primary">Delete</md-button>
+    <md-button class="md-primary" ng-click="ctrl.hide()">Close</md-button>
+  </div>
+</md-dialog>

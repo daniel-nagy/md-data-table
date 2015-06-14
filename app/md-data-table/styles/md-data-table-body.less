@@ -1,22 +1,29 @@
-table[md-data-table] > tbody > tr {
-  height: 48px;
-  transition: background-color 0.2s;
-  
-  &:hover {
-    background-color: @md-dark-row-hover;
+table[md-data-table] > tbody {
+
+  &[md-auto-select] > tr:focus {
+    outline: none;
   }
   
-  &[ng-repeat].ng-leave {
-    display: none;
-  }
-  
-  &.md-selected {
-    background-color: @md-dark-row-select;
-  }
-  
-  > td {
-    font-size: 13px;
-    color: @md-dark;
-    border-top: 1px @md-dark-divider solid;
+  > tr {
+    height: 48px;
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: @md-dark-row-hover;
+    }
+    
+    &[ng-repeat].ng-leave {
+      display: none;
+    }
+    
+    &.md-selected {
+      background-color: @md-dark-row-select;
+    }
+    
+    > td {
+      font-size: 13px;
+      color: @md-dark;
+      border-top: 1px @md-dark-divider solid;
+    }
   }
 }

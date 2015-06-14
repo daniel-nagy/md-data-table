@@ -105,6 +105,9 @@ table[md-data-table] > thead[md-order] > tr > th > div > md-icon.up {
   -webkit-transform: rotate(0deg);
           transform: rotate(0deg);
 }
+table[md-data-table] > tbody[md-auto-select] > tr:focus {
+  outline: none;
+}
 table[md-data-table] > tbody > tr {
   height: 48px;
   transition: background-color 0.2s;

@@ -14,7 +14,9 @@ angular.module('md.data.table').directive('mdTableBody', ['$mdTableRepeat', '$ti
         return ctrl.selectedItems.indexOf(item) !== -1;
       };
       
-      scope.toggleRow = function (item) {
+      scope.toggleRow = function (item, event) {
+        event.stopPropagation();
+        
         if(scope.isSelected(item)) {
           ctrl.selectedItems.splice(ctrl.selectedItems.indexOf(item), 1);
         } else {
@@ -62,20 +64,27 @@ angular.module('md.data.table').directive('mdTableBody', ['$mdTableRepeat', '$ti
     };
   }
   
-  function compile(iElement) {
-    var ngRepeat = iElement.find('tr').attr('ng-repeat');
+  function compile(iElement, iAttrs) {
+    var row = iElement.find('tr');
     
-    if(ngRepeat) {
+    if(row.attr('ng-repeat')) {
+      
       // enable row selection
-      if(iElement.parent().attr('md-row-select')) {
-        var item = $mdTableRepeat.parse(ngRepeat).item;
+      if(row.attr('ng-repeat') && iElement.parent().attr('md-row-select')) {
+        var item = $mdTableRepeat.parse(row.attr('ng-repeat')).item;
         var checkbox = angular.element('<md-checkbox></md-checkbox>');
         
         checkbox.attr('aria-label', 'Select Row');
-        checkbox.attr('ng-click', 'toggleRow(' + item + ')');
+        checkbox.attr('ng-click', 'toggleRow(' + item + ', $event)');
         checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': isSelected(' + item + ')}]');
         
         iElement.find('tr').prepend(angular.element('<td></td>').append(checkbox));
+        
+        if(angular.isDefined(iAttrs.mdAutoSelect)) {
+          row.attr('ng-click', 'toggleRow(' + item + ', $event)');
+        }
+        
+        row.attr('ng-class', '{\'md-selected\': isSelected(' + item + ')}');
       }
       
       iElement.find('tr').attr('md-table-repeat', '');

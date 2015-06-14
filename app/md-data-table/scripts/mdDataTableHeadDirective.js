@@ -1,4 +1,4 @@
-angular.module('md.data.table').directive('mdTableHead', ['$mdTableRepeat', function ($mdTableRepeat) {
+angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTableRepeat', function ($document, $mdTableRepeat) {
   'use strict';
 
 
@@ -43,6 +43,13 @@ angular.module('md.data.table').directive('mdTableHead', ['$mdTableRepeat', func
     
     // trim column names
     if(attrs.hasOwnProperty('mdTrimColumnNames')) {
+      var div = angular.element('<div></div>').css({
+        position: 'absolute',
+        fontSize: '12px',
+        fontWeight : 'bold',
+        visibility: 'hidden'
+      });
+      
       angular.forEach(element.find('th'), function(cell, index) {
         if(index === 0 || element.parent().attr('md-row-select') && index === 1) {
           return;
@@ -50,41 +57,29 @@ angular.module('md.data.table').directive('mdTableHead', ['$mdTableRepeat', func
         
         var trim = cell.querySelector('trim');
         
-        // we need to add an element to the DOM and measure it
-        // to get the width of the cell
-        var div = angular.element('<div></div>');
+        $document.find('body').append(div.html(trim.innerText));
         
-        div.html(trim.innerText).css({
-          position: 'absolute',
-          visibility: 'hidden'
-        });
-        
-        angular.element(document).find('body').append(div);
-        
-        cell.firstChild.width = div.prop('clientWidth');
-        
-        div.remove();
-        
-        // 24px padding at the end of the table
-        if(!cell.nextElementSibling) {
-          cell.firstChild.width += 24;
-        }
+        trim.width = div.prop('clientWidth');
         
         cell.addEventListener('mouseenter', function () {
-          var marginLeft = this.firstChild.localName === 'trim' ? '56' : '22';
+          var trim = this.querySelector('trim');
+          var iconWidth = this.querySelector('md-icon') ? 26 : 0;
           
-          if(this.firstChild.width > (this.clientWidth - marginLeft)) {
-            marginLeft = Math.max(0, (this.clientWidth - this.firstChild.width));
-            this.firstChild.style.textAlign = 'right';
-            this.firstChild.style.marginLeft = marginLeft + 'px';
+          if(trim.width > (this.clientWidth - iconWidth - 56)) {
+            trim.style.minWidth = Math.min(trim.width, this.clientWidth - iconWidth - 28) + 'px';
+            this.firstChild.style.color = 'rgba(0, 0, 0, 0.87)';
+            this.firstChild.style.overflow = 'visible';
           }
         });
         
         cell.addEventListener('mouseleave', function () {
-          this.firstChild.style.marginLeft = '';
-          this.firstChild.style.textAlign = '';
+          this.querySelector('trim').style.minWidth = '';
+          this.firstChild.style.color = '';
+          this.firstChild.style.overflow = '';
         });
       });
+      
+      div.remove();
     }
   }
   
@@ -134,10 +129,16 @@ angular.module('md.data.table').directive('mdTableHead', ['$mdTableRepeat', func
       }
     });
     
+    // ensures a minimum width of 64px for column names
     if(iAttrs.hasOwnProperty('mdTrimColumnNames')) {
-      // enforce a minimum width of 120px per column
+      var minWidth = 120 * iElement.find('th').length;
+      
+      if(iElement.parent().attr('md-row-select')) {
+        minWidth += 66;
+      }
+      
       iElement.parent().css({
-        'min-width': 120 * iElement.find('th').length + 'px',
+        'min-width': minWidth + 'px',
         'table-layout': 'fixed'
       });
     }

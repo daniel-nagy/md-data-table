@@ -34,36 +34,6 @@ md-data-table-container ~ md-data-table-toolbar > *:not(:first-child) {
 md-data-table-container ~ md-data-table-toolbar > *:not(:last-child) {
   margin-right: 16px;
 }
-table[md-data-table]:not([md-row-select]) > thead:not([md-trim-column-names]):not([md-order]) > tr > th:nth-child(n + 2) {
-  padding-left: 56px;
-}
-table[md-data-table]:not([md-row-select]) > thead[md-trim-column-names]:not([md-order]) > tr > th:nth-child(n + 2) > div {
-  margin-left: 56px;
-}
-table[md-data-table]:not([md-row-select]) > thead[md-order] > tr > th:nth-child(n + 2):not([numeric]) > div {
-  margin-left: 56px;
-}
-table[md-data-table]:not([md-row-select]) > thead[md-order] > tr > th:nth-child(n + 2)[numeric] > div {
-  margin-left: 22px;
-}
-table[md-data-table]:not([md-row-select]) > thead:nth-child(n + 2):not(:last-child) {
-  padding-right: 0;
-}
-table[md-data-table][md-row-select] > thead:not([md-trim-column-names]):not([md-order]) > tr > th:nth-child(n + 3) {
-  padding-left: 56px;
-}
-table[md-data-table][md-row-select] > thead[md-trim-column-names]:not([md-order]) > tr > th:nth-child(n + 3) > div {
-  margin-left: 56px;
-}
-table[md-data-table][md-row-select] > thead[md-order] > tr > th:nth-child(n + 3):not([numeric]) > div {
-  margin-left: 56px;
-}
-table[md-data-table][md-row-select] > thead[md-order] > tr > th:nth-child(n + 3)[numeric] > div {
-  margin-left: 22px;
-}
-table[md-data-table][md-row-select] > thead:nth-child(n + 3):not(:last-child) {
-  padding-right: 0;
-}
 table[md-data-table] > thead > tr {
   height: 56px;
 }
@@ -75,13 +45,7 @@ table[md-data-table] > thead > tr > th {
 table[md-data-table] > thead > tr > th.md-active {
   color: rgba(0, 0, 0, 0.87);
 }
-table[md-data-table] > thead[md-trim-column-names],
-table[md-data-table] > thead[md-order] > tr > th {
-  padding-left: 0;
-}
-table[md-data-table] > thead[md-trim-column-names]:hover,
-table[md-data-table] > thead[md-order] > tr > th:hover {
-  color: rgba(0, 0, 0, 0.87);
+table[md-data-table] > thead[md-trim-column-names] > tr > th {
   transition: color 0.25s;
 }
 table[md-data-table] > thead[md-trim-column-names] > tr > th trim {
@@ -90,7 +54,17 @@ table[md-data-table] > thead[md-trim-column-names] > tr > th trim {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+table[md-data-table] > thead[md-order][md-trim-column-names] > tr > th:not(.md-active):not(:hover) > div > md-icon {
+  display: none;
+}
+table[md-data-table] > thead[md-order]:not([md-trim-column-names]) > tr > th:not(.md-active):not(:hover) > div > md-icon {
+  fill: transparent;
+}
+table[md-data-table] > thead[md-order] > tr > th {
+  transition: color 0.25s;
+}
 table[md-data-table] > thead[md-order] > tr > th:hover {
+  color: rgba(0, 0, 0, 0.87);
   cursor: pointer;
 }
 table[md-data-table] > thead[md-order] > tr > th[numeric] > div {
@@ -103,9 +77,6 @@ table[md-data-table] > thead[md-order] > tr > th.md-active > div > md-icon {
 }
 table[md-data-table] > thead[md-order] > tr > th:not(.md-active) > div > md-icon {
   fill: rgba(0, 0, 0, 0.26);
-}
-table[md-data-table] > thead[md-order] > tr > th:not(.md-active):not(:hover) > div > md-icon {
-  display: none;
 }
 table[md-data-table] > thead[md-order] > tr > th > div {
   display: -webkit-flex;
@@ -122,7 +93,7 @@ table[md-data-table] > thead[md-order] > tr > th > div > md-icon {
           flex: 0 0 auto;
   height: 18px;
   width: 18px;
-  margin: 0 8px;
+  margin: 0 4px;
   transition: fill 0.25s, -webkit-transform 0.25s;
   transition: fill 0.25s, transform 0.25s;
 }
@@ -133,12 +104,6 @@ table[md-data-table] > thead[md-order] > tr > th > div > md-icon.down {
 table[md-data-table] > thead[md-order] > tr > th > div > md-icon.up {
   -webkit-transform: rotate(0deg);
           transform: rotate(0deg);
-}
-table[md-data-table]:not([md-row-select]) > tbody > tr > td:nth-child(n + 2) {
-  padding-left: 56px;
-}
-table[md-data-table][md-row-select] > tbody > tr > td:nth-child(n + 3) {
-  padding-left: 56px;
 }
 table[md-data-table] > tbody > tr {
   height: 48px;
@@ -195,7 +160,18 @@ md-data-table-pagination > md-select > .md-select-label > * {
           transform: none !important;
 }
 md-data-table-pagination > md-select > .md-select-label > .md-select-icon {
-  width: 12px;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  margin: 0;
+  width: 24px;
+  height: 24px;
 }
 md-data-table-pagination > md-select > .md-select-label > .md-select-icon:after {
   top: 1px;
@@ -209,10 +185,10 @@ md-data-table-pagination .md-button {
   min-width: 24px;
 }
 md-data-table-pagination .md-button:first-of-type {
-  margin: 0 10px;
+  margin: 0 12px 0 16px;
 }
 md-data-table-pagination .md-button:last-of-type {
-  margin: 0 0 0 10px;
+  margin: 0 0 0 12px;
 }
 md-data-table-container {
   display: block;
@@ -226,32 +202,38 @@ table[md-data-table] {
   background-color: #fff;
   overflow: hidden;
 }
+table[md-data-table]:not([md-row-select]) > thead > tr > th:first-child,
+table[md-data-table]:not([md-row-select]) > tbody > tr > td:first-child {
+  padding: 0 28px 0 24px;
+}
+table[md-data-table]:not([md-row-select]) > thead > tr > th:nth-child(n+2):nth-last-child(n+2),
+table[md-data-table]:not([md-row-select]) > tbody > tr > td:nth-child(n+2):nth-last-child(n+2) {
+  padding: 0 28px;
+}
 table[md-data-table][md-row-select] > thead > tr > th:first-child,
 table[md-data-table][md-row-select] > tbody > tr > td:first-child {
   width: 18px;
-  padding-right: 24px;
+  padding: 0 24px;
+}
+table[md-data-table][md-row-select] > thead > tr > th:nth-child(2),
+table[md-data-table][md-row-select] > tbody > tr > td:nth-child(2) {
+  padding-right: 28px;
+}
+table[md-data-table][md-row-select] > thead > tr > th:nth-child(n+3):nth-last-child(n+2),
+table[md-data-table][md-row-select] > tbody > tr > td:nth-child(n+3):nth-last-child(n+2) {
+  padding: 0 28px;
 }
 table[md-data-table] > thead > tr > th,
 table[md-data-table] > tbody > tr > td {
   text-align: left;
-  padding-top: 8px;
-  padding-bottom: 8px;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
 }
-table[md-data-table] > thead > tr > th:first-child,
-table[md-data-table] > tbody > tr > td:first-child {
-  padding-left: 24px;
-}
-table[md-data-table] > thead > tr > th:not(:last-child),
-table[md-data-table] > tbody > tr > td:not(:last-child) {
-  padding-right: 0;
-}
 table[md-data-table] > thead > tr > th:last-child,
 table[md-data-table] > tbody > tr > td:last-child {
-  padding-right: 24px;
+  padding: 0 24px;
 }
 table[md-data-table] > thead > tr > th:hover,
 table[md-data-table] > tbody > tr > td:hover {

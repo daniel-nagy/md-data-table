@@ -1,117 +1,76 @@
-// condition column padding based on table attributes
-.column-padding(@skip) {
-  // not trimming column names and not sorting
-  &:not([md-trim-column-names]):not([md-order]) > tr > th:nth-child(n + @{skip}) {
-    padding-left: 56px;
-  }
-  // trimming column names but not sorting
-  &[md-trim-column-names]:not([md-order]) > tr > th:nth-child(n + @{skip}) > div {
-    margin-left: 56px;
-  }
-  // sorting and possibly trimming column names; doesn't matter
-  &[md-order] > tr > th:nth-child(n + @{skip}) {
-    &:not([numeric]) > div {
-      margin-left: 56px;
-    }
-    &[numeric] > div {
-      margin-left: 22px;
+table[md-data-table] > thead {
+  > tr {
+    height: 56px;
+    
+    > th {
+      font-size: 12px;
+      color: @md-dark-secondary;
+      white-space: nowrap;
+      
+      &.md-active {
+        color: @md-dark;
+      }
     }
   }
-}
 
-table[md-data-table] {
-
-  // no checkboxes
-  &:not([md-row-select]) > thead {
-    // skip the first column
-    .column-padding(@skip: 2);
+  &[md-trim-column-names] > tr > th {
+    transition: color 0.25s;
+    
+    trim {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
   
-  // checkboxes
-  &[md-row-select] > thead {
-    // skip the first two columns
-    .column-padding(@skip: 3);
+  &[md-order][md-trim-column-names] > tr > th:not(.md-active):not(:hover) > div > md-icon {
+    display: none;
   }
-
-  > thead {
+  
+  &[md-order]:not([md-trim-column-names]) > tr > th:not(.md-active):not(:hover) > div > md-icon {
+    fill: transparent;
+  }
+  
+  &[md-order] > tr > th {
+    transition: color 0.25s;
     
-    > tr {
-      height: 56px;
-      
-      > th {
-        font-size: 12px;
-        color: @md-dark-secondary;
-        white-space: nowrap;
-        
-        &.md-active {
-          color: @md-dark;
-        }
+    &:hover {
+      color: @md-dark;
+      cursor: pointer;
+    }
+    
+    &[numeric] > div {
+      justify-content: flex-end;
+    }
+    
+    &.md-active > div > md-icon {
+      fill: @md-dark;
+    }
+    
+    &:not(.md-active) {
+      > div > md-icon {
+        fill: @md-dark-disabled;
       }
     }
     
-    // trimming column names or sorting rows
-    &[md-trim-column-names], &[md-order] > tr > th {
-      padding-left: 0;
+    > div {
+      display: flex;
+      align-items: center;
+      line-height: 18px;
       
-      &:hover {
-        color: @md-dark;
-        transition: color 0.25s;
-      }
-    }
-    
-    // trimming column names
-    &[md-trim-column-names] > tr > th {
-      trim {
-        display: block;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-    }
-    
-    // sorting rows
-    &[md-order] > tr > th {
-    
-      &:hover {
-        cursor: pointer;
-      }
-      
-      &[numeric] > div {
-        justify-content: flex-end;
-      }
-      
-      &.md-active > div > md-icon {
-        fill: @md-dark;
-      }
-      
-      &:not(.md-active) {
-        > div > md-icon {
-          fill: @md-dark-disabled;
-        }
+      > md-icon {
+        flex: 0 0 auto;
+        height: 18px;
+        width: 18px;
+        margin: 0 4px;
+        transition: fill 0.25s, transform 0.25s;
         
-        &:not(:hover) > div > md-icon {
-          display: none;
+        &.down {
+          transform: rotate(180deg);
         }
-      }
-      
-      > div {
-        display: flex;
-        align-items: center;
-        line-height: 18px;
-        
-        > md-icon {
-          flex: 0 0 auto;
-          height: 18px;
-          width: 18px;
-          margin: 0 8px;
-          transition: fill 0.25s, transform 0.25s;
-          
-          &.down {
-            transform: rotate(180deg);
-          }
-          &.up {
-            transform: rotate(0deg);
-          }
+        &.up {
+          transform: rotate(0deg);
         }
       }
     }

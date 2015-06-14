@@ -1,39 +1,22 @@
-table[md-data-table] {
+table[md-data-table] > tbody > tr {
+  height: 48px;
+  transition: background-color 0.2s;
   
-  // no checkboxes
-  &:not([md-row-select]) > tbody > tr > td {
-    &:nth-child(n + 2) {
-      padding-left: 56px;
-    }
+  &:hover {
+    background-color: @md-dark-row-hover;
   }
   
-  // checkboxes
-  &[md-row-select] > tbody > tr > td {
-    &:nth-child(n + 3) {
-      padding-left: 56px;
-    }
+  &[ng-repeat].ng-leave {
+    display: none;
   }
   
-  > tbody > tr {
-    height: 48px;
-    transition: background-color 0.2s;
-    
-    &:hover {
-      background-color: @md-dark-row-hover;
-    }
-    
-    &[ng-repeat].ng-leave {
-      display: none;
-    }
-    
-    &.md-selected {
-      background-color: @md-dark-row-select;
-    }
-    
-    > td {
-      font-size: 13px;
-      color: @md-dark;
-      border-top: 1px @md-dark-divider solid;
-    }
+  &.md-selected {
+    background-color: @md-dark-row-select;
+  }
+  
+  > td {
+    font-size: 13px;
+    color: @md-dark;
+    border-top: 1px @md-dark-divider solid;
   }
 }

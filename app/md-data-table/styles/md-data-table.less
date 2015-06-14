@@ -24,32 +24,39 @@ table[md-data-table] {
   background-color: #fff;
   overflow: hidden;
   
+  // no checkboxes
+  &:not([md-row-select]) > thead > tr > th,
+  &:not([md-row-select]) > tbody > tr > td {
+    &:first-child {
+      padding: 0 28px 0 24px;
+    }
+    &:nth-child(n+2):nth-last-child(n+2) {
+      padding: 0 28px;
+    }
+  }
+  
   // checkboxes
   &[md-row-select] > thead > tr > th,
   &[md-row-select] > tbody > tr > td {
     &:first-child {
       width: 18px;
-      padding-right: 24px;
+      padding: 0 24px;
+    }
+    &:nth-child(2) {
+      padding-right: 28px;
+    }
+    &:nth-child(n+3):nth-last-child(n+2) {
+      padding: 0 28px;
     }
   }
   
   > thead > tr > th,
   > tbody > tr > td {
     text-align: left;
-    padding-top: 8px;
-    padding-bottom: 8px;
     user-select: none;
     
-    &:first-child {
-      padding-left: 24px;
-    }
-    
-    &:not(:last-child) {
-      padding-right: 0;
-    }
-    
     &:last-child {
-      padding-right: 24px;
+      padding: 0 24px;
     }
     
     &:hover {

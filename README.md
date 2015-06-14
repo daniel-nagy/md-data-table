@@ -88,6 +88,11 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.3.1**
+
+* accurate calculation of the width of column names
+* improved styles for column padding and pagination
+
 **Version 0.3.0**
 
 * The working directory has been restructured at an attempt to be more organized.
@@ -148,7 +153,7 @@ The filter will update when the user clicks on a `<th>` cell. The filter will ta
 
 The provided usage example takes advantage of manual sorting by submitting a query to the server.
 
-##### Client Side Sorting
+##### Client Side Ordering
 
 Just add an `orderBy:` property to the `ng-repeat` attribute that matches the `md-order` attribute.
 

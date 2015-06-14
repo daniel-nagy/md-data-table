@@ -235,6 +235,8 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
         visibility: 'hidden'
       });
       
+      $document.find('body').append(div);
+      
       angular.forEach(element.find('th'), function(cell, index) {
         if(index === 0 || element.parent().attr('md-row-select') && index === 1) {
           return;
@@ -242,7 +244,7 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
         
         var trim = cell.querySelector('trim');
         
-        $document.find('body').append(div.html(trim.innerText));
+        div.html(trim.innerText);
         
         trim.width = div.prop('clientWidth');
         

@@ -88,6 +88,11 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.4.0**
+
+* A row will now reflect its selected status with a background fill
+* New Feature: the `md-auto-select` attribute may be use to allow row selection by clicking anywhere inside the row.
+
 **Version 0.3.1**
 
 * accurate calculation of the width of column names
@@ -127,9 +132,10 @@ Numeric columns align to the right of table cells. Column headers support the fo
 
 > Requires `ng-repeat`.
 
-| Attribute       | Target    | Type    | Description |
-| :-------------- | :-------- | :------ | :---------- |
-| `md-row-select` | `<table>` | `Array` | Two-way data binding of selected items |
+| Attribute        | Target    | Type    | Description |
+| :--------------- | :-------- | :------ | :---------- |
+| `md-row-select`  | `<table>` | `Array` | Two-way data binding of selected items |
+| `md-auto-select` | `<tbody>` | `NULL`  | allow row selection by clicking anywhere inside the row. |
 
 ### Long Header Titles
 

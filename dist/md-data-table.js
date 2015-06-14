@@ -518,9 +518,9 @@ angular.module('templates.md-data-table-pagination.html', []).run(['$templateCac
     '</md-select>\n' +
     '<span>{{min()}} - {{max()}} of {{total}}</span>\n' +
     '<md-button ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">\n' +
-    '  <md-icon md-svg-icon="templates.navigate-before.html"><md-icon>\n' +
+    '  <md-icon md-svg-icon="templates.navigate-before.html"></md-icon>\n' +
     '</md-button>\n' +
     '<md-button ng-click="next()" ng-disabled="!hasNext()" aria-label="Next">\n' +
-    '  <md-icon md-svg-icon="templates.navigate-next.html"><md-icon>\n' +
+    '  <md-icon md-svg-icon="templates.navigate-next.html"></md-icon>\n' +
     '</md-button>');
 }]);

@@ -13,7 +13,9 @@
   "ignore": [],
   "dependencies": {
     "angular": "~1.4.0",
-    "angular-material": "~0.9.7",
+    "angular-material": "~0.9.7"
+  },
+  "devDependencies": {
     "angular-resource": "~1.4.0"
   }
 }

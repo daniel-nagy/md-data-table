@@ -26,15 +26,18 @@ footer {
 }
 footer > footer-content {
   min-height: 64px;
-  padding: 0 16px;
+  padding: 0 16px 16px;
   background-color: #fff;
   color: rgba(0, 0, 0, 0.54);
   font-size: 14px;
 }
-footer > footer-content > * {
-  line-height: 22px;
+footer > footer-content > div {
+  margin-top: 16px;
 }
-footer > footer-content > * + * {
+footer > footer-content > div:not(:last-child) {
+  margin-right: 24px;
+}
+footer > footer-content > div > *:not(span) + *:not(span) {
   margin-left: 24px;
 }
 md-card {

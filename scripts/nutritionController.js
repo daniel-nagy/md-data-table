@@ -7,6 +7,17 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
     page: 1
   };
   
+  $scope.addItem = function (event) {
+    $mdDialog.show({
+      clickOutsideToClose: true,
+      controller: 'addItemController',
+      controllerAs: 'ctrl',
+      focusOnOpen: false,
+      targetEvent: event,
+      templateUrl: 'templates/add-item-dialog.html',
+    }).then(getDesserts);
+  }
+  
   $scope.delete = function (event) {
     $mdDialog.show({
       clickOutsideToClose: true,
@@ -14,8 +25,9 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
       controllerAs: 'ctrl',
       focusOnOpen: false,
       targetEvent: event,
+      locals: { desserts: $scope.selected },
       templateUrl: 'templates/delete-dialog.html',
-    });
+    }).then(getDesserts);
   }
   
   function showProgress() {
@@ -35,15 +47,19 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
   function error() {
     hideProgress();
   }
+  
+  function getDesserts() {
+    $nutrition.desserts.get($scope.query, success, error);
+    
+    showProgress();
+  }
 
   $scope.$watchCollection('query', function (newValue, oldValue) {
     if(newValue === oldValue) {
       return;
     }
     
-    $nutrition.desserts.get($scope.query, success, error);
-    
-    showProgress();
+    getDesserts();
   });
 
 }]);

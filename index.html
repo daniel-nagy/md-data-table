@@ -19,13 +19,25 @@
   <body layout="column">
     
     <md-toolbar>
-      <div class="md-toolbar-tools">
+      <div class="md-toolbar-tools" layout-align="space-between">
         <div class="md-title">Material Design Data Table</div>
       </div>
     </md-toolbar>
     
-    <md-content laout="column" flex>
-      <md-card ng-include="'templates/nutrition-table.html'" ng-controller="nutritionController">
+    <md-content layout="column">
+      
+      <md-card ng-include="'templates/nutrition-table.html'" ng-controller="nutritionController"></md-card>
+      
+      <footer layout="column" layout-align="end">
+        <footer-content layout="row" layout-align="start center" layout-wrap>
+          <div layout="row" layout-align="start center">
+            <span>Made with&nbsp;</span><i class="material-icons md-18" md-primary>favorite</i><span>&nbsp;by Daniel Nagy</span>
+          </div>
+          <div>Version 0.4.0</div>
+          <a href="https://github.com/daniel-nagy/md-data-table" target="_blank">GitHub</a>
+        </footer-content>
+      </footer>
+      
     </md-content>
     
     <script type="text/javascript" src="dependencies/angular.min.js"></script>
@@ -36,8 +48,10 @@
     <script type="text/javascript" src="dependencies/md-data-table.min.js"></script>
     
     <script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript" src="scripts/addItemController.js"></script>
     <script type="text/javascript" src="scripts/deleteController.js"></script>
     <script type="text/javascript" src="scripts/nutritionController.js"></script>
+    <script type="text/javascript" src="scripts/authorizeResource.js"></script>
     <script type="text/javascript" src="scripts/nutritionResource.js"></script>
     
   </body>

@@ -1,21 +1,46 @@
 html,
 body,
 md-content {
+  -webkit-flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
   background-color: #f5f5f5 !important;
   -moz-osx-font-smoothing: grayscale;
 }
-md-toolbar {
+a {
+  text-decoration: none;
+  color: rgb(33,150,243);
+}
+a:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+md-toolbar,
+footer-content {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
-@media all and (min-width: 601px) {
-  md-toolbar .md-title {
-    margin-left: 56px;
-  }
-  md-card {
-    margin: 72px;
-  }
+footer {
+  -webkit-flex: 1 0 auto;
+  -ms-flex: 1 0 auto;
+  flex: 1 0 auto;
+}
+footer > footer-content {
+  min-height: 64px;
+  padding: 0 16px;
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 14px;
+}
+footer > footer-content > * {
+  line-height: 22px;
+}
+footer > footer-content > * + * {
+  margin-left: 24px;
 }
 md-card {
+  -webkit-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
   position: relative;
 }
 .md-button.md-icon-button {
@@ -65,17 +90,25 @@ md-dialog > md-dialog-content > p {
   color: rgba(0, 0, 0, 0.54);
   line-height: 22px;
 }
+md-dialog > md-dialog-content > p.md-warn {
+  color: #f44336;
+}
 md-dialog > md-dialog-content > form:last-child > md-input-container:last-child {
   padding-bottom: 0;
 }
 md-dialog > .md-actions > .md-button {
-  min-width: 70px;
+  min-width: 60px;
 }
 md-dialog[delete-dialog] {
   max-width: 300px;
 }
-md-dialog[delete-dialog] > md-dialog-content > p:last-of-type {
-  margin-bottom: 0;
+md-dialog[add-item-dialog] > md-dialog-content > form > .input-row {
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+md-dialog[add-item-dialog] > md-dialog-content > form > .input-row > md-input-container {
+  min-width: 120px;
 }
 @keyframes enter {
   from { opacity: 0; }

@@ -1,0 +1,61 @@
+<md-dialog add-item-dialog>
+  <md-dialog-content>
+    
+    <h2 class="md-title">Add Dessert</h2>
+    
+    <p ng-if="item.form.$submitted && item.form.$invalid" class="md-warn" layout="row" layout-align="start center">
+      <i class="material-icons">error_outline</i>
+      <span>&nbsp; All fields are required.</span>
+    </p>
+    
+    <form name="item.form" ng-submit="ctrl.addItem()">
+      <div layout="row" class="input-row">
+        <md-input-container flex>
+          <label>Name</label>
+          <input name="name" ng-model="dessert.name" required>
+        </md-input-container>
+        <md-input-container flex>
+          <label>Calories</label>
+          <input name="calories" type="number" min="0" max="999" ng-model="dessert.calories.value" required>
+        </md-input-container>
+      </div>
+      <h3 class="md-subhead">Macronutrients</h3>
+      <div layout="row" class="input-row">
+        <md-input-container flex>
+          <label>Fat (g)</label>
+          <input name="fat" type="number" min="0" max="99" ng-model="dessert.fat.value" required>
+        </md-input-container>
+        <md-input-container flex>
+          <label>Carbs (g)</label>
+          <input name="carbs" type="number" min="0" max="99" ng-model="dessert.carbs.value" required>
+        </md-input-container>
+        <md-input-container flex>
+          <label>Protein (g)</label>
+          <input name="protein" type="number" min="0" max="99" ng-model="dessert.protein.value" required>
+        </md-input-container>
+      </div>
+      <h3 class="md-subhead">Micronutrients</h3>
+      <div layout="row" class="input-row">
+        <md-input-container flex>
+          <label>Sodium (mg)</label>
+          <input name="sodium" type="number" min="0" max="9999" ng-model="dessert.sodium.value" required>
+        </md-input-container>
+        <md-input-container flex>
+          <label>Calcium (%)</label>
+          <input name="calcium" type="number" min="0" max="99" ng-model="dessert.calcium.value" required>
+        </md-input-container>
+        <md-input-container flex>
+          <label>Iron (%)</label>
+          <input name="iron" type="number" min="0" max="99" ng-model="dessert.iron.value" required>
+        </md-input-container>
+      </div>
+    </form>
+    
+  </md-dialog-content>
+  
+  <div class="md-actions">
+    <md-button class="md-primary" ng-click="ctrl.addItem()">Add Item</md-button>
+    <md-button class="md-primary" ng-click="ctrl.cancel()">Cancel</md-button>
+  </div>
+  
+</md-dialog>

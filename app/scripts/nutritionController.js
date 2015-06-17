@@ -1,6 +1,8 @@
 angular.module('nutritionApp').controller('nutritionController', ['$nutrition', '$scope', function ($nutrition, $scope) {
   'use strict';
   
+  $scope.selected = [];
+  
   $scope.query = {
     order: 'name',
     limit: 5,

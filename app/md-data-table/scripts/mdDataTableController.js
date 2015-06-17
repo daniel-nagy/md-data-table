@@ -3,7 +3,16 @@ angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '
   
   var self = this;
   
-  self.selectedItems = [];
+  if($attrs.mdRowSelect) {
+    self.selectedItems = angular.isArray($scope.selectedItems) ? $scope.selectedItems : [];
+    
+    if(!angular.isArray($scope.selectedItems)) {
+      console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
+      $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
+      'i.e. ' + $attrs.mdRowSelect + ' = [], two-way data binding will fail.');
+    }
+  }
+  
   self.columns = [];
   self.classes = [];
   
@@ -13,10 +22,6 @@ angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '
       self.classes.push(mdClass);
     }
   });
-  
-  if($attrs.mdRowSelect) {
-    $parse($attrs.mdRowSelect).assign($scope.$parent.$parent, self.selectedItems);
-  }
   
   if($attrs.mdFilter) {
     self.filter = $scope.filter;
@@ -41,5 +46,4 @@ angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '
   };
   
   angular.forEach($element.find('th'), self.setColumns);
-
 }]);

@@ -88,6 +88,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.4.1**
+
+* Bug Fix: two-way data binding of selected items.
+
 **Version 0.4.0**
 
 * A row will now reflect its selected status with a background fill
@@ -136,6 +140,8 @@ Numeric columns align to the right of table cells. Column headers support the fo
 | :--------------- | :-------- | :------ | :---------- |
 | `md-row-select`  | `<table>` | `Array` | Two-way data binding of selected items |
 | `md-auto-select` | `<tbody>` | `NULL`  | allow row selection by clicking anywhere inside the row. |
+
+> Be sure to define the variable in your controller for two-way data binding to work. If you fail to do so, a friendly reminder will be logged to the console.
 
 ### Long Header Titles
 

@@ -1,5 +1,7 @@
 angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '$nutrition', '$scope', function ($mdDialog, $nutrition, $scope) {
   'use strict';
+  
+  $scope.selected = [];
 
   $scope.query = {
     order: 'name',

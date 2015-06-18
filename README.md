@@ -88,6 +88,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.4.2**
+
+* Bug Fix: Conditionally clearing selected items only when row selection is enabled. Good catch [Sophie](https://github.com/scooper91)!
+
 **Version 0.4.1**
 
 * Bug Fix: two-way data binding of selected items.

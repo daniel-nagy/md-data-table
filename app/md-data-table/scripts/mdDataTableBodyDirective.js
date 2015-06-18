@@ -26,7 +26,7 @@ angular.module('md.data.table').directive('mdTableBody', ['$mdTableRepeat', '$ti
     ctrl.ready = function () {
       var self = this;
       
-      if(!listener) {
+      if(!listener && element.parent().attr('md-row-select')) {
         var items = $mdTableRepeat.parse(element.find('tr').attr('ng-repeat')).items;
         
         // clear the selected items (incase of server side filtering or pagination)

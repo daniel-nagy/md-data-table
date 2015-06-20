@@ -88,9 +88,13 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.4.3**
+
+* Bug Fix: using `parseFloat` instead of `parseInt`. Thanks [@vcastello](https://github.com/vcastello)!
+
 **Version 0.4.2**
 
-* Bug Fix: Conditionally clearing selected items only when row selection is enabled. Good catch [Sophie](https://github.com/scooper91)!
+* Bug Fix: Conditionally clearing selected items only when row selection is enabled. Good catch [@scooper91](https://github.com/scooper91)!
 
 **Version 0.4.1**
 

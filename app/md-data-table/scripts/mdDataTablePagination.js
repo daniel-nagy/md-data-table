@@ -20,9 +20,7 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
       };
       
       scope.next = function () {
-        if(scope.hasNext()) {
-          scope.page++;
-        }
+        scope.page++;
       };
       
       scope.min = function () {
@@ -34,15 +32,13 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
       };
       
       scope.onSelect = function () {
-        if(scope.min() > scope.total) {
+        while((scope.min() > scope.total) && scope.hasPrevious()) {
           scope.previous();
         }
       };
       
       scope.previous = function () {
-        if(scope.hasPrevious()) {
-          scope.page--;
-        }
+        scope.page--;
       };
     }
   };

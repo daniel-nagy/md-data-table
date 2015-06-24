@@ -4,12 +4,14 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
   return {
     templateUrl: 'templates.md-data-table-pagination.html',
     scope: {
+      label: '@mdLabel',
       limit: '=mdLimit',
       page: '=mdPage',
       rowSelect: '=mdRowSelect',
       total: '@mdTotal'
     },
     link: function (scope) {
+      var min;
       
       scope.hasNext = function () {
         return ((scope.page * scope.limit) < scope.total);
@@ -32,6 +34,8 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
       };
       
       scope.onSelect = function () {
+        scope.page = Math.floor(min / scope.limit) + 1;
+        
         while((scope.min() > scope.total) && scope.hasPrevious()) {
           scope.previous();
         }
@@ -40,6 +44,10 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
       scope.previous = function () {
         scope.page--;
       };
+      
+      scope.$watch('page', function () {
+        min = scope.min();
+      });
     }
   };
 });

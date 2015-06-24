@@ -1,4 +1,4 @@
-<span class="label">Rows per page:</span>
+<span class="label">{{label || 'Rows per page:'}}</span>
 <md-select ng-model="limit" ng-change="onSelect()" aria-label="Row Count" placeholder="{{rowSelect ? rowSelect[0] : 5}}">
   <md-option ng-repeat="rows in rowSelect ? rowSelect : [5, 10, 15]" value="{{rows}}">{{rows}}</md-option>
 </md-select>

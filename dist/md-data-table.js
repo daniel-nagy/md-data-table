@@ -403,12 +403,14 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
   return {
     templateUrl: 'templates.md-data-table-pagination.html',
     scope: {
+      label: '@mdLabel',
       limit: '=mdLimit',
       page: '=mdPage',
       rowSelect: '=mdRowSelect',
       total: '@mdTotal'
     },
     link: function (scope) {
+      var min;
       
       scope.hasNext = function () {
         return ((scope.page * scope.limit) < scope.total);
@@ -431,6 +433,8 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
       };
       
       scope.onSelect = function () {
+        scope.page = Math.floor(min / scope.limit) + 1;
+        
         while((scope.min() > scope.total) && scope.hasPrevious()) {
           scope.previous();
         }
@@ -439,6 +443,10 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
       scope.previous = function () {
         scope.page--;
       };
+      
+      scope.$watch('page', function () {
+        min = scope.min();
+      });
     }
   };
 });
@@ -549,7 +557,7 @@ angular.module('templates.navigate-next.html', []).run(['$templateCache', functi
 angular.module('templates.md-data-table-pagination.html', []).run(['$templateCache', function($templateCache) {
   'use strict';
   $templateCache.put('templates.md-data-table-pagination.html',
-    '<span class="label">Rows per page:</span>\n' +
+    '<span class="label">{{label || \'Rows per page:\'}}</span>\n' +
     '<md-select ng-model="limit" ng-change="onSelect()" aria-label="Row Count" placeholder="{{rowSelect ? rowSelect[0] : 5}}">\n' +
     '  <md-option ng-repeat="rows in rowSelect ? rowSelect : [5, 10, 15]" value="{{rows}}">{{rows}}</md-option>\n' +
     '</md-select>\n' +

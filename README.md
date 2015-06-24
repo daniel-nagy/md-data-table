@@ -88,6 +88,11 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.4.6**
+
+* Improvement: You can now interpolate the pagination label.
+* Improvement: Pagination will now calculate an appropriate page based on the current min value when the number of rows are changed (hopefully).
+
 **Version 0.4.5**
 
 * Improvement: You must now explicitly place an `orderBy` attribute on a header cell to enable sorting on that column. This allows for a combination of columns that are sortable and not sortable.
@@ -199,6 +204,7 @@ To use pagination add a `md-data-table-pagination` element to the `md-data-table
 
 | Attribute       | Type     | Description |
 | :---------------| :------- | :---------- |
+| `md-label`      | `String` | Specify the pagination label. The default is 'RowspPer page:'.|
 | `md-limit`      | `Number` | A row limit. |
 | `md-page`       | `Number` | Page number. |
 | `md-total`      | `Number` | Total number of items. |

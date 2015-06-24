@@ -60,25 +60,25 @@ table[md-data-table] > thead[md-order][md-trim-column-names] > tr > th:not(.md-a
 table[md-data-table] > thead[md-order]:not([md-trim-column-names]) > tr > th:not(.md-active):not(:hover) > div > md-icon {
   fill: transparent;
 }
-table[md-data-table] > thead[md-order] > tr > th {
+table[md-data-table] > thead[md-order] > tr > th[order-by] {
   transition: color 0.25s;
 }
-table[md-data-table] > thead[md-order] > tr > th:hover {
+table[md-data-table] > thead[md-order] > tr > th[order-by]:hover {
   color: rgba(0, 0, 0, 0.87);
   cursor: pointer;
 }
-table[md-data-table] > thead[md-order] > tr > th[numeric] > div {
+table[md-data-table] > thead[md-order] > tr > th[order-by][numeric] > div {
   -webkit-justify-content: flex-end;
       -ms-flex-pack: end;
           justify-content: flex-end;
 }
-table[md-data-table] > thead[md-order] > tr > th.md-active > div > md-icon {
+table[md-data-table] > thead[md-order] > tr > th[order-by].md-active > div > md-icon {
   fill: rgba(0, 0, 0, 0.87);
 }
-table[md-data-table] > thead[md-order] > tr > th:not(.md-active) > div > md-icon {
+table[md-data-table] > thead[md-order] > tr > th[order-by]:not(.md-active) > div > md-icon {
   fill: rgba(0, 0, 0, 0.26);
 }
-table[md-data-table] > thead[md-order] > tr > th > div {
+table[md-data-table] > thead[md-order] > tr > th[order-by] > div {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -87,7 +87,7 @@ table[md-data-table] > thead[md-order] > tr > th > div {
           align-items: center;
   line-height: 18px;
 }
-table[md-data-table] > thead[md-order] > tr > th > div > md-icon {
+table[md-data-table] > thead[md-order] > tr > th[order-by] > div > md-icon {
   -webkit-flex: 0 0 auto;
       -ms-flex: 0 0 auto;
           flex: 0 0 auto;
@@ -97,11 +97,11 @@ table[md-data-table] > thead[md-order] > tr > th > div > md-icon {
   transition: fill 0.25s, -webkit-transform 0.25s;
   transition: fill 0.25s, transform 0.25s;
 }
-table[md-data-table] > thead[md-order] > tr > th > div > md-icon.down {
+table[md-data-table] > thead[md-order] > tr > th[order-by] > div > md-icon.down {
   -webkit-transform: rotate(180deg);
           transform: rotate(180deg);
 }
-table[md-data-table] > thead[md-order] > tr > th > div > md-icon.up {
+table[md-data-table] > thead[md-order] > tr > th[order-by] > div > md-icon.up {
   -webkit-transform: rotate(0deg);
           transform: rotate(0deg);
 }

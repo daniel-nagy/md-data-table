@@ -221,7 +221,7 @@ This repository contains a demo application for developing features. As you make
 
 **update**
 
-I noticed the nutrition app was an inconvenience for people trying to run the app locally and contribute. I have updated the demo application to remove the dependency for the nutrition app. This is also a good example of how you can take advantage of `ngRepeat` to easily achieve client side sorting and pagination. **I am aware of the layout bug using ngRepeat to paginate**, hopefully I will have a fix soon.
+I noticed the nutrition app was an inconvenience for people trying to run the app locally and contribute. I have updated the demo application to remove the dependency for the nutrition app. This is also a good example of how you can take advantage of `ngRepeat` to easily achieve client side sorting and pagination. **I am aware of the layout bug using ngRepeat to paginate**, see issue #25, hopefully I will have a fix soon.
 
 ##### Running the App Locally
 

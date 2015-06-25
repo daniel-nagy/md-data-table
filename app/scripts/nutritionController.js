@@ -1,4 +1,4 @@
-angular.module('nutritionApp').controller('nutritionController', ['$nutrition', '$scope', function ($nutrition, $scope) {
+angular.module('nutritionApp').controller('nutritionController', ['$http', '$scope', function ($http, $scope) {
   'use strict';
   
   $scope.selected = [];
@@ -9,14 +9,11 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
     page: 1
   };
   
-  $scope.$watchCollection('query', function (newValue, oldValue) {
-    if(newValue === oldValue) {
-      return;
-    }
-    
-    $nutrition.desserts.get($scope.query, function (desserts) {
-      $scope.desserts = desserts;
-    });
+  $http.get('desserts.js').then(function (desserts) {
+    $scope.desserts = desserts.data;
   });
   
+  $scope.skip = function (dessert, index) {
+    return index >= ($scope.query.limit * ($scope.query.page - 1));
+  };
 }]);

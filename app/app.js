@@ -1,4 +1,4 @@
-angular.module('nutritionApp', ['md.data.table', 'ngMaterial', 'ngResource'])
+angular.module('nutritionApp', ['md.data.table', 'ngMaterial'])
 
   .config(['$mdThemingProvider', function ($mdThemingProvider) {
     'use strict';

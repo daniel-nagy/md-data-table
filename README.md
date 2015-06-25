@@ -216,10 +216,12 @@ To use pagination add a `md-data-table-pagination` element to the `md-data-table
 
 * node
 * grunt-cli
-* [nutrion-app](https://github.com/daniel-nagy/nutrition-app)
-  * mongodb
 
 This repository contains a demo application for developing features. As you make changes the application will live reload itself.
+
+**update**
+
+I noticed the nutrition app was an inconvenience for people trying to run the app locally and contribute. I have updated the demo application to remove the dependency for the nutrition app. This is also a good example of how you can take advantage of `ngRepeat` to easily achieve client side sorting and pagination. **I am aware of the layout bug using ngRepeat to paginate**, hopefully I will have a fix soon.
 
 ##### Running the App Locally
 

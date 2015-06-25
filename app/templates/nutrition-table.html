@@ -21,7 +21,7 @@
       </tr>
     </thead>
     <tbody md-auto-select>
-      <tr ng-repeat="dessert in desserts.data">
+      <tr ng-repeat="dessert in desserts.data | orderBy: query.order | filter: skip | limitTo: query.limit">
         <td>{{dessert.name}}</td>
         <td>{{dessert.calories.value}}</td>
         <td>{{dessert.fat.value}}</td>

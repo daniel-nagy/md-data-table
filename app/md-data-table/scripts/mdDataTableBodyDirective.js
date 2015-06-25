@@ -1,9 +1,7 @@
-angular.module('md.data.table').directive('mdTableBody', ['$mdTableRepeat', '$timeout', function ($mdTableRepeat, $timeout) {
+angular.module('md.data.table').directive('mdTableBody', ['$mdTableRepeat', function ($mdTableRepeat) {
   'use strict';
   
   function postLink(scope, element, attrs, ctrl) {
-    var listener;
-    
     scope.mdClasses = ctrl.classes;
     
     // enable row selection
@@ -23,43 +21,23 @@ angular.module('md.data.table').directive('mdTableBody', ['$mdTableRepeat', '$ti
       };
     }
     
-    ctrl.ready = function () {
-      var self = this;
-      
-      if(!listener && element.parent().attr('md-row-select')) {
-        var items = $mdTableRepeat.parse(element.find('tr').attr('ng-repeat')).items;
-        
-        // clear the selected items (incase of server side filtering or pagination)
-        listener = scope.$watch(items, function (newValue, oldValue) {
-          if(newValue !== oldValue) {
-            ctrl.selectedItems.splice(0);
-          }
-        });
-      }
-      
-      // set numeric cells
-      this.columns.forEach(function (column, index) {
-        if(!column.isNumeric) {
-          return;
-        }
-        
-        self.column(index, function (cell) {
-          cell.style.textAlign = 'right';
-          
-          if(self.columns[index].hasOwnProperty('precision')) {
-            $timeout(function () {
-              cell.innerHTML = parseInt(cell.innerHTML).toFixed(self.columns[index].precision);
-            });
-          }
-          
-          if(cell.attributes.hasOwnProperty('show-unit')) {
-            $timeout(function () {
-              cell.innerHTML += self.columns[index].unit;
-            });
-          }
-        });
+    // execute a callback function on each cell in a column
+    ctrl.column = function (index, callback) {
+      angular.forEach(element.find('tr'), function(row) {
+        callback(angular.element(row.children[index]));
       });
     };
+    
+    // support numeric columns for tables not using ng-repeat
+    if(element.children().length) {
+      ctrl.columns.forEach(function(column, index) {
+        if(column.isNumeric) {
+          ctrl.column(index, function (cell) {
+            ctrl.addNumericCell(cell, index);
+          })
+        }
+      });
+    }
   }
   
   function compile(iElement, iAttrs) {

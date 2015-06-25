@@ -1,11 +1,9 @@
 angular.module('md.data.table', ['md.table.templates']);
 
-angular.module('md.data.table').directive('mdTableBody', ['$mdTableRepeat', '$timeout', function ($mdTableRepeat, $timeout) {
+angular.module('md.data.table').directive('mdTableBody', ['$mdTableRepeat', function ($mdTableRepeat) {
   'use strict';
   
   function postLink(scope, element, attrs, ctrl) {
-    var listener;
-    
     scope.mdClasses = ctrl.classes;
     
     // enable row selection
@@ -25,43 +23,23 @@ angular.module('md.data.table').directive('mdTableBody', ['$mdTableRepeat', '$ti
       };
     }
     
-    ctrl.ready = function () {
-      var self = this;
-      
-      if(!listener && element.parent().attr('md-row-select')) {
-        var items = $mdTableRepeat.parse(element.find('tr').attr('ng-repeat')).items;
-        
-        // clear the selected items (incase of server side filtering or pagination)
-        listener = scope.$watch(items, function (newValue, oldValue) {
-          if(newValue !== oldValue) {
-            ctrl.selectedItems.splice(0);
-          }
-        });
-      }
-      
-      // set numeric cells
-      this.columns.forEach(function (column, index) {
-        if(!column.isNumeric) {
-          return;
-        }
-        
-        self.column(index, function (cell) {
-          cell.style.textAlign = 'right';
-          
-          if(self.columns[index].hasOwnProperty('precision')) {
-            $timeout(function () {
-              cell.innerHTML = parseInt(cell.innerHTML).toFixed(self.columns[index].precision);
-            });
-          }
-          
-          if(cell.attributes.hasOwnProperty('show-unit')) {
-            $timeout(function () {
-              cell.innerHTML += self.columns[index].unit;
-            });
-          }
-        });
+    // execute a callback function on each cell in a column
+    ctrl.column = function (index, callback) {
+      angular.forEach(element.find('tr'), function(row) {
+        callback(angular.element(row.children[index]));
       });
     };
+    
+    // support numeric columns for tables not using ng-repeat
+    if(element.children().length) {
+      ctrl.columns.forEach(function(column, index) {
+        if(column.isNumeric) {
+          ctrl.column(index, function (cell) {
+            ctrl.addNumericCell(cell, index);
+          })
+        }
+      });
+    }
   }
   
   function compile(iElement, iAttrs) {
@@ -99,7 +77,7 @@ angular.module('md.data.table').directive('mdTableBody', ['$mdTableRepeat', '$ti
   };
 }]);
 
-angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '$element', '$parse', '$scope', function ($attrs, $element, $parse, $scope) {
+angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '$element', '$scope', '$timeout', function ($attrs, $element, $scope, $timeout) {
   'use strict';
   
   var self = this;
@@ -107,6 +85,7 @@ angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '
   if($attrs.mdRowSelect) {
     self.selectedItems = angular.isArray($scope.selectedItems) ? $scope.selectedItems : [];
     
+    // log warning for developer
     if(!angular.isArray($scope.selectedItems)) {
       console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
       $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
@@ -124,14 +103,14 @@ angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '
     }
   });
   
-  if($attrs.mdFilter) {
-    self.filter = $scope.filter;
-  }
-  
-  self.column = function (index, callback) {
-    angular.forEach($element.find('tbody').find('tr'), function(row) {
-      callback(row.children[index]);
-    });
+  self.ready = function (items) {
+    if(!self.listener && $attrs.mdRowSelect) {
+      self.listener = $scope.$parent.$watch(items, function (newValue, oldeValue) {
+        if(newValue !== oldeValue) {
+          self.selectedItems.splice(0);
+        }
+      });
+    }
   };
 
   self.setColumns = function (cell) {
@@ -145,6 +124,22 @@ angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '
       precision: cell.attributes.precision ? cell.attributes.precision.value : undefined
     });
   };
+  
+  self.addNumericCell = function (cell, index) {
+    cell.addClass('numeric');
+    
+    if(self.columns[index].hasOwnProperty('precision')) {
+      $timeout(function () {
+        cell.text(parseInt(cell.text()).toFixed(self.columns[index].precision));
+      });
+    }
+    
+    if(angular.isDefined(cell.showUnit)) {
+      $timeout(function () {
+        cell.text(cell.text() + self.columns[index].unit);
+      });
+    }
+  }
   
   angular.forEach($element.find('th'), self.setColumns);
 }]);
@@ -451,19 +446,27 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
   };
 });
 
-angular.module('md.data.table').directive('mdTableRepeat', function () {
+angular.module('md.data.table').directive('mdTableRepeat', ['$mdTableRepeat', function ($mdTableRepeat) {
   'use strict';
   
-  return {
-    require: '^mdDataTable',
-    link: function (scope, element, attrs, ctrl) {
-      // notifies the parent directive everytime ngRepeat changes
-      if(scope.$last) {
-        ctrl.ready();
-      }
+  function postLink(scope, element, attrs, ctrl) {
+    
+    if(scope.$last && !ctrl.listener) {
+      ctrl.ready($mdTableRepeat.parse(attrs.ngRepeat).items);
     }
+    
+    ctrl.columns.forEach(function (column, index) {
+      if(column.isNumeric) {
+        ctrl.addNumericCell(element.children().eq(index), index);
+      }
+    });
+  }
+  
+  return {
+    link: postLink,
+    require: '^mdDataTable'
   };
-});
+}]);
 
 angular.module('md.data.table').factory('$mdTableRepeat', function () {
   'use strict';

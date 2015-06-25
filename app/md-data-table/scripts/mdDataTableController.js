@@ -1,4 +1,4 @@
-angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '$element', '$parse', '$scope', function ($attrs, $element, $parse, $scope) {
+angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '$element', '$scope', '$timeout', function ($attrs, $element, $scope, $timeout) {
   'use strict';
   
   var self = this;
@@ -6,6 +6,7 @@ angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '
   if($attrs.mdRowSelect) {
     self.selectedItems = angular.isArray($scope.selectedItems) ? $scope.selectedItems : [];
     
+    // log warning for developer
     if(!angular.isArray($scope.selectedItems)) {
       console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
       $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
@@ -23,14 +24,14 @@ angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '
     }
   });
   
-  if($attrs.mdFilter) {
-    self.filter = $scope.filter;
-  }
-  
-  self.column = function (index, callback) {
-    angular.forEach($element.find('tbody').find('tr'), function(row) {
-      callback(row.children[index]);
-    });
+  self.ready = function (items) {
+    if(!self.listener && $attrs.mdRowSelect) {
+      self.listener = $scope.$parent.$watch(items, function (newValue, oldeValue) {
+        if(newValue !== oldeValue) {
+          self.selectedItems.splice(0);
+        }
+      });
+    }
   };
 
   self.setColumns = function (cell) {
@@ -44,6 +45,22 @@ angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '
       precision: cell.attributes.precision ? cell.attributes.precision.value : undefined
     });
   };
+  
+  self.addNumericCell = function (cell, index) {
+    cell.addClass('numeric');
+    
+    if(self.columns[index].hasOwnProperty('precision')) {
+      $timeout(function () {
+        cell.text(parseInt(cell.text()).toFixed(self.columns[index].precision));
+      });
+    }
+    
+    if(angular.isDefined(cell.showUnit)) {
+      $timeout(function () {
+        cell.text(cell.text() + self.columns[index].unit);
+      });
+    }
+  }
   
   angular.forEach($element.find('th'), self.setColumns);
 }]);

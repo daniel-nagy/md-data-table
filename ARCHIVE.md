@@ -2,6 +2,21 @@
 
 ### 0.4.x
 
+**Version 0.4.7**
+
+* Bug Fix: Numeric columns will now align properly when using `ngRepeat` to do client side sorting and pagination.
+* Selected items will not be cleared when using `ngRepeat` to do client side sorting and pagination. (I don't know if they were before but I do know now).
+
+**Version 0.4.6**
+
+* Improvement: You can now interpolate the pagination label.
+* Improvement: Pagination will now calculate an appropriate page based on the current min value when the number of rows are changed (hopefully).
+
+**Version 0.4.5**
+
+* Improvement: You must now explicitly place an `orderBy` attribute on a header cell to enable sorting on that column. This allows for a combination of columns that are sortable and not sortable.
+* Improvement: you may now use `ngRepeat` on header cells with column ordering.
+
 **Version 0.4.4**
 
 * Bug Fix: When the number of rows per page is changed, pagination will now decrement the page until the min value is less than the total number of items or the page is zero.

@@ -126,6 +126,9 @@ table[md-data-table] > tbody > tr > td {
   color: rgba(0, 0, 0, 0.87);
   border-top: 1px rgba(0, 0, 0, 0.12) solid;
 }
+table[md-data-table] > tbody > tr > td.numeric {
+  text-align: right;
+}
 md-data-table-pagination {
   display: -webkit-flex;
   display: -ms-flexbox;

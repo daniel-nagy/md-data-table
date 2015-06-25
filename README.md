@@ -88,6 +88,11 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.4.7**
+
+* Bug Fix: Numeric columns will now align properly when using `ngRepeat` to do client side sorting and pagination.
+* Selected items will not be cleared when using `ngRepeat` to do client side sorting and pagination. (I don't know if they were before but I do know now).
+
 **Version 0.4.6**
 
 * Improvement: You can now interpolate the pagination label.
@@ -96,7 +101,6 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 **Version 0.4.5**
 
 * Improvement: You must now explicitly place an `orderBy` attribute on a header cell to enable sorting on that column. This allows for a combination of columns that are sortable and not sortable.
-
 * Improvement: you may now use `ngRepeat` on header cells with column ordering.
 
 **Version 0.4.4**
@@ -221,7 +225,7 @@ This repository contains a demo application for developing features. As you make
 
 **update**
 
-I noticed the nutrition app was an inconvenience for people trying to run the app locally and contribute. I have updated the demo application to remove the dependency for the nutrition app. This is also a good example of how you can take advantage of `ngRepeat` to easily achieve client side sorting and pagination. **I am aware of the layout bug using ngRepeat to paginate**, hopefully I will have a fix soon.
+I noticed the nutrition app was an inconvenience for people trying to run the app locally and contribute. I have updated the demo application to remove the dependency for the nutrition app. This is also a good example of how you can take advantage of `ngRepeat` to easily achieve client side sorting and pagination.
 
 ##### Running the App Locally
 

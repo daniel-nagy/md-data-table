@@ -1,13 +1,21 @@
-angular.module('md.data.table').directive('mdTableRepeat', function () {
+angular.module('md.data.table').directive('mdTableRepeat', ['$mdTableRepeat', function ($mdTableRepeat) {
   'use strict';
   
-  return {
-    require: '^mdDataTable',
-    link: function (scope, element, attrs, ctrl) {
-      // notifies the parent directive everytime ngRepeat changes
-      if(scope.$last) {
-        ctrl.ready();
-      }
+  function postLink(scope, element, attrs, ctrl) {
+    
+    if(scope.$last && !ctrl.listener) {
+      ctrl.ready($mdTableRepeat.parse(attrs.ngRepeat).items);
     }
+    
+    ctrl.columns.forEach(function (column, index) {
+      if(column.isNumeric) {
+        ctrl.addNumericCell(element.children().eq(index), index);
+      }
+    });
+  }
+  
+  return {
+    link: postLink,
+    require: '^mdDataTable'
   };
-});
+}]);

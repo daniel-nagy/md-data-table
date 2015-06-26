@@ -12,7 +12,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
   $scope.query = {
     filter: '',
     limit: 5,
-    order: 'name',
+    order: 'nameToLower',
     page: 1
   };
   

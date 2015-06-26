@@ -130,7 +130,7 @@ angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '
     
     if(self.columns[index].hasOwnProperty('precision')) {
       $timeout(function () {
-        cell.text(parseInt(cell.text()).toFixed(self.columns[index].precision));
+        cell.text(parseFloat(cell.text()).toFixed(self.columns[index].precision));
       });
     }
     

@@ -10,8 +10,9 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
   };
 
   $scope.query = {
-    order: 'name',
+    filter: '',
     limit: 5,
+    order: 'name',
     page: 1
   };
   
@@ -60,17 +61,11 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
     }).then(getDesserts);
   }
   
-  $scope.filterItems = function (filter) {
-    $nutrition.desserts.filter({filter: filter, limit: $scope.query.limit}, success, error);
-    showProgress();
-  }
-  
   $scope.removeFilter = function () {
     $scope.filter.show = false;
-    $scope.filter.value = undefined;
+    $scope.query.filter = '';
     
     if($scope.filter.form.$dirty) {
-      getDesserts();
       $scope.filter.form.$setPristine();
     }
   }

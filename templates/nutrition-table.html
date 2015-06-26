@@ -12,7 +12,7 @@
 <md-data-table-toolbar ng-show="filter.show && !selected.length">
   <i class="material-icons md-dark">search</i>
   <form flex name="filter.form">
-    <input type="text" ng-change="filterItems(filter.value)" ng-model="filter.value" ng-model-options="filter.options" placeholder="search">
+    <input type="text" ng-model="query.filter" ng-model-options="filter.options" placeholder="search">
   </form>
   <md-button class="md-icon-button" ng-click="removeFilter()">
     <i class="material-icons md-dark">close</i>
@@ -32,14 +32,14 @@
   <table md-data-table md-row-select="selected">
     <thead ng-show="desserts.data.length" md-order="query.order">
       <tr>
-        <th order-by="name">Dessert (100g serving)</th>
+        <th order-by="nameToLower">Dessert (100g serving)</th>
         <th numeric order-by="calories.value">Calories</th>
-        <th numeric unit="g" precision="1" order-by="fat.value">Fat</th>
-        <th numeric unit="g" order-by="carbs.value">Carbs</th>
-        <th numeric unit="g" precision="1" order-by="protein.value">Protein</th>
-        <th numeric unit="mg" order-by="sodium.value">Sodium</th>
-        <th numeric unit="%" order-by="calcium.value">Calcium</th>
-        <th numeric unit="%" order-by="iron.value">Iron</th>
+        <th numeric unit="g" precision="1">Fat</th>
+        <th numeric unit="g">Carbs</th>
+        <th numeric unit="g" precision="1">Protein</th>
+        <th numeric unit="mg">Sodium</th>
+        <th numeric unit="%">Calcium</th>
+        <th numeric unit="%">Iron</th>
       </tr>
     </thead>
     <tbody md-auto-select>

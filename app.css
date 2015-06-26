@@ -15,6 +15,22 @@ a:hover {
   text-decoration: underline;
   cursor: pointer;
 }
+input::-webkit-input-placeholder {
+  color: rgba(0, 0, 0, 0.26);
+  font-weight: 300;
+}
+input::-moz-placeholder {
+  color: rgba(0, 0, 0, 0.26);
+  font-weight: 300;
+}
+input:-ms-input-placeholder {
+  color: rgba(0, 0, 0, 0.26);
+  font-weight: 300;
+}
+input::input-placeholder {
+  color: rgba(0, 0, 0, 0.26);
+  font-weight: 300;
+}
 md-toolbar,
 footer-content {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
@@ -66,6 +82,18 @@ md-data-table-toolbar.alternate {
 }
 md-data-table-toolbar > .md-button.md-icon-button:last-child {
   margin-right: -12px;
+}
+md-data-table-toolbar > form {
+  margin-left: 16px;
+}
+md-data-table-toolbar > form > input {
+  width: 100%;
+  margin: 0;
+  border: none;
+  color: rgba(0, 0, 0, 0.87);
+}
+md-data-table-toolbar > form > input:focus {
+  outline: none;
 }
 md-card > md-progress-linear[md-mode=indeterminate] {
   position: absolute;

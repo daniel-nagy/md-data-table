@@ -1,7 +1,21 @@
-<md-data-table-toolbar ng-show="!selected.length" layout-align="space-between">
+<md-data-table-toolbar ng-hide="selected.length || filter.show">
   <h2 class="md-title">Nutrition</h2>
+  <div flex></div>
+  <md-button class="md-icon-button" ng-click="filter.show = true">
+    <i class="material-icons md-dark">filter_list</i>
+  </md-button>
   <md-button class="md-icon-button" ng-click="addItem($event)">
     <i class="material-icons md-dark">local_dining</i>
+  </md-button>
+</md-data-table-toolbar>
+
+<md-data-table-toolbar ng-show="filter.show && !selected.length">
+  <i class="material-icons md-dark">search</i>
+  <form flex name="filter.form">
+    <input type="text" ng-change="filterItems(filter.value)" ng-model="filter.value" ng-model-options="filter.options" placeholder="search">
+  </form>
+  <md-button class="md-icon-button" ng-click="removeFilter()">
+    <i class="material-icons md-dark">close</i>
   </md-button>
 </md-data-table-toolbar>
 

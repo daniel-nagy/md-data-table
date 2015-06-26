@@ -12,7 +12,7 @@
       <div layout="row" class="input-row">
         <md-input-container flex>
           <label>Name</label>
-          <input name="name" ng-model="dessert.name" required>
+          <input name="name" ng-model="dessert.name" md-maxlength="20" required>
         </md-input-container>
         <md-input-container flex>
           <label>Calories</label>
@@ -54,7 +54,7 @@
   </md-dialog-content>
   
   <div class="md-actions">
-    <md-button class="md-primary" ng-click="ctrl.addItem()">Add Item</md-button>
+    <md-button class="md-primary" ng-click="ctrl.addItem()" ng-disabled="item.form.$invalid">Add Item</md-button>
     <md-button class="md-primary" ng-click="ctrl.cancel()">Cancel</md-button>
   </div>
   

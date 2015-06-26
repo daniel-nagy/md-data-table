@@ -8,7 +8,12 @@ Specification for Material Design data tables can be found [here](http://www.goo
 
 http://danielnagy.me/md-data-table
 
+## License
+
+This software is provided free of change and without restriction under the [MIT License](LICENSE.md)
+
 ## Installation
+
 This package is installable through the Bower package manager.
 
 ```

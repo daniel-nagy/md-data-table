@@ -1,0 +1,17 @@
+table[md-data-table] > tfoot {
+
+  > tr {
+    height: 48px;
+    
+    > td {
+      font-size: 13px;
+      color: @md-dark;
+      border-top: 1px @md-dark-divider solid;
+      white-space: nowrap;
+      
+      &.numeric {
+        text-align: right;
+      }
+    }
+  }
+}

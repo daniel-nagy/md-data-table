@@ -1,5 +1,11 @@
 ## Version History
 
+### 0.5.x
+
+**Version 0.5.0**
+
+* Support for `<tfoot>` elements.
+
 ### 0.4.x
 
 **Version 0.4.7**

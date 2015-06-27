@@ -130,7 +130,7 @@ angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '
     
     if(self.columns[index].hasOwnProperty('precision')) {
       $timeout(function () {
-        cell.text(parseInt(cell.text()).toFixed(self.columns[index].precision));
+        cell.text(parseFloat(cell.text()).toFixed(self.columns[index].precision));
       });
     }
     
@@ -147,13 +147,14 @@ angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '
 angular.module('md.data.table').directive('mdDataTable', function () {
   'use strict';
   
-  function compile(iElement, iAttrs) {
-    var head = iElement.find('thead');
-    var body = iElement.find('tbody');
+  function compile(tElement, tAttrs) {
+    var head = tElement.find('thead');
+    var body = tElement.find('tbody');
+    var foot = tElement.find('tfoot');
     
     // make sure the table has a head element
     if(!head.length) {
-      head = iElement.find('tbody').eq(0);
+      head = tElement.find('tbody').eq(0);
       
       if(head.children().find('th').length) {
         head.replaceWith('<thead>' + head.html() + '</thead>');
@@ -161,21 +162,29 @@ angular.module('md.data.table').directive('mdDataTable', function () {
         throw new Error('mdDataTable', 'Expecting <thead></thead> element.');
       }
       
-      head = iElement.find('thead');
-      body = iElement.find('tbody');
+      head = tElement.find('thead');
+      body = tElement.find('tbody');
     }
     
-    // notify the head and the body to begin work
+    // notify the children to begin work
     head.attr('md-table-head', '');
     body.attr('md-table-body', '');
     
+    if(foot.length) {
+      foot.attr('md-table-foot', '');
+      
+      if(tAttrs.mdRowSelect) {
+        foot.find('tr').prepend('<td></td>');
+      }
+    }
+    
     // log rudimentary warnings for the developer
     if(!body.children().attr('ng-repeat')) {
-      if(iAttrs.hasOwnProperty('mdRowSelect')) {
-        return console.warn('Use ngRepeat to enable automatic row selection.');
+      if(tAttrs.mdRowSelect) {
+        console.warn('Use ngRepeat to enable automatic row selection.');
       }
-      if(head.attr('md-filter')) {
-        console.warn('Manual sorting may be difficult without ngRepeat.');
+      if(head.attr('md-order')) {
+        console.warn('Column ordering without ngRepeat is not supported by this directive.');
       }
     }
   }
@@ -188,6 +197,29 @@ angular.module('md.data.table').directive('mdDataTable', function () {
     },
     compile: compile,
     controller: 'mdDataTableController'
+  };
+});
+
+angular.module('md.data.table').directive('mdTableFoot', function () {
+  'use strict';
+
+  function postLink(scope, element, attrs, ctrl) {
+    var cells = element.find('td');
+    
+    ctrl.columns.forEach(function(column, index) {
+      if(column.isNumeric) {
+        cells.eq(index).addClass('numeric');
+      }
+    });
+    
+    if(cells.length < ctrl.columns.length) {
+      element.find('tr').append('<td colspan="' + (ctrl.columns.length - cells.length) + '"></td>');
+    }
+  }
+  
+  return {
+    require: '^mdDataTable',
+    link: postLink
   };
 });
 

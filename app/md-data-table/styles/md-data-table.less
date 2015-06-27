@@ -3,6 +3,7 @@
 @import 'md-data-table-toolbar';
 @import 'md-data-table-head';
 @import 'md-data-table-body';
+@import 'md-data-table-foot';
 @import 'md-data-table-pagination';
 
 .column-padding(@skip) {
@@ -26,7 +27,8 @@ table[md-data-table] {
   
   // no checkboxes
   &:not([md-row-select]) > thead > tr > th,
-  &:not([md-row-select]) > tbody > tr > td {
+  &:not([md-row-select]) > tbody > tr > td,
+  &:not([md-row-select]) > tfoot > tr > td {
     &:first-child {
       padding: 0 28px 0 24px;
     }
@@ -37,7 +39,8 @@ table[md-data-table] {
   
   // checkboxes
   &[md-row-select] > thead > tr > th,
-  &[md-row-select] > tbody > tr > td {
+  &[md-row-select] > tbody > tr > td,
+  &[md-row-select] > tfoot > tr > td {
     &:first-child {
       width: 18px;
       padding: 0 24px;
@@ -51,16 +54,12 @@ table[md-data-table] {
   }
   
   > thead > tr > th,
-  > tbody > tr > td {
+  > tbody > tr > td,
+  > tfoot > tr > td {
     text-align: left;
-    user-select: none;
     
     &:last-child {
       padding: 0 24px;
-    }
-    
-    &:hover {
-      cursor: default;
     }
     
     &:focus {

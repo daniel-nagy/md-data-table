@@ -93,6 +93,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.5.0**
+
+* Support for `<tfoot>` elements, see the section on table [#table-toolbars](toolbars) for more info.
+
 **Version 0.4.7**
 
 * Bug Fix: Numeric columns will now align properly when using `ngRepeat` to do client side sorting and pagination.
@@ -112,66 +116,16 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 * Bug Fix: When the number of rows per page is changed, pagination will now decrement the page until the min value is less than the total number of items or the page is zero.
 
-**Version 0.4.3**
-
-* Bug Fix: using `parseFloat` instead of `parseInt`. Thanks [@vcastello](https://github.com/vcastello)!
-
-**Version 0.4.2**
-
-* Bug Fix: Conditionally clearing selected items only when row selection is enabled. Good catch [@scooper91](https://github.com/scooper91)!
-
-**Version 0.4.1**
-
-* Bug Fix: two-way data binding of selected items.
-
-**Version 0.4.0**
-
-* A row will now reflect its selected status with a background fill
-* New Feature: the `md-auto-select` attribute may be use to allow row selection by clicking anywhere inside the row.
-
 View the [archives](ARCHIVE.md) for a complete version history.
 
 ## API Documentation
 
-### Numeric Columns
-
-Numeric columns align to the right of table cells. Column headers support the following attributes for numeric data.
-
-##### Header Cells
-
-| Attribute    | Target  | Type     | Description |
-| :----------- | :------ | :------- | :---------- |
-| `numeric`    | `<th>`  | `NULL`   | Informs the directive the column is numeric in nature. |
-| `unit`       | `<th>`  | `String` | Specifies the unit. Providing a unit will automatically add the unit, wrapped in parenthesis, to the header cell. |
-| `precision`  | `<th>`  | `Number` | Specifies the number of decimal places to display. The default is none. |
-
-##### Body Cells
-
-| Attribute   | Target  | Type     | Description |
-| :---------- | :------ | :------- | :---------- |
-| `show-unit` | `<td>`  | `NULL`   | Displays the unit in the body cell; `unit` must be specified on the header cell. |
-
-
-> Note that the `numeric` attribute must be present for other attributes to take effect.
-
-### Row Selection
-
-> Requires `ng-repeat`.
-
-| Attribute        | Target    | Type    | Description |
-| :--------------- | :-------- | :------ | :---------- |
-| `md-row-select`  | `<table>` | `Array` | Two-way data binding of selected items |
-| `md-auto-select` | `<tbody>` | `NULL`  | allow row selection by clicking anywhere inside the row. |
-
-> Be sure to define the variable in your controller for two-way data binding to work. If you fail to do so, a friendly reminder will be logged to the console.
-
-### Long Header Titles
-
-| Attribute              | Target    | Type   | Description |
-| :--------------------- | :-------- | :----- | :---------- |
-| `md-trim-column-names` | `<thead>` | `NULL` | Enable truncating column names. |
-
-Column names will be shortened if they exceed the width of the cell minus the `56px` of padding between cells. If the name exceeds the width of the cell plus the `56px` of padding between cells, then only an additional `56px` of text will be shown the rest will remain truncated.
+* [Column Ordering](#column-ordering)
+* [Long Header Titles](#long-header-titles)
+* [Numeric Columns](#numeric-columns)
+* [Pagination](#pagination)
+* [Row Selection](#row-selection)
+* [Table Toolbars](#table-toolbars)
 
 ### Column Ordering
 
@@ -207,17 +161,76 @@ Just add an `orderBy:` property to the `ng-repeat` attribute that matches the `m
 </md-data-table-container>
 ```
 
+### Long Header Titles
+
+| Attribute              | Target    | Type   | Description |
+| :--------------------- | :-------- | :----- | :---------- |
+| `md-trim-column-names` | `<thead>` | `NULL` | Enable truncating column names. |
+
+Column names will be shortened if they exceed the width of the cell minus the `56px` of padding between cells. If the name exceeds the width of the cell plus the `56px` of padding between cells, then only an additional `56px` of text will be shown the rest will remain truncated.
+
+### Numeric Columns
+
+Numeric columns align to the right of table cells. Column headers support the following attributes for numeric data.
+
+##### Header Cells
+
+| Attribute    | Target  | Type     | Description |
+| :----------- | :------ | :------- | :---------- |
+| `numeric`    | `<th>`  | `NULL`   | Informs the directive the column is numeric in nature. |
+| `unit`       | `<th>`  | `String` | Specifies the unit. Providing a unit will automatically add the unit, wrapped in parenthesis, to the header cell. |
+| `precision`  | `<th>`  | `Number` | Specifies the number of decimal places to display. The default is none. |
+
+##### Body Cells
+
+| Attribute   | Target  | Type     | Description |
+| :---------- | :------ | :------- | :---------- |
+| `show-unit` | `<td>`  | `NULL`   | Displays the unit in the body cell; `unit` must be specified on the header cell. |
+
+
+> Note that the `numeric` attribute must be present for other attributes to take effect.
+
 ### Pagination
 
 To use pagination add a `md-data-table-pagination` element to the `md-data-table-toolbar`.
 
 | Attribute       | Type     | Description |
 | :---------------| :------- | :---------- |
-| `md-label`      | `String` | Specify the pagination label. The default is 'RowspPer page:'.|
+| `md-label`      | `String` | Specify the pagination label. The default is 'Rows per page:'.|
 | `md-limit`      | `Number` | A row limit. |
 | `md-page`       | `Number` | Page number. |
 | `md-total`      | `Number` | Total number of items. |
 | `md-row-select` | `Array`  | Row limit options. The default is `[5, 10, 15]` |
+
+### Row Selection
+
+> Requires `ng-repeat`.
+
+| Attribute        | Target    | Type    | Description |
+| :--------------- | :-------- | :------ | :---------- |
+| `md-row-select`  | `<table>` | `Array` | Two-way data binding of selected items |
+| `md-auto-select` | `<tbody>` | `NULL`  | allow row selection by clicking anywhere inside the row. |
+
+> Be sure to define the variable in your controller for two-way data binding to work. If you fail to do so, a friendly reminder will be logged to the console.
+
+### Table Toolbars
+
+Tables may be embedded within cards that offer navigation and data manipulation tools available at the top and bottom.
+
+In general, use an `md-data-table-toolbar` for table toolbars, however; if you need to display information relative to a particular column in the table you may use use a `<tfoot>` element. For example, say you had a `calories.total` property that summed the total number of calories and you wanted to display that information directly beneath the Calories column.
+
+```html
+<tfoot>
+  <tr>
+    <td></td>
+    </td><strong>Total:</strong> {{calories.total}}</td>
+  </tr>
+</tfoot>
+```
+
+Observe that Calories is the second column in the table. Therefore, we need to offset the first column with an empty cell. If you need to offset many columns you can use `<td colspan="${n}"></td>` where `n` is the number of columns to offset.
+
+> Note that the directive is smart enough to insert an empty cell for the row selection column and that empty cells are not required after the last cell.
 
 ## Contributing
 

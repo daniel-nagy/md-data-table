@@ -95,7 +95,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 **Version 0.5.0**
 
-* Support for `<tfoot>` elements, see the section on table [#table-toolbars](toolbars) for more info.
+* Support for `<tfoot>` elements, see the section on table [toolbars](#table-toolbars) for more info.
 
 **Version 0.4.7**
 

@@ -93,6 +93,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.5.1**
+
+* You can now set the default sort for a column.
+
 **Version 0.5.0**
 
 * Support for `<tfoot>` elements, see the section on table [toolbars](#table-toolbars) for more info.
@@ -129,9 +133,11 @@ View the [archives](ARCHIVE.md) for a complete version history.
 
 ### Column Ordering
 
-| Attribute              | Target    | Type     | Description |
-| :--------------------- | :-------- | :------- | :---------- |
-| `md-order`             | `<thead>` | `String` | Two-way data binding filter. |
+| Attribute       | Target    | Type     | Description |
+| :-------------- | :-------- | :------- | :---------- |
+| `md-order`      | `<thead>` | `String` | Two-way data binding order property. |
+| `order-by`      | `<th>`    | `String` | The value to sort on when the user clicks the column name. |
+| `descend-first` | `<th>`    | `NULL`   | Tell the directive to first sort descending. |
 
 The `mdOrder` attribute will be update when the user clicks a `<th>` cell to the value defined by the `order-by` attribute. The `mdOrder` attribute can be used in to do server-side sorting or client-side sorting.
 

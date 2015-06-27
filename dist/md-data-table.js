@@ -366,6 +366,10 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
   
   function postLink(scope, element, attrs, ctrl) {
     
+    if(angular.isDefined(attrs.descendFirst)) {
+      attrs.$set('descendFirst', true);
+    }
+    
     if(element.text().match(/{{[^}]+}}/)) {
       var text = $interpolate('\'' + element.text() + '\'')(scope.$parent);
       var trim = element.find('trim');
@@ -383,7 +387,7 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
       if(scope.isActive()) {
         return ctrl.order[0] === '-' ? 'down' : 'up';
       }
-      return 'up';
+      return attrs.descendFirst ? 'down' : 'up';
     };
     
     scope.isActive = function () {
@@ -391,7 +395,11 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
     };
     
     scope.setOrder = function () {
-      ctrl.order = ctrl.order === scope.order ? '-' + scope.order : scope.order;
+      if(scope.isActive()) {
+        ctrl.order = ctrl.order === scope.order ? '-' + scope.order : scope.order;
+      } else {
+        ctrl.order = attrs.descendFirst ? '-' + scope.order : scope.order;
+      }
     };
   }
   

@@ -438,7 +438,7 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
   return {
     templateUrl: 'templates.md-data-table-pagination.html',
     scope: {
-      label: '@mdLabel',
+      label: '=mdLabel',
       limit: '=mdLimit',
       page: '=mdPage',
       rowSelect: '=mdRowSelect',
@@ -446,6 +446,15 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
     },
     link: function (scope) {
       var min;
+      
+      scope.paginationLabel = {
+        text: 'Rows per page:',
+        of: 'of'
+      };
+      
+      if(angular.isObject(scope.label)) {
+        angular.extend(scope.paginationLabel, scope.label);
+      }
       
       scope.hasNext = function () {
         return ((scope.page * scope.limit) < scope.total);
@@ -600,11 +609,11 @@ angular.module('templates.navigate-next.html', []).run(['$templateCache', functi
 angular.module('templates.md-data-table-pagination.html', []).run(['$templateCache', function($templateCache) {
   'use strict';
   $templateCache.put('templates.md-data-table-pagination.html',
-    '<span class="label">{{label || \'Rows per page:\'}}</span>\n' +
+    '<span class="label">{{paginationLabel.text}}</span>\n' +
     '<md-select ng-model="limit" ng-change="onSelect()" aria-label="Row Count" placeholder="{{rowSelect ? rowSelect[0] : 5}}">\n' +
     '  <md-option ng-repeat="rows in rowSelect ? rowSelect : [5, 10, 15]" value="{{rows}}">{{rows}}</md-option>\n' +
     '</md-select>\n' +
-    '<span>{{min()}} - {{max()}} of {{total}}</span>\n' +
+    '<span>{{min()}} - {{max()}} {{paginationLabel.of}} {{total}}</span>\n' +
     '<md-button ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">\n' +
     '  <md-icon md-svg-icon="templates.navigate-before.html"></md-icon>\n' +
     '</md-button>\n' +

@@ -95,7 +95,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 **Version 0.5.1**
 
-* You can now set the default sort for a column.
+* You can now set the default sort direction for a column.
 
 **Version 0.5.0**
 
@@ -202,11 +202,18 @@ To use pagination add a `md-data-table-pagination` element to the `md-data-table
 
 | Attribute       | Type     | Description |
 | :---------------| :------- | :---------- |
-| `md-label`      | `String` | Specify the pagination label. The default is 'Rows per page:'.|
+| `md-label`      | `Object` | Change the pagination label. The default is 'Rows per page:'.|
 | `md-limit`      | `Number` | A row limit. |
 | `md-page`       | `Number` | Page number. |
 | `md-total`      | `Number` | Total number of items. |
 | `md-row-select` | `Array`  | Row limit options. The default is `[5, 10, 15]` |
+
+The `md-label` attribute has the following properties.
+
+| Property | Type     | Description |
+| :--------| :------- | :---------- |
+| text     | `String` | The pagination label. |
+| of       | `String` | The 'of' in 'x - y of z'. |
 
 ### Row Selection
 

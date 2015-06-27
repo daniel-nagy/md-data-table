@@ -4,7 +4,7 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
   return {
     templateUrl: 'templates.md-data-table-pagination.html',
     scope: {
-      label: '@mdLabel',
+      label: '=mdLabel',
       limit: '=mdLimit',
       page: '=mdPage',
       rowSelect: '=mdRowSelect',
@@ -12,6 +12,15 @@ angular.module('md.data.table').directive('mdDataTablePagination', function () {
     },
     link: function (scope) {
       var min;
+      
+      scope.paginationLabel = {
+        text: 'Rows per page:',
+        of: 'of'
+      };
+      
+      if(angular.isObject(scope.label)) {
+        angular.extend(scope.paginationLabel, scope.label);
+      }
       
       scope.hasNext = function () {
         return ((scope.page * scope.limit) < scope.total);

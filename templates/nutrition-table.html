@@ -26,11 +26,9 @@
   </md-button>
 </md-data-table-toolbar>
 
-<md-progress-linear ng-if="loading" md-mode="indeterminate"></md-progress-linear>
-
 <md-data-table-container>
   <table md-data-table md-row-select="selected">
-    <thead ng-show="desserts.data.length" md-order="query.order">
+    <thead md-order="query.order" md-trigger="onOrderChange">
       <tr>
         <th order-by="nameToLower">Dessert (100g serving)</th>
         <th numeric order-by="calories.value">Calories</th>
@@ -58,5 +56,5 @@
 </md-data-table-container>
 
 <md-data-table-toolbar layout-align="end">
-  <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}"></md-data-table-pagination>
+  <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}" md-trigger="onPaginationChange"></md-data-table-pagination>
 </md-data-table-toolbar>

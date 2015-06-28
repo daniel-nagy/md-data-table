@@ -16,27 +16,17 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
     page: 1
   };
   
-  function showProgress() {
-    $scope.loading = true;
-  }
-  
-  function hideProgress() {
-    $scope.loading = false;
-  }
-  
   function success(desserts) {
     $scope.desserts = desserts;
-    hideProgress();
   }
   
-  function error() {
-    hideProgress();
-  }
+  $scope.onOrderChange = function (order) {
+    return $nutrition.desserts.get($scope.query, success).$promise;
+  };
   
-  function getDesserts() {
-    $nutrition.desserts.get($scope.query, success, error);
-    showProgress();
-  }
+  $scope.onPaginationChange = function (page, limit) {
+    return $nutrition.desserts.get($scope.query, success).$promise;
+  };
   
   $scope.addItem = function (event) {
     $mdDialog.show({
@@ -69,13 +59,5 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
       $scope.filter.form.$setPristine();
     }
   }
-  
-  $scope.$watchCollection('query', function (newValue, oldValue) {
-    if(newValue === oldValue) {
-      return;
-    }
-    
-    getDesserts();
-  });
 
 }]);

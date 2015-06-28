@@ -95,27 +95,6 @@ md-data-table-toolbar > form > input {
 md-data-table-toolbar > form > input:focus {
   outline: none;
 }
-md-card > md-progress-linear[md-mode=indeterminate] {
-  position: absolute;
-  height: 3px;
-  top: -3px;
-}
-md-card > md-progress-linear[md-mode=indeterminate].ng-enter {
-  animation: enter 1s;
-  -webkit-animation: enter 1s;
-}
-md-card > md-progress-linear[md-mode=indeterminate].ng-leave {
-  animation: leave 1s;
-  -webkit-animation: leave 1s;
-}
-md-card > md-progress-linear[md-mode=indeterminate] > .md-container {
-  height: 3px;
-  top: 64px;
-  transition: none;
-}
-md-card > md-progress-linear[md-mode=indeterminate] > .md-container > .md-bar {
-  height: 3px;
-}
 md-dialog > md-dialog-content > p {
   margin: 16px 0;
   color: rgba(0, 0, 0, 0.54);
@@ -140,20 +119,4 @@ md-dialog[add-item-dialog] > md-dialog-content > form > .input-row {
 }
 md-dialog[add-item-dialog] > md-dialog-content > form > .input-row > md-input-container {
   min-width: 120px;
-}
-@keyframes enter {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@-webkit-keyframes enter {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@-webkit-keyframes leave {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
-@keyframes leave {
-  from { opacity: 1; }
-  to { opacity: 0; }
 }

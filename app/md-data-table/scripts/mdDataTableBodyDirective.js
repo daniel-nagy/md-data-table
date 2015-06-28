@@ -34,7 +34,7 @@ angular.module('md.data.table').directive('mdTableBody', ['$mdTableRepeat', func
         if(column.isNumeric) {
           ctrl.column(index, function (cell) {
             ctrl.addNumericCell(cell, index);
-          })
+          });
         }
       });
     }

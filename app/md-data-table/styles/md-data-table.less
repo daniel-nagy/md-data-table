@@ -5,6 +5,7 @@
 @import 'md-data-table-body';
 @import 'md-data-table-foot';
 @import 'md-data-table-pagination';
+@import 'md-data-table-progress';
 
 .column-padding(@skip) {
   &:nth-child(n + @{skip}):not(:last-child) {
@@ -26,7 +27,7 @@ table[md-data-table] {
   overflow: hidden;
   
   // no checkboxes
-  &:not([md-row-select]) > thead > tr > th,
+  &:not([md-row-select]) > thead:not([md-table-progress]) > tr > th,
   &:not([md-row-select]) > tbody > tr > td,
   &:not([md-row-select]) > tfoot > tr > td {
     &:first-child {
@@ -38,7 +39,7 @@ table[md-data-table] {
   }
   
   // checkboxes
-  &[md-row-select] > thead > tr > th,
+  &[md-row-select] > thead:not([md-table-progress]) > tr > th,
   &[md-row-select] > tbody > tr > td,
   &[md-row-select] > tfoot > tr > td {
     &:first-child {
@@ -53,7 +54,7 @@ table[md-data-table] {
     }
   }
   
-  > thead > tr > th,
+  > thead:not([md-table-progress]) > tr > th,
   > tbody > tr > td,
   > tfoot > tr > td {
     text-align: left;

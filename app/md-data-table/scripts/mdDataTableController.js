@@ -1,4 +1,4 @@
-angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '$element', '$scope', '$timeout', function ($attrs, $element, $scope, $timeout) {
+angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '$element', '$q', '$scope', '$timeout', function ($attrs, $element, $q, $scope, $timeout) {
   'use strict';
   
   var self = this;
@@ -23,6 +23,24 @@ angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '
       self.classes.push(mdClass);
     }
   });
+  
+  self.defer = function () {
+    if(self.deferred) {
+      self.deferred.reject('cancel');
+    } else {
+      self.showProgress();
+    }
+    
+    self.deferred = $q.defer();
+    self.deferred.promise.then(self.resolve);
+    
+    return self.deferred;
+  };
+  
+  self.resolve = function () {
+    self.deferred = undefined;
+    self.hideProgress();
+  };
   
   self.ready = function (items) {
     if(!self.listener && $attrs.mdRowSelect) {
@@ -60,7 +78,7 @@ angular.module('md.data.table').controller('mdDataTableController', ['$attrs', '
         cell.text(cell.text() + self.columns[index].unit);
       });
     }
-  }
+  };
   
   angular.forEach($element.find('th'), self.setColumns);
 }]);

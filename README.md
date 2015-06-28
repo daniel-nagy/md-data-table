@@ -31,21 +31,25 @@ bower install angular-material-data-table --save
 angular.module('nutritionApp').controller('nutritionController', ['$nutrition', '$scope', function ($nutrition, $scope) {
   'use strict';
   
+  $scope.selected = [];
+  
   $scope.query = {
     order: 'name',
     limit: 5,
     page: 1
   };
   
-  $scope.$watchCollection('query', function (newValue, oldValue) {
-    if(newValue === oldValue) {
-      return;
-    }
-    
-    $nutrition.desserts.query($scope.query, function (desserts) {
-      $scope.desserts = desserts;
-    });
-  });
+  function success(desserts) {
+    $scope.desserts = desserts;
+  }
+  
+  $scope.onOrderChange = function (order) {
+    return $nutrition.desserts.get($scope.query, success).$promise; 
+  };
+  
+  $scope.onPaginationChange = function (page, limit) {
+    return $nutrition.desserts.get($scope.query, success).$promise; 
+  };
 
 }]);
 ```
@@ -59,7 +63,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 <md-data-table-container>
   <table md-data-table md-row-select="selected">
-    <thead md-order="query.order" md-trim-column-names>
+    <thead md-order="query.order" md-trigger="onOrderChange">
       <tr>
         <th order-by="name">Dessert (100g serving)</th>
         <th numeric order-by="calories.value">Calories</th>
@@ -72,7 +76,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="dessert in desserts">
+      <tr ng-repeat="dessert in desserts.data">
         <td>{{dessert.name}}</td>
         <td>{{dessert.calories.value}}</td>
         <td>{{dessert.fat.value}}</td>
@@ -87,11 +91,15 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 </md-data-table-container>
 
 <md-data-table-toolbar layout-align="end">
-  <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="9"></md-data-table-pagination>
+  <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.total}}" md-trigger="onPaginationChange"></md-data-table-pagination>
 </md-data-table-toolbar>
 ```
 
 ## Change Log
+
+**Version 0.6.0**
+
+* Register trigger handlers for column reorder and pagination change. If the function returns a promise, a loading indicator will be displayed.
 
 **Version 0.5.1**
 
@@ -111,15 +119,6 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 * Improvement: You can now interpolate the pagination label.
 * Improvement: Pagination will now calculate an appropriate page based on the current min value when the number of rows are changed (hopefully).
 
-**Version 0.4.5**
-
-* Improvement: You must now explicitly place an `orderBy` attribute on a header cell to enable sorting on that column. This allows for a combination of columns that are sortable and not sortable.
-* Improvement: you may now use `ngRepeat` on header cells with column ordering.
-
-**Version 0.4.4**
-
-* Bug Fix: When the number of rows per page is changed, pagination will now decrement the page until the min value is less than the total number of items or the page is zero.
-
 View the [archives](ARCHIVE.md) for a complete version history.
 
 ## API Documentation
@@ -133,13 +132,16 @@ View the [archives](ARCHIVE.md) for a complete version history.
 
 ### Column Ordering
 
-| Attribute       | Target    | Type     | Description |
-| :-------------- | :-------- | :------- | :---------- |
-| `md-order`      | `<thead>` | `String` | Two-way data binding order property. |
-| `order-by`      | `<th>`    | `String` | The value to sort on when the user clicks the column name. |
-| `descend-first` | `<th>`    | `NULL`   | Tell the directive to first sort descending. |
+| Attribute       | Target    | Type       | Description |
+| :-------------- | :-------- | :--------- | :---------- |
+| `md-order`      | `<thead>` | `String`   | Two-way data binding order property. |
+| `md-trigger`    | `<thead>` | `function` | Will execute when the order is changed, passing the order as a parameter. |
+| `order-by`      | `<th>`    | `String`   | The value to sort on when the user clicks the column name. |
+| `descend-first` | `<th>`    | `NULL`     | Tell the directive to first sort descending. |
 
 The `mdOrder` attribute will be update when the user clicks a `<th>` cell to the value defined by the `order-by` attribute. The `mdOrder` attribute can be used in to do server-side sorting or client-side sorting.
+
+If the function assigned to the `md-triger` attribute returns a promise, a loading indicator will be displayed.
 
 > This directive does not support sorting of in-place data, i.e. data included directly in the markup, nor do I plan on supporting this.
 
@@ -200,13 +202,14 @@ Numeric columns align to the right of table cells. Column headers support the fo
 
 To use pagination add a `md-data-table-pagination` element to the `md-data-table-toolbar`.
 
-| Attribute       | Type     | Description |
-| :---------------| :------- | :---------- |
-| `md-label`      | `Object` | Change the pagination label. The default is 'Rows per page:'.|
-| `md-limit`      | `Number` | A row limit. |
-| `md-page`       | `Number` | Page number. |
-| `md-total`      | `Number` | Total number of items. |
-| `md-row-select` | `Array`  | Row limit options. The default is `[5, 10, 15]` |
+| Attribute       | Type       | Description |
+| :---------------| :--------- | :---------- |
+| `md-label`      | `Object`   | Change the pagination label. The default is 'Rows per page:'.|
+| `md-limit`      | `Number`   | A row limit. |
+| `md-page`       | `Number`   | Page number. |
+| `md-total`      | `Number`   | Total number of items. |
+| `md-row-select` | `Array`    | Row limit options. The default is `[5, 10, 15]` |
+| `md-trigger`    | `function` | Will execute on table load and when the page or limit is changed, passing the page and limit as parameters. |
 
 The `md-label` attribute has the following properties.
 
@@ -214,6 +217,8 @@ The `md-label` attribute has the following properties.
 | :--------| :------- | :---------- |
 | text     | `String` | The pagination label. |
 | of       | `String` | The 'of' in 'x - y of z'. |
+
+If the function assigned to the `md-triger` attribute returns a promise, a loading indicator will be displayed.
 
 ### Row Selection
 

@@ -1,6 +1,16 @@
 ## Version History
 
+### 0.6.x
+
+**Version 0.6.0**
+
+* Register trigger handlers for column reorder and pagination change. If the function returns a promise, a loading indicator will be displayed.
+
 ### 0.5.x
+
+**Version 0.5.1**
+
+* You can now set the default sort direction for a column.
 
 **Version 0.5.0**
 

@@ -137,7 +137,7 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
     controllerAs: 'headCtrl',
     require: '^mdDataTable',
     scope: {
-      trigger: '=mdTrigger',
+      trigger: '=mdTrigger'
     },
     compile: compile
   };

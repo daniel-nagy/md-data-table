@@ -380,11 +380,12 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
     controllerAs: 'headCtrl',
     require: '^mdDataTable',
     scope: {
-      trigger: '=mdTrigger',
+      trigger: '=mdTrigger'
     },
     compile: compile
   };
 }]);
+
 
 angular.module('md.data.table').directive('orderBy', ['$interpolate', '$timeout', function ($interpolate, $timeout) {
   'use strict';
@@ -593,9 +594,10 @@ angular.module('md.data.table').directive('mdTableProgress', function () {
     link: postLink,
     require: '^mdDataTable',
     replace: true,
-    templateUrl: 'templates.md-data-table-progress.html',
+    templateUrl: 'templates.md-data-table-progress.html'
   };
 });
+
 
 angular.module('md.data.table').directive('mdTableRepeat', ['$mdTableRepeat', function ($mdTableRepeat) {
   'use strict';

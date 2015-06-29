@@ -20,6 +20,6 @@ angular.module('md.data.table').directive('mdTableProgress', function () {
     link: postLink,
     require: '^mdDataTable',
     replace: true,
-    templateUrl: 'templates.md-data-table-progress.html',
+    templateUrl: 'templates.md-data-table-progress.html'
   };
 });

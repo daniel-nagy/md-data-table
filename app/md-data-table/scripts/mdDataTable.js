@@ -1,0 +1,126 @@
+angular.module('md.data.table')
+
+.directive('mdDataTable', function () {
+  'use strict';
+  
+  function compile(tElement, tAttrs) {
+    var head = tElement.find('thead');
+    var body = tElement.find('tbody');
+    var foot = tElement.find('tfoot');
+    
+    // make sure the table has a head element
+    if(!head.length) {
+      head = tElement.find('tbody').eq(0);
+      
+      if(head.children().find('th').length) {
+        head.replaceWith('<thead>' + head.html() + '</thead>');
+      } else {
+        throw new Error('mdDataTable', 'Expecting <thead></thead> element.');
+      }
+      
+      head = tElement.find('thead');
+      body = tElement.find('tbody');
+    }
+    
+    // notify the children to begin work
+    head.attr('md-table-head', '');
+    body.attr('md-table-body', '');
+    
+    if(foot.length) {
+      foot.attr('md-table-foot', '');
+      
+      if(tAttrs.mdRowSelect) {
+        foot.find('tr').prepend('<td></td>');
+      }
+    }
+    
+    // log rudimentary warnings for the developer
+    if(!body.children().attr('ng-repeat')) {
+      if(tAttrs.mdRowSelect) {
+        console.warn('Use ngRepeat to enable automatic row selection.');
+      }
+      if(head.attr('md-order')) {
+        console.warn('Column ordering without ngRepeat is not supported by this directive.');
+      }
+    }
+  }
+  
+  return {
+    restrict: 'A',
+    scope: {
+      filter: '=mdFilter',
+      selectedItems: '=mdRowSelect'
+    },
+    compile: compile,
+    controller: 'mdDataTableController'
+  };
+})
+
+.controller('mdDataTableController', ['$attrs', '$element', '$q', '$scope', function ($attrs, $element, $q, $scope) {
+  'use strict';
+
+  var self = this;
+
+  if($attrs.mdRowSelect) {
+    self.selectedItems = angular.isArray($scope.selectedItems) ? $scope.selectedItems : [];
+
+    // log warning for developer
+    if(!angular.isArray($scope.selectedItems)) {
+      console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
+      $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
+      'i.e. ' + $attrs.mdRowSelect + ' = [], two-way data binding will fail.');
+    }
+  }
+
+  self.columns = [];
+  self.classes = [];
+
+  // support theming
+  ['md-primary', 'md-hue-1', 'md-hue-2', 'md-hue-3'].forEach(function(mdClass) {
+    if($element.hasClass(mdClass)) {
+      self.classes.push(mdClass);
+    }
+  });
+
+  self.defer = function () {
+    if(self.deferred) {
+      self.deferred.reject('cancel');
+    } else {
+      self.showProgress();
+    }
+
+    self.deferred = $q.defer();
+    self.deferred.promise.then(self.resolve);
+
+    return self.deferred;
+  };
+
+  self.resolve = function () {
+    self.deferred = undefined;
+    self.hideProgress();
+  };
+
+  self.ready = function (items) {
+    if(!self.listener && $attrs.mdRowSelect) {
+      self.listener = $scope.$parent.$watch(items, function (newValue, oldeValue) {
+        if(newValue !== oldeValue) {
+          self.selectedItems.splice(0);
+        }
+      });
+    }
+  };
+
+  self.setColumns = function (cell) {
+    if(!cell.attributes.numeric) {
+      return self.columns.push({ isNumeric: false });
+    }
+
+    self.columns.push({
+      isNumeric: true,
+      unit: cell.attributes.unit ? cell.attributes.unit.value : undefined,
+      precision: cell.attributes.precision ? cell.attributes.precision.value : undefined
+    });
+  };
+
+  angular.forEach($element.find('th'), self.setColumns);
+}]);

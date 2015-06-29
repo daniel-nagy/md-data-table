@@ -12,7 +12,7 @@
 <md-data-table-toolbar ng-show="filter.show && !selected.length">
   <i class="material-icons md-dark">search</i>
   <form flex name="filter.form">
-    <input type="text" ng-model="query.filter" ng-model-options="filter.options" placeholder="search">
+    <input type="text" ng-model="query.filter" ng-change="filterItems()" ng-model-options="filter.options" placeholder="search">
   </form>
   <md-button class="md-icon-button" ng-click="removeFilter()">
     <i class="material-icons md-dark">close</i>

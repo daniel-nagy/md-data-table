@@ -20,6 +20,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
     $scope.desserts = desserts;
   }
   
+  $scope.filterItems = function () {
+    $nutrition.desserts.get($scope.query, success);
+  };
+  
   $scope.onOrderChange = function (order) {
     return $nutrition.desserts.get($scope.query, success).$promise;
   };
@@ -58,6 +62,8 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
     if($scope.filter.form.$dirty) {
       $scope.filter.form.$setPristine();
     }
+    
+    $scope.filterItems();
   }
 
 }]);

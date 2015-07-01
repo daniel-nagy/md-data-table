@@ -46,13 +46,14 @@ angular.module('md.data.table')
   }
   
   return {
-    restrict: 'A',
-    scope: {
-      filter: '=mdFilter',
+    bindToController: {
       selectedItems: '=mdRowSelect'
     },
     compile: compile,
-    controller: 'mdDataTableController'
+    controller: 'mdDataTableController',
+    controllerAs: 'tableCtrl',
+    restrict: 'A',
+    scope: {}
   };
 })
 
@@ -61,19 +62,17 @@ angular.module('md.data.table')
 
   var self = this;
 
-  if($attrs.mdRowSelect) {
-    self.selectedItems = angular.isArray($scope.selectedItems) ? $scope.selectedItems : [];
-
+  if($attrs.mdRowSelect && !angular.isArray(self.selectedItems)) {
+    self.selectedItems = [];
     // log warning for developer
-    if(!angular.isArray($scope.selectedItems)) {
-      console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
-      $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
-      'i.e. ' + $attrs.mdRowSelect + ' = [], two-way data binding will fail.');
-    }
+    console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
+    $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
+    'i.e. ' + $attrs.mdRowSelect + ' = [], two-way data binding will fail.');
   }
 
   self.columns = [];
   self.classes = [];
+  self.repeatEnd = [];
 
   // support theming
   ['md-primary', 'md-hue-1', 'md-hue-2', 'md-hue-3'].forEach(function(mdClass) {
@@ -99,15 +98,21 @@ angular.module('md.data.table')
     self.deferred = undefined;
     self.hideProgress();
   };
-
-  self.ready = function (items) {
+  
+  self.repeatEnd.push(function (ngRepeat) {
     if(!self.listener && $attrs.mdRowSelect) {
-      self.listener = $scope.$parent.$watch(items, function (newValue, oldeValue) {
+      self.listener = $scope.$parent.$watch(ngRepeat.items, function (newValue, oldeValue) {
         if(newValue !== oldeValue) {
           self.selectedItems.splice(0);
         }
       });
     }
+  });
+  
+  self.onRepeatEnd = function (ngRepeat) {
+    self.repeatEnd.forEach(function (listener) {
+      listener(ngRepeat);
+    });
   };
 
   self.setColumns = function (cell) {

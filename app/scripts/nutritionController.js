@@ -9,6 +9,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$sco
     page: 1
   };
   
+  $scope.isDisabled = function (dessert) {
+    return dessert.calories.value > 400;
+  };
+  
   $http.get('desserts.js').then(function (desserts) {
     $scope.desserts = desserts.data;
   });

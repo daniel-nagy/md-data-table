@@ -114,7 +114,7 @@ table[md-data-table] > tbody > tr {
   transition: background-color 0.2s;
 }
 table[md-data-table] > tbody > tr:hover {
-  background-color: #eeeeee;
+  background-color: #eeeeee !important;
 }
 table[md-data-table] > tbody > tr[ng-repeat].ng-leave {
   display: none;

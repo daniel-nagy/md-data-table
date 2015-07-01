@@ -1,17 +1,17 @@
 angular.module('md.data.table').directive('mdTableProgress', function () {
   'use strict';
   
-  function postLink(scope, element, attrs, ctrl) {
+  function postLink(scope, element, attrs, tableCtrl) {
     
     scope.getColumnCount = function () {
-      return ctrl.columns.length;
+      return tableCtrl.columns.length;
     };
     
-    ctrl.hideProgress = function () {
+    tableCtrl.hideProgress = function () {
       scope.showProgress = false;
     };
     
-    ctrl.showProgress = function () {
+    tableCtrl.showProgress = function () {
       scope.showProgress = true;
     };
   }

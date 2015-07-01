@@ -1,6 +1,6 @@
 angular.module('md.data.table')
 
-.directive('mdTableRow', ['$timeout', function ($timeout) {
+.directive('mdTableRow', ['$mdTable', '$timeout', function ($mdTable, $timeout) {
   'use strict';
 
   function postLink(scope, element, attrs, ctrl) {
@@ -8,20 +8,24 @@ angular.module('md.data.table')
     if(element.parent().parent().attr('md-row-select')) {
       var disable = element.parent().attr('md-disable-select');
       
+      if(scope.$last && !ctrl.listener) {
+        ctrl.onRepeatEnd($mdTable.parse(attrs.ngRepeat));
+      }
+      
       scope.mdClasses = ctrl.classes;
       
-      scope.isDisabled = function () {
-        return disable ? scope.$eval(disable) : false;
+      var isDisabled = function() {
+        return (disable ? scope.$eval(disable) : false);
       };
       
       scope.isSelected = function (item) {
-        return ctrl.selectedItems.indexOf(item) !== -1;
+        return (ctrl.selectedItems.indexOf(item) !== -1);
       };
       
       scope.toggleRow = function (item, event) {
         event.stopPropagation();
         
-        if(scope.isDisabled()) {
+        if(isDisabled()) {
           return;
         }
         
@@ -63,12 +67,6 @@ angular.module('md.data.table')
 .directive('mdTableRepeat', ['$mdTable', function ($mdTable) {
   'use strict';
   
-  function postLink(scope, element, attrs, ctrl) {
-    if(scope.$last && !ctrl.listener) {
-      ctrl.ready($mdTable.parse(attrs.ngRepeat).items);
-    }
-  }
-  
   function compile(tElement, tAttrs) {
     var item = $mdTable.parse(tAttrs.ngRepeat).item;
     var checkbox = angular.element('<md-checkbox></md-checkbox>');
@@ -78,7 +76,7 @@ angular.module('md.data.table')
     checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': isSelected(' + item + ')}]');
     
     if(tElement.parent().attr('md-disable-select')) {
-      checkbox.attr('ng-disabled', 'isDisabled()');
+      checkbox.attr('ng-disabled', tElement.parent().attr('md-disable-select'));
     }
     
     tElement.prepend(angular.element('<td></td>').append(checkbox));
@@ -88,13 +86,10 @@ angular.module('md.data.table')
     }
     
     tAttrs.$set('ngClass', '{\'md-selected\': isSelected(' + item + ')}');
-    
-    return postLink;
   }
   
   return {
     compile: compile,
-    priority: 1001,
-    require: '^^mdDataTable'
+    priority: 1001
   };
-}])
+}]);

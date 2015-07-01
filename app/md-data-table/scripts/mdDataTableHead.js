@@ -1,4 +1,4 @@
-angular.module('md.data.table').directive('mdTableHead', ['$document', '$interpolate', '$mdTable', '$q', function ($document, $interpolate, $mdTable, $q) {
+angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable', '$q', function ($document, $mdTable, $q) {
   'use strict';
 
   function postLink(scope, element, attrs, tableCtrl) {

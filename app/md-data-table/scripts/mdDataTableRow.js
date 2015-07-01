@@ -15,11 +15,11 @@ angular.module('md.data.table')
       scope.mdClasses = ctrl.classes;
       
       var isDisabled = function() {
-        return (disable ? scope.$eval(disable) : false);
+        return disable ? scope.$eval(disable) : false;
       };
       
       scope.isSelected = function (item) {
-        return (ctrl.selectedItems.indexOf(item) !== -1);
+        return ctrl.selectedItems.indexOf(item) !== -1;
       };
       
       scope.toggleRow = function (item, event) {

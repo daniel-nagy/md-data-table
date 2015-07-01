@@ -166,10 +166,6 @@ angular.module('md.data.table').directive('mdTableBody', ['$interpolate', functi
         scope.toggleAll = function (items) {
           var selectableItems = getSelectableItems(items);
           
-          if(selectableItems.length === 0) {
-            return;
-          }
-          
           if(selectableItems.length === tableCtrl.selectedItems.length) {
             tableCtrl.selectedItems.splice(0);
           } else {
@@ -219,7 +215,7 @@ angular.module('md.data.table').directive('mdTableFoot', function () {
   };
 });
 
-angular.module('md.data.table').directive('mdTableHead', ['$document', '$interpolate', '$mdTable', '$q', function ($document, $interpolate, $mdTable, $q) {
+angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable', '$q', function ($document, $mdTable, $q) {
   'use strict';
 
   function postLink(scope, element, attrs, tableCtrl) {
@@ -576,11 +572,11 @@ angular.module('md.data.table')
       scope.mdClasses = ctrl.classes;
       
       var isDisabled = function() {
-        return (disable ? scope.$eval(disable) : false);
+        return disable ? scope.$eval(disable) : false;
       };
       
       scope.isSelected = function (item) {
-        return (ctrl.selectedItems.indexOf(item) !== -1);
+        return ctrl.selectedItems.indexOf(item) !== -1;
       };
       
       scope.toggleRow = function (item, event) {

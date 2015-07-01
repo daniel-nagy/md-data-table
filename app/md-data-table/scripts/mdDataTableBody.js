@@ -32,10 +32,6 @@ angular.module('md.data.table').directive('mdTableBody', ['$interpolate', functi
         scope.toggleAll = function (items) {
           var selectableItems = getSelectableItems(items);
           
-          if(selectableItems.length === 0) {
-            return;
-          }
-          
           if(selectableItems.length === tableCtrl.selectedItems.length) {
             tableCtrl.selectedItems.splice(0);
           } else {

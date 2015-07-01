@@ -4,6 +4,35 @@ angular.module('md.data.table')
   'use strict';
 
   function postLink(scope, element, attrs, ctrl) {
+    
+    if(element.parent().parent().attr('md-row-select')) {
+      var disable = element.parent().attr('md-disable-select');
+      
+      scope.mdClasses = ctrl.classes;
+      
+      scope.isDisabled = function () {
+        return disable ? scope.$eval(disable) : false;
+      };
+      
+      scope.isSelected = function (item) {
+        return ctrl.selectedItems.indexOf(item) !== -1;
+      };
+      
+      scope.toggleRow = function (item, event) {
+        event.stopPropagation();
+        
+        if(scope.isDisabled()) {
+          return;
+        }
+        
+        if(scope.isSelected(item)) {
+          ctrl.selectedItems.splice(ctrl.selectedItems.indexOf(item), 1);
+        } else {
+          ctrl.selectedItems.push(item);
+        }
+      };
+    }
+    
     ctrl.columns.forEach(function (column, index) {
       if(column.isNumeric) {
         var cell = element.children().eq(index);
@@ -38,22 +67,6 @@ angular.module('md.data.table')
     if(scope.$last && !ctrl.listener) {
       ctrl.ready($mdTable.parse(attrs.ngRepeat).items);
     }
-    
-    scope.mdClasses = ctrl.classes;
-    
-    scope.isSelected = function (item) {
-      return ctrl.selectedItems.indexOf(item) !== -1;
-    };
-    
-    scope.toggleRow = function (item, event) {
-      event.stopPropagation();
-      
-      if(scope.isSelected(item)) {
-        ctrl.selectedItems.splice(ctrl.selectedItems.indexOf(item), 1);
-      } else {
-        ctrl.selectedItems.push(item);
-      }
-    };
   }
   
   function compile(tElement, tAttrs) {
@@ -65,16 +78,16 @@ angular.module('md.data.table')
     checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': isSelected(' + item + ')}]');
     
     if(tElement.parent().attr('md-disable-select')) {
-      checkbox.attr('ng-disabled', tElement.parent().attr('md-disable-select'));
+      checkbox.attr('ng-disabled', 'isDisabled()');
     }
     
     tElement.prepend(angular.element('<td></td>').append(checkbox));
     
     if(angular.isDefined(tElement.parent().attr('md-auto-select'))) {
-      tAttrs.$set('ng-click', 'toggleRow(' + item + ', $event)');
+      tAttrs.$set('ngClick', 'toggleRow(' + item + ', $event)');
     }
     
-    tAttrs.$set('ng-class', '{\'md-selected\': isSelected(' + item + ')}');
+    tAttrs.$set('ngClass', '{\'md-selected\': isSelected(' + item + ')}');
     
     return postLink;
   }

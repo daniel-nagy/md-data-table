@@ -1,4 +1,4 @@
-angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTableRepeat', '$q', function ($document, $mdTableRepeat, $q) {
+angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable', '$q', function ($document, $mdTable, $q) {
   'use strict';
 
   function postLink(scope, element, attrs, tableCtrl) {
@@ -8,25 +8,6 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
       scope.headCtrl.pullTrigger = function () {
         var deferred = tableCtrl.defer();
         $q.when(scope.trigger(scope.headCtrl.order)).finally(deferred.resolve);
-      };
-    }
-    
-    // row selection
-    if(element.parent().attr('md-row-select')) {
-      scope.$parent.allSelected = function (items) {
-        return items && items.length ? items.length === tableCtrl.selectedItems.length : false;
-      };
-      
-      scope.$parent.toggleAll = function (items) {
-        if(scope.$parent.allSelected(items)) {
-          tableCtrl.selectedItems.splice(0);
-        } else {
-          angular.forEach(items, function (item) {
-            if(tableCtrl.selectedItems.indexOf(item) === -1) {
-              tableCtrl.selectedItems.push(item);
-            }
-          });
-        }
       };
     }
     
@@ -113,12 +94,13 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
       var ngRepeat = tElement.parent().find('tbody').find('tr').attr('ng-repeat');
       
       if(ngRepeat) {
-        var items = $mdTableRepeat.parse(ngRepeat).items;
+        var items = $mdTable.parse(ngRepeat).items;
         var checkbox = angular.element('<md-checkbox></md-checkbox>');
         
         checkbox.attr('aria-label', 'Select All');
         checkbox.attr('ng-click', 'toggleAll(' + items + ')');
-        checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': allSelected(' + items + ')}]');
+        checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': allSelected()}]');
+        checkbox.attr('ng-disabled', '!getCount(' + items + ')');
         
         tElement.find('tr').prepend(angular.element('<th></th>').append(checkbox));
       }

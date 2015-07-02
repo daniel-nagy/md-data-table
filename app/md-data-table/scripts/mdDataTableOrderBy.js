@@ -5,7 +5,7 @@ angular.module('md.data.table').directive('orderBy', ['$interpolate', '$timeout'
     return '<th ng-click="setOrder()" ng-class="{\'md-active\': isActive()}">' + tElement.html() + '</th>';
   }
 
-  function postLink(scope, element, attrs, ctrl) {
+  function postLink(scope, element, attrs, headCtrl) {
     
     if(angular.isDefined(attrs.descendFirst)) {
       attrs.$set('descendFirst', true);
@@ -26,24 +26,24 @@ angular.module('md.data.table').directive('orderBy', ['$interpolate', '$timeout'
 
     scope.getDirection = function () {
       if(scope.isActive()) {
-        return ctrl.order[0] === '-' ? 'down' : 'up';
+        return headCtrl.order[0] === '-' ? 'down' : 'up';
       }
       return attrs.descendFirst ? 'down' : 'up';
     };
 
     scope.isActive = function () {
-      return ctrl.order === scope.order || ctrl.order === '-' + scope.order;
+      return headCtrl.order === scope.order || headCtrl.order === '-' + scope.order;
     };
 
     scope.setOrder = function () {
       if(scope.isActive()) {
-        ctrl.order = ctrl.order === scope.order ? '-' + scope.order : scope.order;
+        headCtrl.order = headCtrl.order === scope.order ? '-' + scope.order : scope.order;
       } else {
-        ctrl.order = attrs.descendFirst ? '-' + scope.order : scope.order;
+        headCtrl.order = attrs.descendFirst ? '-' + scope.order : scope.order;
       }
       
-      if(ctrl.pullTrigger) {
-        $timeout(ctrl.pullTrigger);
+      if(headCtrl.pullTrigger) {
+        $timeout(headCtrl.pullTrigger);
       }
     };
   }

@@ -1,4 +1,4 @@
-angular.module('md.data.table').factory('$mdTableRepeat', function () {
+angular.module('md.data.table').factory('$mdTable', function () {
   'use strict';
   
   var cache = {};
@@ -16,16 +16,6 @@ angular.module('md.data.table').factory('$mdTableRepeat', function () {
     while(this.hasNext() && ['|', 'track'].indexOf(this.getNext()) === -1) {
       this.items += this.current();
     }
-    
-    // this.orderBy = undefined;
-    // if(this.hasNext() && this.getNext() === 'orderBy:') {
-    //   this.orderBy = this.getNext();
-    // }
-    //
-    // this.trackBy = undefined;
-    // if(this.hasNext()) {
-    //   this.trackBy = this.getNext() === 'by' ? this.getNext() : this.current();
-    // }
   }
   
   Repeat.prototype.current = function () {
@@ -43,13 +33,6 @@ angular.module('md.data.table').factory('$mdTableRepeat', function () {
   Repeat.prototype.hasNext = function () {
     return this._iterator < this._tokens.length - 1;
   };
-  
-  // Repeat.prototype.insertOrderBy = function (property) {
-  //   this.orderBy = property;
-  //   this._iterator = this.trackBy ? this._tokens.indexOf(this.trackBy) : this._tokens.length;
-  //   this._tokens.splice(this._iterator, 0, '|', 'orderBy:', property);
-  //   return this._tokens.join(' ');
-  // };
   
   function parse(ngRepeat) {
     if(!cache.hasOwnProperty(ngRepeat)) {

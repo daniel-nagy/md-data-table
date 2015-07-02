@@ -11,7 +11,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
 
   $scope.query = {
     filter: '',
-    limit: 5,
+    limit: '5',
     order: 'nameToLower',
     page: 1
   };
@@ -20,15 +20,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
     $scope.desserts = desserts;
   }
   
-  $scope.filterItems = function () {
-    $nutrition.desserts.get($scope.query, success);
-  };
-  
-  $scope.onOrderChange = function (order) {
-    return $nutrition.desserts.get($scope.query, success).$promise;
-  };
-  
-  $scope.onPaginationChange = function (page, limit) {
+  $scope.onChange = function () {
     return $nutrition.desserts.get($scope.query, success).$promise;
   };
   
@@ -41,7 +33,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
       targetEvent: event,
       templateUrl: 'templates/add-item-dialog.html',
     }).then(getDesserts);
-  }
+  };
   
   $scope.delete = function (event) {
     $mdDialog.show({
@@ -53,7 +45,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
       locals: { desserts: $scope.selected },
       templateUrl: 'templates/delete-dialog.html',
     }).then(getDesserts);
-  }
+  };
   
   $scope.removeFilter = function () {
     $scope.filter.show = false;
@@ -61,9 +53,9 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
     
     if($scope.filter.form.$dirty) {
       $scope.filter.form.$setPristine();
+      $scope.filterItems();
     }
-    
-    $scope.filterItems();
-  }
-
+  };
+  
+  $scope.onChange();
 }]);

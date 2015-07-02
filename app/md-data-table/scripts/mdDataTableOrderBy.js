@@ -42,10 +42,8 @@ angular.module('md.data.table').directive('orderBy', ['$interpolate', '$timeout'
         headCtrl.order = attrs.descendFirst ? '-' + scope.order : scope.order;
       }
       
-      if(angular.isFunction(headCtrl.trigger)) {
-        $timeout(function () {
-          headCtrl.trigger(headCtrl.order);
-        });
+      if(headCtrl.pullTrigger) {
+        $timeout(headCtrl.pullTrigger);
       }
     };
   }

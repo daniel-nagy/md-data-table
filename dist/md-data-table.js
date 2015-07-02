@@ -223,12 +223,10 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
   function postLink(scope, element, attrs, tableCtrl) {
     
     // table progress
-    if(angular.isFunction(scope.headCtrl.trigger)) {
-      var trigger = scope.headCtrl.trigger;
-      
-      scope.headCtrl.trigger = function (order) {
+    if(angular.isFunction(scope.trigger)) {
+      scope.headCtrl.pullTrigger = function () {
         var deferred = tableCtrl.defer();
-        $q.when(trigger(order), deferred.resolve);
+        $q.when(scope.trigger(scope.headCtrl.order), deferred.resolve);
       };
     }
     
@@ -334,13 +332,14 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
   
   return {
     bindToController: {
-      order: '=mdOrder',
-      trigger: '=mdTrigger'
+      order: '=mdOrder'
     },
     controller: function () {},
     controllerAs: 'headCtrl',
     require: '^mdDataTable',
-    scope: {},
+    scope: {
+      trigger: '=mdTrigger'
+    },
     compile: compile
   };
 }]);
@@ -390,10 +389,8 @@ angular.module('md.data.table').directive('orderBy', ['$interpolate', '$timeout'
         headCtrl.order = attrs.descendFirst ? '-' + scope.order : scope.order;
       }
       
-      if(angular.isFunction(headCtrl.trigger)) {
-        $timeout(function () {
-          headCtrl.trigger(headCtrl.order);
-        });
+      if(headCtrl.pullTrigger) {
+        $timeout(headCtrl.pullTrigger);
       }
     };
   }
@@ -459,15 +456,14 @@ angular.module('md.data.table')
       
       var setTrigger = function(table) {
         var tableCtrl = table.controller('mdDataTable');
-        var trigger = scope.trigger;
         
         if(!tableCtrl) {
           return console.warn('Table Pagination: Could not locate your table directive, your ' + attrs.mdTrigger + ' function will not work.');
         }
         
-        scope.trigger = function (page, limit) {
+        scope.pullTrigger = function () {
           var deferred = tableCtrl.defer();
-          $q.when(trigger(page, limit), deferred.resolve);
+          $q.when(scope.trigger(scope.page, scope.limit), deferred.resolve);
         };
       };
       
@@ -506,10 +502,8 @@ angular.module('md.data.table')
   $scope.next = function () {
     $scope.page++;
     
-    if(angular.isFunction($scope.trigger)) {
-      $timeout(function () {
-        $scope.trigger($scope.page, $scope.limit);
-      });
+    if($scope.pullTrigger) {
+      $timeout($scope.pullTrigger);
     }
     
     min = $scope.min();
@@ -526,10 +520,8 @@ angular.module('md.data.table')
   $scope.onSelect = function () {
     $scope.page = Math.floor(min / $scope.limit) + 1;
     
-    if(angular.isFunction($scope.trigger)) {
-      $timeout(function () {
-        $scope.trigger($scope.page, $scope.limit);
-      });
+    if($scope.pullTrigger) {
+      $timeout($scope.pullTrigger);
     }
     
     min = $scope.min();
@@ -541,10 +533,8 @@ angular.module('md.data.table')
   $scope.previous = function () {
     $scope.page--;
     
-    if(angular.isFunction($scope.trigger)) {
-      $timeout(function () {
-        $scope.trigger($scope.page, $scope.limit);
-      });
+    if($scope.pullTrigger) {
+      $timeout($scope.pullTrigger);
     }
     
     min = $scope.min();

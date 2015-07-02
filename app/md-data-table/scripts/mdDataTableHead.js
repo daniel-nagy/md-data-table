@@ -4,12 +4,10 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
   function postLink(scope, element, attrs, tableCtrl) {
     
     // table progress
-    if(angular.isFunction(scope.headCtrl.trigger)) {
-      var trigger = scope.headCtrl.trigger;
-      
-      scope.headCtrl.trigger = function (order) {
+    if(angular.isFunction(scope.trigger)) {
+      scope.headCtrl.pullTrigger = function () {
         var deferred = tableCtrl.defer();
-        $q.when(trigger(order), deferred.resolve);
+        $q.when(scope.trigger(scope.headCtrl.order), deferred.resolve);
       };
     }
     
@@ -115,13 +113,14 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
   
   return {
     bindToController: {
-      order: '=mdOrder',
-      trigger: '=mdTrigger'
+      order: '=mdOrder'
     },
     controller: function () {},
     controllerAs: 'headCtrl',
     require: '^mdDataTable',
-    scope: {},
+    scope: {
+      trigger: '=mdTrigger'
+    },
     compile: compile
   };
 }]);

@@ -30,15 +30,14 @@ angular.module('md.data.table')
       
       var setTrigger = function(table) {
         var tableCtrl = table.controller('mdDataTable');
-        var trigger = scope.trigger;
         
         if(!tableCtrl) {
           return console.warn('Table Pagination: Could not locate your table directive, your ' + attrs.mdTrigger + ' function will not work.');
         }
         
-        scope.trigger = function (page, limit) {
+        scope.pullTrigger = function () {
           var deferred = tableCtrl.defer();
-          $q.when(trigger(page, limit), deferred.resolve);
+          $q.when(scope.trigger(scope.page, scope.limit), deferred.resolve);
         };
       };
       
@@ -77,10 +76,8 @@ angular.module('md.data.table')
   $scope.next = function () {
     $scope.page++;
     
-    if(angular.isFunction($scope.trigger)) {
-      $timeout(function () {
-        $scope.trigger($scope.page, $scope.limit);
-      });
+    if($scope.pullTrigger) {
+      $timeout($scope.pullTrigger);
     }
     
     min = $scope.min();
@@ -97,10 +94,8 @@ angular.module('md.data.table')
   $scope.onSelect = function () {
     $scope.page = Math.floor(min / $scope.limit) + 1;
     
-    if(angular.isFunction($scope.trigger)) {
-      $timeout(function () {
-        $scope.trigger($scope.page, $scope.limit);
-      });
+    if($scope.pullTrigger) {
+      $timeout($scope.pullTrigger);
     }
     
     min = $scope.min();
@@ -112,10 +107,8 @@ angular.module('md.data.table')
   $scope.previous = function () {
     $scope.page--;
     
-    if(angular.isFunction($scope.trigger)) {
-      $timeout(function () {
-        $scope.trigger($scope.page, $scope.limit);
-      });
+    if($scope.pullTrigger) {
+      $timeout($scope.pullTrigger);
     }
     
     min = $scope.min();

@@ -97,6 +97,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.7.0**
+
+* Conditionally disable row selection. See [toolbars](#row-selection) for more details.
+
 **Version 0.6.0**
 
 * Register trigger handlers for column reorder and pagination change. If the function returns a promise, a loading indicator will be displayed.
@@ -220,14 +224,35 @@ The `md-label` attribute has the following properties.
 
 If the function assigned to the `md-triger` attribute returns a promise, a loading indicator will be displayed.
 
+**Example: Client Side pagination using ngRepeat.**
+
+```html
+<tr ng-repeat="item in array | orderBy: myOrder | filter: mySkip | limitTo: myLimit">
+```
+
+```javascript
+$scope.mySkip = function (item, index) {
+  return index >= ($scope.myLimit * ($scope.myPage - 1));
+};
+```
+
 ### Row Selection
 
 > Requires `ng-repeat`.
 
-| Attribute        | Target    | Type    | Description |
-| :--------------- | :-------- | :------ | :---------- |
-| `md-row-select`  | `<table>` | `Array` | Two-way data binding of selected items |
-| `md-auto-select` | `<tbody>` | `NULL`  | allow row selection by clicking anywhere inside the row. |
+| Attribute           | Target    | Type    | Description |
+| :------------------ | :-------- | :------ | :---------- |
+| `md-row-select`     | `<table>` | `Array` | Two-way data binding of selected items |
+| `md-auto-select`    | `<tbody>` | `NULL`  | allow row selection by clicking anywhere inside the row. |
+| `md-disable-select` | `<tbody>` | `expression | function` | Conditionally disable row selection |
+
+**Example: Disable all desserts with more than 400 calories.**
+
+```html
+<tbody md-disable-select="dessert.calories.value > 4000"></tbody>
+<!-- or assuming isDisabled is defined in you controller -->
+<tbody md-disable-select="isDisabled(dessert)"></tbody>
+```
 
 > Be sure to define the variable in your controller for two-way data binding to work. If you fail to do so, a friendly reminder will be logged to the console.
 

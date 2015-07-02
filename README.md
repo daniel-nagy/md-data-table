@@ -97,6 +97,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.7.2**
+
+* I've rewrapped the trigger functions in timeouts because I realize it's unexpected and inconvenient for the scope to be stale.
+
 **Version 0.7.1**
 
 * The function you pass to `md-trigger` will now be wrapped in a promise, meaning even if you call it from within your controller a loading indicator will be displayed. :)
@@ -116,20 +120,6 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 **Version 0.5.1**
 
 * You can now set the default sort direction for a column.
-
-**Version 0.5.0**
-
-* Support for `<tfoot>` elements, see the section on [Table Toolbars](#table-toolbars) for more info.
-
-**Version 0.4.7**
-
-* Bug Fix: Numeric columns will now align properly when using `ngRepeat` to do client side sorting and pagination.
-* Selected items will not be cleared when using `ngRepeat` to do client side sorting and pagination. (I don't know if they were before but I do know now).
-
-**Version 0.4.6**
-
-* Improvement: You can now interpolate the pagination label.
-* Improvement: Pagination will now calculate an appropriate page based on the current min value when the number of rows are changed (hopefully).
 
 View the [archives](ARCHIVE.md) for a complete version history.
 

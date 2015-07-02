@@ -346,7 +346,7 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
 }]);
 
 
-angular.module('md.data.table').directive('orderBy', ['$interpolate', function ($interpolate) {
+angular.module('md.data.table').directive('orderBy', ['$interpolate', '$timeout', function ($interpolate, $timeout) {
   'use strict';
 
   function template(tElement) {
@@ -391,7 +391,9 @@ angular.module('md.data.table').directive('orderBy', ['$interpolate', function (
       }
       
       if(angular.isFunction(headCtrl.trigger)) {
-        headCtrl.trigger(headCtrl.order);
+        $timeout(function () {
+          headCtrl.trigger(headCtrl.order);
+        });
       }
     };
   }
@@ -488,7 +490,7 @@ angular.module('md.data.table')
   };
 }])
 
-.controller('mdPaginationCtrl', ['$scope', function ($scope) {
+.controller('mdPaginationCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
   'use strict';
   
   var min = 1;
@@ -505,7 +507,9 @@ angular.module('md.data.table')
     $scope.page++;
     
     if(angular.isFunction($scope.trigger)) {
-      $scope.trigger($scope.page, $scope.limit);
+      $timeout(function () {
+        $scope.trigger($scope.page, $scope.limit);
+      });
     }
     
     min = $scope.min();
@@ -523,7 +527,9 @@ angular.module('md.data.table')
     $scope.page = Math.floor(min / $scope.limit) + 1;
     
     if(angular.isFunction($scope.trigger)) {
-      $scope.trigger($scope.page, $scope.limit);
+      $timeout(function () {
+        $scope.trigger($scope.page, $scope.limit);
+      });
     }
     
     min = $scope.min();
@@ -536,7 +542,9 @@ angular.module('md.data.table')
     $scope.page--;
     
     if(angular.isFunction($scope.trigger)) {
-      $scope.trigger($scope.page, $scope.limit);
+      $timeout(function () {
+        $scope.trigger($scope.page, $scope.limit);
+      });
     }
     
     min = $scope.min();

@@ -53,9 +53,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
     
     if($scope.filter.form.$dirty) {
       $scope.filter.form.$setPristine();
-      $scope.filterItems();
     }
   };
   
-  $scope.onChange();
+  $scope.$watch('query.filter', function () {
+    $scope.onChange();
+  });
 }]);

@@ -132,7 +132,7 @@ angular.module('md.data.table')
   angular.forEach($element.find('th'), self.setColumns);
 }]);
 
-angular.module('md.data.table').directive('mdTableBody', ['$interpolate', function ($interpolate) {
+angular.module('md.data.table').directive('mdTableBody', function () {
   'use strict';
   
   function postLink(scope, element, attrs, tableCtrl) {
@@ -141,29 +141,28 @@ angular.module('md.data.table').directive('mdTableBody', ['$interpolate', functi
     if(element.parent().attr('md-row-select')) {
       
       tableCtrl.repeatEnd.push(function (ngRepeat) {
-        var isDisabled = $interpolate('{{' + attrs.mdDisableSelect + '}}');
         var model = {};
+        var count = 0;
         
         var getSelectableItems = function(items) {
           return items.filter(function (item) {
             model[ngRepeat.item] = item;
-            return isDisabled(model) !== 'true';
+            return !scope.disable(model);
           });
         };
         
-        scope.getCount = function(items) {
-          return items.reduce(function(sum, item) {
+        scope.$parent.getCount = function(items) {
+          return count = items.reduce(function(sum, item) {
             model[ngRepeat.item] = item;
-            return isDisabled(model) !== 'true' ? ++sum : sum;
+            return scope.disable(model) ? sum : ++sum;
           }, 0);
         };
         
-        scope.allSelected = function (items) {
-          var count = scope.getCount(items);
+        scope.$parent.allSelected = function () {
           return count && count === tableCtrl.selectedItems.length;
         };
         
-        scope.toggleAll = function (items) {
+        scope.$parent.toggleAll = function (items) {
           var selectableItems = getSelectableItems(items);
           
           if(selectableItems.length === tableCtrl.selectedItems.length) {
@@ -188,9 +187,12 @@ angular.module('md.data.table').directive('mdTableBody', ['$interpolate', functi
 
   return {
     compile: compile,
-    require: '^mdDataTable'
+    require: '^mdDataTable',
+    scope: {
+      disable: '&mdDisableSelect'
+    }
   };
-}]);
+});
 
 angular.module('md.data.table').directive('mdTableFoot', function () {
   'use strict';
@@ -316,7 +318,7 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
         
         checkbox.attr('aria-label', 'Select All');
         checkbox.attr('ng-click', 'toggleAll(' + items + ')');
-        checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': allSelected(' + items + ')}]');
+        checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': allSelected()}]');
         checkbox.attr('ng-disabled', '!getCount(' + items + ')');
         
         tElement.find('tr').prepend(angular.element('<th></th>').append(checkbox));

@@ -99,7 +99,7 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
         
         checkbox.attr('aria-label', 'Select All');
         checkbox.attr('ng-click', 'toggleAll(' + items + ')');
-        checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': allSelected(' + items + ')}]');
+        checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': allSelected()}]');
         checkbox.attr('ng-disabled', '!getCount(' + items + ')');
         
         tElement.find('tr').prepend(angular.element('<th></th>').append(checkbox));

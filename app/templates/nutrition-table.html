@@ -35,6 +35,7 @@
   </table>
 </md-data-table-container>
 
-<md-data-table-toolbar layout-align="end">
+<md-data-table-toolbar layout-align="space-between">
+  <md-button ng-click="onChange()">Pull Trigger</md-button>
   <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}"></md-data-table-pagination>
 </md-data-table-toolbar>

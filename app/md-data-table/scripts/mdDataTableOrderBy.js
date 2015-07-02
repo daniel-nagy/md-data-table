@@ -1,4 +1,4 @@
-angular.module('md.data.table').directive('orderBy', ['$interpolate', '$timeout', function ($interpolate, $timeout) {
+angular.module('md.data.table').directive('orderBy', ['$interpolate', function ($interpolate) {
   'use strict';
 
   function template(tElement) {
@@ -42,8 +42,8 @@ angular.module('md.data.table').directive('orderBy', ['$interpolate', '$timeout'
         headCtrl.order = attrs.descendFirst ? '-' + scope.order : scope.order;
       }
       
-      if(headCtrl.pullTrigger) {
-        $timeout(headCtrl.pullTrigger);
+      if(angular.isFunction(headCtrl.trigger)) {
+        headCtrl.trigger(headCtrl.order);
       }
     };
   }

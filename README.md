@@ -97,6 +97,14 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.7.1**
+
+* The function you pass to `md-trigger` will now be wrapped in a promise, meaning even if you call it from within your controller a loading indicator will be displayed. :)
+
+* I've removed the `$timeout` when calling your `md-trigger` function meaning the function will be call **before** two-way data binding has had a chance to update your model scope.
+
+* The reason your `md-trigger` function is being called when the page loads is because of a bug in the `mdSelect` module. I've created a pull request to fix this issue but as an immediate fix you can use a `String` instead of a `Number` for your `md-limit` value. For more information see the issue I opened awhile back [#3233](https://github.com/angular/material/issues/3233).
+
 **Version 0.7.0**
 
 * Conditionally disable row selection. See [Row Selection](#row-selection) for more details.
@@ -213,7 +221,7 @@ To use pagination add a `md-data-table-pagination` element to the `md-data-table
 | `md-page`       | `Number`   | Page number. |
 | `md-total`      | `Number`   | Total number of items. |
 | `md-row-select` | `Array`    | Row limit options. The default is `[5, 10, 15]` |
-| `md-trigger`    | `function` | Will execute on table load and when the page or limit is changed, passing the page and limit as parameters. |
+| `md-trigger`    | `function` | Will execute when the page or limit is changed, passing the page and limit as parameters. |
 
 The `md-label` attribute has the following properties.
 

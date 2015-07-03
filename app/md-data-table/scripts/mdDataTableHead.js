@@ -7,7 +7,7 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
     if(angular.isFunction(scope.trigger)) {
       scope.headCtrl.pullTrigger = function () {
         var deferred = tableCtrl.defer();
-        $q.when(scope.trigger(scope.headCtrl.order), deferred.resolve);
+        $q.when(scope.trigger(scope.headCtrl.order))['finally'](deferred.resolve);
       };
     }
     

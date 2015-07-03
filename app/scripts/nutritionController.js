@@ -5,7 +5,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
   
   $scope.query = {
     order: 'name',
-    limit: '5',
+    limit: 5,
     page: 1
   };
   
@@ -27,6 +27,16 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
     return deferred.promise;
   };
   
+  $scope.loadStuff = function () {
+    var deferred = $q.defer();
+    
+    $timeout(function () {
+      deferred.reject();
+    }, 2000);
+    
+    $scope.deferred = deferred.promise;
+  };
+  
   $scope.onorderchange = function(order) {
     
     console.log('Scope Order: ' + $scope.query.order);
@@ -39,10 +49,6 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
     }, 2000);
     
     return deferred.promise;
-  };
-  
-  $scope.update = function () {
-    $scope.onchange();
   };
   
   $scope.skip = function (dessert, index) {

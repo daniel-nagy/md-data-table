@@ -18,10 +18,10 @@ angular.module('md.data.table').directive('mdTableBody', function () {
         };
         
         scope.$parent.getCount = function(items) {
-          return count = items.reduce(function(sum, item) {
+          return (count = items.reduce(function(sum, item) {
             model[ngRepeat.item] = item;
             return scope.disable(model) ? sum : ++sum;
-          }, 0);
+          }, 0));
         };
         
         scope.$parent.allSelected = function () {

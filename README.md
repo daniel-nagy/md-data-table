@@ -34,6 +34,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
   $scope.selected = [];
   
   $scope.query = {
+    filter: '',
     order: 'name',
     limit: 5,
     page: 1
@@ -42,6 +43,13 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
   function success(desserts) {
     $scope.desserts = desserts;
   }
+  
+  // in the future we may see a few built in alternate headers but in the mean time
+  // you can implement your own search header and do something like
+  $scope.search = function (predicate) {
+    $scope.filter = predicate;
+    $scope.deferred = $nutrition.desserts.get($scope.query, success).$promise;
+  };
   
   $scope.onOrderChange = function (order) {
     return $nutrition.desserts.get($scope.query, success).$promise; 
@@ -62,7 +70,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 </md-data-table-toolbar>
 
 <md-data-table-container>
-  <table md-data-table md-row-select="selected">
+  <table md-data-table md-row-select="selected" md-progress="deferred">
     <thead md-order="query.order" md-trigger="onOrderChange">
       <tr>
         <th order-by="name">Dessert (100g serving)</th>
@@ -97,6 +105,12 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.7.3**
+
+* I've added an `md-progress` [attribute](#table-progress) to the table element to trigger the progress indicator from outside the table scope.
+
+* I'm also using `ng-value` instead of `value` in the pagination directive now, which should hopefully fix the issue some people are having with their trigger function being called on page load.
+
 **Version 0.7.2**
 
 * I've rewrapped the trigger functions in timeouts because I realize it's unexpected and inconvenient for the scope to be stale.
@@ -128,6 +142,7 @@ View the [archives](ARCHIVE.md) for a complete version history.
 * [Numeric Columns](#numeric-columns)
 * [Pagination](#pagination)
 * [Row Selection](#row-selection)
+* [Table Progress] (#table-progress)
 * [Table Toolbars](#table-toolbars)
 
 ### Column Ordering
@@ -251,6 +266,16 @@ $scope.mySkip = function (item, index) {
 ```
 
 > Be sure to define the variable in your controller for two-way data binding to work. If you fail to do so, a friendly reminder will be logged to the console.
+
+### Table Progress
+
+| Attribute         | Target    | Type      | Description |
+| :---------------- | :-------- | :-------- | :---------- |
+| `md-progress`     | `<table>` | `promise` | The table will display a loading indicator until notified. |
+
+A progress indicator can be displayed in a couple different ways. If the function you supply to the `md-trigger` attributes returns a promise, then a loading indicator will be automatically displayed whenever any events within the scope of the table are dispatched (i.e. reordering, pagination).
+
+It's not unlikely that some events outside the scope of the table will effect its contents. For example, a search field that filters the table by sending a query to the server. To provide flexibility for such events, the table directive has a `md-progress` attribute that accepts a `promise` and will display a progress indicator until notified.
 
 ### Table Toolbars
 

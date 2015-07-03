@@ -47,6 +47,7 @@ angular.module('md.data.table')
   
   return {
     bindToController: {
+      progress: '=mdProgress',
       selectedItems: '=mdRowSelect'
     },
     compile: compile,
@@ -68,6 +69,13 @@ angular.module('md.data.table')
     console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
     $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
     'i.e. ' + $attrs.mdRowSelect + ' = [], two-way data binding will fail.');
+  }
+  
+  if($attrs.mdProgress) {
+    $scope.$watch('tableCtrl.progress', function () {
+      var deferred = self.defer();
+      $q.when(self.progress)['finally'](deferred.resolve);
+    });
   }
 
   self.columns = [];

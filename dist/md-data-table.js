@@ -49,6 +49,7 @@ angular.module('md.data.table')
   
   return {
     bindToController: {
+      progress: '=mdProgress',
       selectedItems: '=mdRowSelect'
     },
     compile: compile,
@@ -70,6 +71,13 @@ angular.module('md.data.table')
     console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
     $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
     'i.e. ' + $attrs.mdRowSelect + ' = [], two-way data binding will fail.');
+  }
+  
+  if($attrs.mdProgress) {
+    $scope.$watch('tableCtrl.progress', function () {
+      var deferred = self.defer();
+      $q.when(self.progress)['finally'](deferred.resolve);
+    });
   }
 
   self.columns = [];
@@ -152,10 +160,10 @@ angular.module('md.data.table').directive('mdTableBody', function () {
         };
         
         scope.$parent.getCount = function(items) {
-          return count = items.reduce(function(sum, item) {
+          return (count = items.reduce(function(sum, item) {
             model[ngRepeat.item] = item;
             return scope.disable(model) ? sum : ++sum;
-          }, 0);
+          }, 0));
         };
         
         scope.$parent.allSelected = function () {
@@ -226,7 +234,7 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
     if(angular.isFunction(scope.trigger)) {
       scope.headCtrl.pullTrigger = function () {
         var deferred = tableCtrl.defer();
-        $q.when(scope.trigger(scope.headCtrl.order), deferred.resolve);
+        $q.when(scope.trigger(scope.headCtrl.order))['finally'](deferred.resolve);
       };
     }
     
@@ -463,7 +471,7 @@ angular.module('md.data.table')
         
         scope.pullTrigger = function () {
           var deferred = tableCtrl.defer();
-          $q.when(scope.trigger(scope.page, scope.limit), deferred.resolve);
+          $q.when(scope.trigger(scope.page, scope.limit))['finally'](deferred.resolve);
         };
       };
       
@@ -741,7 +749,7 @@ angular.module('templates.md-data-table-pagination.html', []).run(['$templateCac
   $templateCache.put('templates.md-data-table-pagination.html',
     '<span class="label">{{paginationLabel.text}}</span>\n' +
     '<md-select ng-model="limit" ng-change="onSelect()" aria-label="Row Count" placeholder="{{rowSelect ? rowSelect[0] : 5}}">\n' +
-    '  <md-option ng-repeat="rows in rowSelect ? rowSelect : [5, 10, 15]" value="{{rows}}">{{rows}}</md-option>\n' +
+    '  <md-option ng-repeat="rows in rowSelect ? rowSelect : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>\n' +
     '</md-select>\n' +
     '<span>{{min()}} - {{max()}} {{paginationLabel.of}} {{total}}</span>\n' +
     '<md-button ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">\n' +

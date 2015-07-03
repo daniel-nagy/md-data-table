@@ -37,7 +37,7 @@ angular.module('md.data.table')
         
         scope.pullTrigger = function () {
           var deferred = tableCtrl.defer();
-          $q.when(scope.trigger(scope.page, scope.limit), deferred.resolve);
+          $q.when(scope.trigger(scope.page, scope.limit))['finally'](deferred.resolve);
         };
       };
       

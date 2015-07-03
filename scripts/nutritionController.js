@@ -1,6 +1,8 @@
 angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '$nutrition', '$scope', function ($mdDialog, $nutrition, $scope) {
   'use strict';
   
+  var bookmark;
+  
   $scope.selected = [];
   
   $scope.filter = {
@@ -56,7 +58,19 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
     }
   };
   
-  $scope.$watch('query.filter', function () {
+  $scope.$watch('query.filter', function (newValue, oldValue) {
+    if(!oldValue) {
+      bookmark = $scope.query.page;
+    }
+    
+    if(newValue !== oldValue) {
+      $scope.query.page = 1;
+    }
+    
+    if(!newValue) {
+      $scope.query.page = bookmark;
+    }
+    
     $scope.deferred = $scope.onChange();
   });
 }]);

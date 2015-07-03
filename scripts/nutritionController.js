@@ -57,6 +57,6 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
   };
   
   $scope.$watch('query.filter', function () {
-    $scope.onChange();
+    $scope.deferred = $scope.onChange();
   });
 }]);

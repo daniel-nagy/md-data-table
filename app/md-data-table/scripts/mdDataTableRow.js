@@ -3,23 +3,21 @@ angular.module('md.data.table')
 .directive('mdTableRow', ['$mdTable', '$timeout', function ($mdTable, $timeout) {
   'use strict';
 
-  function postLink(scope, element, attrs, ctrl) {
+  function postLink(scope, element, attrs, tableCtrl) {
     
     if(element.parent().parent().attr('md-row-select')) {
       var disable = element.parent().attr('md-disable-select');
       
-      if(scope.$last && !ctrl.listener) {
-        ctrl.onRepeatEnd($mdTable.parse(attrs.ngRepeat));
+      if(scope.$last && !tableCtrl.listener) {
+        tableCtrl.onRepeatEnd($mdTable.parse(attrs.ngRepeat));
       }
-      
-      scope.mdClasses = ctrl.classes;
       
       var isDisabled = function() {
         return disable ? scope.$eval(disable) : false;
       };
       
       scope.isSelected = function (item) {
-        return ctrl.selectedItems.indexOf(item) !== -1;
+        return tableCtrl.selectedItems.indexOf(item) !== -1;
       };
       
       scope.toggleRow = function (item, event) {
@@ -30,28 +28,28 @@ angular.module('md.data.table')
         }
         
         if(scope.isSelected(item)) {
-          ctrl.selectedItems.splice(ctrl.selectedItems.indexOf(item), 1);
+          tableCtrl.selectedItems.splice(tableCtrl.selectedItems.indexOf(item), 1);
         } else {
-          ctrl.selectedItems.push(item);
+          tableCtrl.selectedItems.push(item);
         }
       };
     }
     
-    ctrl.columns.forEach(function (column, index) {
+    tableCtrl.columns.forEach(function (column, index) {
       if(column.isNumeric) {
         var cell = element.children().eq(index);
         
         cell.addClass('numeric');
         
-        if(ctrl.columns[index].hasOwnProperty('precision')) {
+        if(tableCtrl.columns[index].hasOwnProperty('precision')) {
           $timeout(function () {
-            cell.text(parseFloat(cell.text()).toFixed(ctrl.columns[index].precision));
+            cell.text(parseFloat(cell.text()).toFixed(tableCtrl.columns[index].precision));
           });
         }
         
         if(angular.isDefined(cell.showUnit)) {
           $timeout(function () {
-            cell.text(cell.text() + ctrl.columns[index].unit);
+            cell.text(cell.text() + tableCtrl.columns[index].unit);
           });
         }
       }

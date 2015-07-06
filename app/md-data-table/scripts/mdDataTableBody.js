@@ -5,6 +5,7 @@ angular.module('md.data.table').directive('mdTableBody', function () {
     
     // row selection
     if(element.parent().attr('md-row-select')) {
+      scope.$parent.mdClasses = tableCtrl.classes;
       
       tableCtrl.repeatEnd.push(function (ngRepeat) {
         var model = {};

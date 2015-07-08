@@ -41,13 +41,7 @@ angular.module('md.data.table')
         
         cell.addClass('numeric');
         
-        if(tableCtrl.columns[index].hasOwnProperty('precision')) {
-          $timeout(function () {
-            cell.text(parseFloat(cell.text()).toFixed(tableCtrl.columns[index].precision));
-          });
-        }
-        
-        if(angular.isDefined(cell.showUnit)) {
+        if(angular.isDefined(cell.attr('show-unit'))) {
           $timeout(function () {
             cell.text(cell.text() + tableCtrl.columns[index].unit);
           });

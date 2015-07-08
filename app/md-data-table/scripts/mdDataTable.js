@@ -127,11 +127,10 @@ angular.module('md.data.table')
     if(!cell.attributes.numeric) {
       return self.columns.push({ isNumeric: false });
     }
-
+    
     self.columns.push({
       isNumeric: true,
       unit: cell.attributes.unit ? cell.attributes.unit.value : undefined,
-      precision: cell.attributes.precision ? cell.attributes.precision.value : undefined
     });
   };
 

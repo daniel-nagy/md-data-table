@@ -105,6 +105,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.7.4**
+
+* The `precision` attribute has been removed from numeric columns, use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) filter instead.
+
 **Version 0.7.3**
 
 * I've added an `md-progress` [attribute](#table-progress) to the table element to trigger the progress indicator from outside the table scope.
@@ -202,7 +206,6 @@ Numeric columns align to the right of table cells. Column headers support the fo
 | :----------- | :------ | :------- | :---------- |
 | `numeric`    | `<th>`  | `NULL`   | Informs the directive the column is numeric in nature. |
 | `unit`       | `<th>`  | `String` | Specifies the unit. Providing a unit will automatically add the unit, wrapped in parenthesis, to the header cell. |
-| `precision`  | `<th>`  | `Number` | Specifies the number of decimal places to display. The default is none. |
 
 ##### Body Cells
 
@@ -210,8 +213,12 @@ Numeric columns align to the right of table cells. Column headers support the fo
 | :---------- | :------ | :------- | :---------- |
 | `show-unit` | `<td>`  | `NULL`   | Displays the unit in the body cell; `unit` must be specified on the header cell. |
 
+You may use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) filter on a body cell to set the decimal precision.
 
-> Note that the `numeric` attribute must be present for other attributes to take effect.
+```html
+<!-- 2 decimal places -->
+<td>{{dessert.protein.value | number: 2}}</td>
+```
 
 ### Pagination
 

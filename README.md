@@ -75,9 +75,9 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
       <tr>
         <th order-by="name">Dessert (100g serving)</th>
         <th numeric order-by="calories.value">Calories</th>
-        <th numeric unit="g" precision="1" order-by="fat.value">Fat</th>
+        <th numeric unit="g" order-by="fat.value">Fat</th>
         <th numeric unit="g" order-by="carbs.value">Carbs</th>
-        <th numeric unit="g" precision="1" order-by="protein.value">Protein</th>
+        <th numeric unit="g" order-by="protein.value">Protein</th>
         <th numeric unit="mg" order-by="sodium.value">Sodium</th>
         <th numeric unit="%" order-by="calcium.value">Calcium</th>
         <th numeric unit="%" order-by="iron.value">Iron</th>
@@ -87,9 +87,9 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
       <tr ng-repeat="dessert in desserts.data">
         <td>{{dessert.name}}</td>
         <td>{{dessert.calories.value}}</td>
-        <td>{{dessert.fat.value}}</td>
+        <td>{{dessert.fat.value | number: 1}}</td>
         <td>{{dessert.carbs.value}}</td>
-        <td>{{dessert.protein.value}}</td>
+        <td>{{dessert.protein.value | number: 1}}</td>
         <td>{{dessert.sodium.value}}</td>
         <td show-unit>{{dessert.calcium.value}}</td>
         <td show-unit>{{dessert.iron.value}}</td>

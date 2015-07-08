@@ -32,9 +32,9 @@
       <tr>
         <th order-by="nameToLower">Dessert (100g serving)</th>
         <th numeric order-by="calories.value">Calories</th>
-        <th numeric unit="g" precision="1">Fat</th>
+        <th numeric unit="g">Fat</th>
         <th numeric unit="g">Carbs</th>
-        <th numeric unit="g" precision="1">Protein</th>
+        <th numeric unit="g">Protein</th>
         <th numeric unit="mg">Sodium</th>
         <th numeric unit="%">Calcium</th>
         <th numeric unit="%">Iron</th>
@@ -44,9 +44,9 @@
       <tr ng-repeat="dessert in desserts.data">
         <td>{{dessert.name}}</td>
         <td>{{dessert.calories.value}}</td>
-        <td>{{dessert.fat.value}}</td>
+        <td>{{dessert.fat.value | number: 1}}</td>
         <td>{{dessert.carbs.value}}</td>
-        <td>{{dessert.protein.value}}</td>
+        <td>{{dessert.protein.value | number: 1}}</td>
         <td>{{dessert.sodium.value}}</td>
         <td show-unit>{{dessert.calcium.value}}</td>
         <td show-unit>{{dessert.iron.value}}</td>

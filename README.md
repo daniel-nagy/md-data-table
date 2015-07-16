@@ -20,7 +20,21 @@ This package is installable through the Bower package manager.
 bower install angular-material-data-table --save
 ```
 
-> This module is experimental technology.
+In your `index.html` file, include the data table module and style sheet.
+
+```html
+<!-- style sheet -->
+<link href="bower_components/angular-material-data-table/dist/md-data-table.min.css" rel="stylesheet" type="text/css"/>
+<!-- module -->
+<script type="text/javascript" src="bower_components/angular-material-data-table/dist/md-data-table.min.js"></script>
+```
+
+Include the `md.data.table` module as a dependency in your application.
+
+```javascript
+angular.module('myApp', ['md.data.table', 'ngMaterial']);
+```
+
 > Tested in IE 10 and on IOS 7.
 
 ## Usage

@@ -2,6 +2,20 @@
 
 ### 0.7.x
 
+**Version 0.7.5**
+
+* First and last page navigation links courtesy of [@vcastello](https://github.com/scooper91).
+
+**Version 0.7.4**
+
+* The `precision` attribute has been removed from numeric columns, use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) filter instead.
+
+**Version 0.7.3**
+
+* I've added an `md-progress` [attribute](#table-progress) to the table element to trigger the progress indicator from outside the table scope.
+
+* I'm also using `ng-value` instead of `value` in the pagination directive now, which should hopefully fix the issue some people are having with their trigger function being called on page load.
+
 **Version 0.7.2**
 
 * I've rewrapped the trigger functions in timeouts because I realize it's unexpected and inconvenient for the scope to be stale.

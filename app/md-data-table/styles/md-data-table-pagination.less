@@ -8,8 +8,18 @@ md-data-table-pagination {
     }
   }
   
+  .label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
   &:last-child {
     margin-right: -6px;
+  }
+  
+  > *:not(.label) {
+    flex: 0 0 auto;
   }
   
   > *:not(.md-button) {
@@ -61,6 +71,10 @@ md-data-table-pagination {
     
     &:last-of-type {
       margin: 0 0 0 12px;
+    }
+    
+    &:not(:first-of-type):not(:last-of-type) {
+      margin: 0 12px;
     }
   }
 }

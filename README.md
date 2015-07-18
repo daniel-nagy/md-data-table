@@ -119,6 +119,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.7.5**
+
+* First and last page navigation links courtesy of [@vcastello](https://github.com/scooper91).
+
 **Version 0.7.4**
 
 * The `precision` attribute has been removed from numeric columns, use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) filter instead.
@@ -138,18 +142,6 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 * I've removed the `$timeout` when calling your `md-trigger` function meaning the function will be call **before** two-way data binding has had a chance to update your model scope.
 
 * The reason your `md-trigger` function is being called when the page loads is because of a bug in the `mdSelect` module. I've created a pull request to fix this issue but as an immediate fix you can use a `String` instead of a `Number` for your `md-limit` value. For more information see the issue I opened awhile back [#3233](https://github.com/angular/material/issues/3233).
-
-**Version 0.7.0**
-
-* Conditionally disable row selection. See [Row Selection](#row-selection) for more details.
-
-**Version 0.6.0**
-
-* Register trigger handlers for column reorder and pagination change. If the function returns a promise, a loading indicator will be displayed.
-
-**Version 0.5.1**
-
-* You can now set the default sort direction for a column.
 
 View the [archives](ARCHIVE.md) for a complete version history.
 

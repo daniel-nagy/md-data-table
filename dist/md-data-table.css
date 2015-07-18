@@ -155,8 +155,18 @@ md-data-table-pagination {
     display: none;
   }
 }
+md-data-table-pagination .label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 md-data-table-pagination:last-child {
   margin-right: -6px;
+}
+md-data-table-pagination > *:not(.label) {
+  -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
 }
 md-data-table-pagination > *:not(.md-button) {
   margin-right: 16px;
@@ -208,6 +218,9 @@ md-data-table-pagination .md-button:first-of-type {
 }
 md-data-table-pagination .md-button:last-of-type {
   margin: 0 0 0 12px;
+}
+md-data-table-pagination .md-button:not(:first-of-type):not(:last-of-type) {
+  margin: 0 12px;
 }
 @-webkit-keyframes md-table-progress-enter {
   from {

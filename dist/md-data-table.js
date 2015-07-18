@@ -436,20 +436,20 @@ angular.module('md.data.table')
 
 .directive('mdDataTablePagination', ['$q', function ($q) {
   'use strict';
-  
+
   function postLink(scope, element, attrs) {
     scope.paginationLabel = {
       text: 'Rows per page:',
       of: 'of'
     };
-    
+
     if(angular.isObject(scope.label)) {
       angular.extend(scope.paginationLabel, scope.label);
     }
-    
+
     // table progress
     if(angular.isFunction(scope.trigger)) {
-      
+
       // the pagination directive is outside the table directive so we need
       // to locate the controller
       var findTable = function(parent, callback) {
@@ -461,20 +461,20 @@ angular.module('md.data.table')
         }
         callback(angular.element(parent.firstElementChild));
       };
-      
+
       var setTrigger = function(table) {
         var tableCtrl = table.controller('mdDataTable');
-        
+
         if(!tableCtrl) {
           return console.warn('Table Pagination: Could not locate your table directive, your ' + attrs.mdTrigger + ' function will not work.');
         }
-        
+
         scope.pullTrigger = function () {
           var deferred = tableCtrl.defer();
           $q.when(scope.trigger(scope.page, scope.limit))['finally'](deferred.resolve);
         };
       };
-      
+
       findTable(element.parent()[0], setTrigger);
     }
   }
@@ -496,58 +496,80 @@ angular.module('md.data.table')
 
 .controller('mdPaginationCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
   'use strict';
-  
+
   var min = 1;
-  
+
   $scope.hasNext = function () {
     return (($scope.page * $scope.limit) < $scope.total);
   };
-  
+
   $scope.hasPrevious = function () {
     return ($scope.page > 1);
   };
-  
+
   $scope.next = function () {
     $scope.page++;
-    
+
     if($scope.pullTrigger) {
       $timeout($scope.pullTrigger);
     }
-    
+
     min = $scope.min();
   };
-  
+
+  $scope.last = function () {
+    $scope.page = Math.ceil($scope.total / $scope.limit);
+
+    if($scope.pullTrigger) {
+      $timeout($scope.pullTrigger);
+    }
+
+    min = $scope.min();
+  };
+
   $scope.min = function () {
     return ((($scope.page - 1) * $scope.limit) + 1);
   };
-  
+
   $scope.max = function () {
     return $scope.hasNext() ? $scope.page * $scope.limit : $scope.total;
   };
-  
+
   $scope.onSelect = function () {
     $scope.page = Math.floor(min / $scope.limit) + 1;
-    
+
     if($scope.pullTrigger) {
       $timeout($scope.pullTrigger);
     }
-    
+
     min = $scope.min();
     while((min > $scope.total) && $scope.hasPrevious()) {
       $scope.previous();
     }
   };
-  
+
   $scope.previous = function () {
     $scope.page--;
-    
+
     if($scope.pullTrigger) {
       $timeout($scope.pullTrigger);
     }
-    
+
     min = $scope.min();
   };
+
+  $scope.first = function () {
+    $scope.page = 1;
+
+    if($scope.pullTrigger) {
+      $timeout($scope.pullTrigger);
+    }
+
+    min = $scope.min();
+  };
+
 }]);
+
 
 angular.module('md.data.table').directive('mdTableProgress', function () {
   'use strict';
@@ -714,7 +736,7 @@ angular.module('md.data.table').factory('$mdTable', function () {
   
 });
 
-angular.module('md.table.templates', ['templates.arrow.html', 'templates.navigate-before.html', 'templates.navigate-next.html', 'templates.md-data-table-pagination.html', 'templates.md-data-table-progress.html']);
+angular.module('md.table.templates', ['templates.arrow.html', 'templates.navigate-before.html', 'templates.navigate-first.html', 'templates.navigate-last.html', 'templates.navigate-next.html', 'templates.md-data-table-pagination.html', 'templates.md-data-table-progress.html']);
 
 angular.module('templates.arrow.html', []).run(['$templateCache', function($templateCache) {
   'use strict';
@@ -726,6 +748,20 @@ angular.module('templates.navigate-before.html', []).run(['$templateCache', func
   'use strict';
   $templateCache.put('templates.navigate-before.html',
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>\n' +
+    '');
+}]);
+
+angular.module('templates.navigate-first.html', []).run(['$templateCache', function($templateCache) {
+  'use strict';
+  $templateCache.put('templates.navigate-first.html',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M7 6 v12 h2 v-12 h-2z M17.41 7.41L16 6l-6 6 6 6 1.41-1.41L12.83 12z"/></svg>\n' +
+    '');
+}]);
+
+angular.module('templates.navigate-last.html', []).run(['$templateCache', function($templateCache) {
+  'use strict';
+  $templateCache.put('templates.navigate-last.html',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15 6 v12 h2 v-12 h-2z M8 6L6.59 7.41 11.17 12l-4.58 4.59L8 18l6-6z"/></svg>\n' +
     '');
 }]);
 
@@ -744,12 +780,19 @@ angular.module('templates.md-data-table-pagination.html', []).run(['$templateCac
     '  <md-option ng-repeat="rows in rowSelect ? rowSelect : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>\n' +
     '</md-select>\n' +
     '<span>{{min()}} - {{max()}} {{paginationLabel.of}} {{total}}</span>\n' +
+    '<md-button ng-click="first()" ng-disabled="!hasPrevious()" aria-label="First">\n' +
+    '  <md-icon md-svg-icon="templates.navigate-first.html"></md-icon>\n' +
+    '</md-button>\n' +
     '<md-button ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">\n' +
     '  <md-icon md-svg-icon="templates.navigate-before.html"></md-icon>\n' +
     '</md-button>\n' +
     '<md-button ng-click="next()" ng-disabled="!hasNext()" aria-label="Next">\n' +
     '  <md-icon md-svg-icon="templates.navigate-next.html"></md-icon>\n' +
-    '</md-button>');
+    '</md-button>\n' +
+    '<md-button ng-click="last()" ng-disabled="!hasNext()" aria-label="Last">\n' +
+    '  <md-icon md-svg-icon="templates.navigate-last.html"></md-icon>\n' +
+    '</md-button>\n' +
+    '');
 }]);
 
 angular.module('templates.md-data-table-progress.html', []).run(['$templateCache', function($templateCache) {

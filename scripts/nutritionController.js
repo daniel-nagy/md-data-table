@@ -26,6 +26,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
     return $nutrition.desserts.get($scope.query, success).$promise;
   };
   
+  function getDesserts() {
+    $scope.deferred = $scope.onChange();
+  }
+  
   $scope.addItem = function (event) {
     $mdDialog.show({
       clickOutsideToClose: true,
@@ -71,6 +75,6 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
       $scope.query.page = bookmark;
     }
     
-    $scope.deferred = $scope.onChange();
+    getDesserts();
   });
 }]);

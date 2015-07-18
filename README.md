@@ -121,7 +121,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 **Version 0.7.5**
 
-* First and last page navigation links courtesy of [@vcastello](https://github.com/scooper91).
+* First and last page navigation links courtesy of [@vcastello](https://github.com/vcastello).
 
 **Version 0.7.4**
 

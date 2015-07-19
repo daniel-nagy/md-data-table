@@ -452,14 +452,11 @@ angular.module('md.data.table')
 
       // the pagination directive is outside the table directive so we need
       // to locate the controller
-      var findTable = function(parent, callback) {
-        while(parent.localName !== 'md-data-table-toolbar' && parent.parentElement) {
-          parent = parent.parentElement;
-        }
-        while(parent.localName !== 'md-data-table-container' && parent.previousElementSibling) {
+      var findTable = function(element, callback) {
+        while(element.localName !== 'md-data-table-container' && element.previousElementSibling) {
           parent = parent.previousElementSibling;
         }
-        callback(angular.element(parent.firstElementChild));
+        callback(angular.element(element.firstElementChild));
       };
 
       var setTrigger = function(table) {
@@ -475,7 +472,7 @@ angular.module('md.data.table')
         };
       };
 
-      findTable(element.parent()[0], setTrigger);
+      findTable(element.prop('previousElementSibling'), setTrigger);
     }
   }
 
@@ -775,23 +772,27 @@ angular.module('templates.navigate-next.html', []).run(['$templateCache', functi
 angular.module('templates.md-data-table-pagination.html', []).run(['$templateCache', function($templateCache) {
   'use strict';
   $templateCache.put('templates.md-data-table-pagination.html',
-    '<span class="label">{{paginationLabel.text}}</span>\n' +
-    '<md-select ng-model="limit" ng-change="onSelect()" aria-label="Row Count" placeholder="{{rowSelect ? rowSelect[0] : 5}}">\n' +
-    '  <md-option ng-repeat="rows in rowSelect ? rowSelect : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>\n' +
-    '</md-select>\n' +
-    '<span>{{min()}} - {{max()}} {{paginationLabel.of}} {{total}}</span>\n' +
-    '<md-button ng-click="first()" ng-disabled="!hasPrevious()" aria-label="First">\n' +
-    '  <md-icon md-svg-icon="templates.navigate-first.html"></md-icon>\n' +
-    '</md-button>\n' +
-    '<md-button ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">\n' +
-    '  <md-icon md-svg-icon="templates.navigate-before.html"></md-icon>\n' +
-    '</md-button>\n' +
-    '<md-button ng-click="next()" ng-disabled="!hasNext()" aria-label="Next">\n' +
-    '  <md-icon md-svg-icon="templates.navigate-next.html"></md-icon>\n' +
-    '</md-button>\n' +
-    '<md-button ng-click="last()" ng-disabled="!hasNext()" aria-label="Last">\n' +
-    '  <md-icon md-svg-icon="templates.navigate-last.html"></md-icon>\n' +
-    '</md-button>\n' +
+    '<div>\n' +
+    '  <span class="label">{{paginationLabel.text}}</span>\n' +
+    '  <md-select ng-model="limit" ng-change="onSelect()" aria-label="Row Count" placeholder="{{rowSelect ? rowSelect[0] : 5}}">\n' +
+    '    <md-option ng-repeat="rows in rowSelect ? rowSelect : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>\n' +
+    '  </md-select>\n' +
+    '  <span>{{min()}} - {{max()}} {{paginationLabel.of}} {{total}}</span>\n' +
+    '</div>\n' +
+    '<div>\n' +
+    '  <md-button ng-click="first()" ng-disabled="!hasPrevious()" aria-label="First">\n' +
+    '    <md-icon md-svg-icon="templates.navigate-first.html"></md-icon>\n' +
+    '  </md-button>\n' +
+    '  <md-button ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">\n' +
+    '    <md-icon md-svg-icon="templates.navigate-before.html"></md-icon>\n' +
+    '  </md-button>\n' +
+    '  <md-button ng-click="next()" ng-disabled="!hasNext()" aria-label="Next">\n' +
+    '    <md-icon md-svg-icon="templates.navigate-next.html"></md-icon>\n' +
+    '  </md-button>\n' +
+    '  <md-button ng-click="last()" ng-disabled="!hasNext()" aria-label="Last">\n' +
+    '    <md-icon md-svg-icon="templates.navigate-last.html"></md-icon>\n' +
+    '  </md-button>\n' +
+    '</div>\n' +
     '');
 }]);
 

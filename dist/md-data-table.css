@@ -146,49 +146,66 @@ md-data-table-pagination {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+}
+@media all and (max-width: 600px) {
+  md-data-table-pagination {
+    -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-align-items: stretch;
+        -ms-flex-align: stretch;
+            align-items: stretch;
+  }
+}
+md-data-table-pagination > div {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
+  -webkit-justify-content: flex-end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  min-height: 56px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.54);
+  border-top: 1px rgba(0, 0, 0, 0.12) solid;
+  box-sizing: border-box;
 }
-@media all and (max-width: 600px) {
-  md-data-table-pagination > .label {
-    display: none;
+@media all and (min-width: 601px) {
+  md-data-table-pagination > div:nth-child(1) {
+    -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+            flex: 1 1 auto;
   }
 }
-md-data-table-pagination .label {
+md-data-table-pagination > div:nth-child(1) > .label {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin: 0 32px 0 24px;
 }
-md-data-table-pagination:last-child {
-  margin-right: -6px;
-}
-md-data-table-pagination > *:not(.label) {
+md-data-table-pagination > div:nth-child(1) > md-select {
   -webkit-flex: 0 0 auto;
       -ms-flex: 0 0 auto;
           flex: 0 0 auto;
-}
-md-data-table-pagination > *:not(.md-button) {
-  margin-right: 16px;
-}
-md-data-table-pagination > *:not(:first-child):not(.md-button) {
-  margin-left: 16px;
-}
-md-data-table-pagination > md-select {
   padding: 0;
+  margin-right: 32px;
 }
-md-data-table-pagination > md-select > .md-select-label {
+md-data-table-pagination > div:nth-child(1) > md-select > .md-select-label {
   min-height: 0;
   min-width: 0;
   padding: 0;
   color: rgba(0, 0, 0, 0.54) !important;
   border-bottom: 0 !important;
 }
-md-data-table-pagination > md-select > .md-select-label > * {
+md-data-table-pagination > div:nth-child(1) > md-select > .md-select-label > * {
   -webkit-transform: none !important;
           transform: none !important;
 }
-md-data-table-pagination > md-select > .md-select-label > .md-select-icon {
+md-data-table-pagination > div:nth-child(1) > md-select > .md-select-label > .md-select-icon {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -202,25 +219,45 @@ md-data-table-pagination > md-select > .md-select-label > .md-select-icon {
   width: 24px;
   height: 24px;
 }
-md-data-table-pagination > md-select > .md-select-label > .md-select-icon:after {
+md-data-table-pagination > div:nth-child(1) > md-select > .md-select-label > .md-select-icon:after {
   top: 1px;
 }
-md-data-table-pagination .md-button {
+md-data-table-pagination > div:nth-child(1) > span:last-child {
+  -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
+}
+@media all and (min-width: 601px) {
+  md-data-table-pagination > div:nth-child(1) > span:last-child {
+    margin-right: 32px;
+  }
+}
+@media all and (max-width: 600px) {
+  md-data-table-pagination > div:nth-child(1) > span:last-child {
+    margin-right: 24px;
+  }
+}
+md-data-table-pagination > div:nth-child(2) {
+  -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
+}
+md-data-table-pagination > div:nth-child(2) .md-button {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
   padding: 0;
   min-height: 24px;
   min-width: 24px;
 }
-md-data-table-pagination .md-button:first-of-type {
-  margin: 0 12px 0 16px;
+md-data-table-pagination > div:nth-child(2) .md-button:not(:last-of-type) {
+  margin: 0 24px 0 0;
 }
-md-data-table-pagination .md-button:last-of-type {
-  margin: 0 0 0 12px;
-}
-md-data-table-pagination .md-button:not(:first-of-type):not(:last-of-type) {
-  margin: 0 12px;
+md-data-table-pagination > div:nth-child(2) .md-button:last-of-type {
+  margin: 0 18px 0 0;
 }
 @-webkit-keyframes md-table-progress-enter {
   from {

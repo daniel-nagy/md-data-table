@@ -112,12 +112,17 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
   </table>
 </md-data-table-container>
 
-<md-data-table-toolbar layout-align="end">
-  <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.total}}" md-trigger="onPaginationChange"></md-data-table-pagination>
-</md-data-table-toolbar>
+
+<md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.total}}" md-trigger="onPaginationChange"></md-data-table-pagination>
+
 ```
 
 ## Change Log
+
+**Version 0.7.5**
+
+* **Important:** Pagination is now its own toolbar and should not be wrapped in a `md-data-table-toolbar` element.
+* The pagination toolbar will now collapse into two separate toolbars on screens less than or equal to `600px` wide.
 
 **Version 0.7.5**
 

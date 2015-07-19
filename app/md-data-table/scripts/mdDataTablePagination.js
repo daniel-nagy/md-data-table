@@ -18,14 +18,11 @@ angular.module('md.data.table')
 
       // the pagination directive is outside the table directive so we need
       // to locate the controller
-      var findTable = function(parent, callback) {
-        while(parent.localName !== 'md-data-table-toolbar' && parent.parentElement) {
-          parent = parent.parentElement;
-        }
-        while(parent.localName !== 'md-data-table-container' && parent.previousElementSibling) {
+      var findTable = function(element, callback) {
+        while(element.localName !== 'md-data-table-container' && element.previousElementSibling) {
           parent = parent.previousElementSibling;
         }
-        callback(angular.element(parent.firstElementChild));
+        callback(angular.element(element.firstElementChild));
       };
 
       var setTrigger = function(table) {
@@ -41,7 +38,7 @@ angular.module('md.data.table')
         };
       };
 
-      findTable(element.parent()[0], setTrigger);
+      findTable(element.prop('previousElementSibling'), setTrigger);
     }
   }
 

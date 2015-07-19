@@ -112,7 +112,6 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
   </table>
 </md-data-table-container>
 
-
 <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.total}}" md-trigger="onPaginationChange"></md-data-table-pagination>
 
 ```

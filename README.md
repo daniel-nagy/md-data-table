@@ -118,7 +118,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
-**Version 0.7.5**
+**Version 0.7.6**
 
 * **Important:** Pagination is now its own toolbar and should not be wrapped in a `md-data-table-toolbar` element.
 * The pagination toolbar will now collapse into two separate toolbars on screens less than or equal to `600px` wide.

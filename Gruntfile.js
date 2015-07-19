@@ -37,7 +37,7 @@ module.exports = function (grunt) {
     // condense javascript into a single file
     concat: {
       options: {
-        separator: '\n\n',
+        separator: '\n\n'
       },
       build: {
         files: {
@@ -54,7 +54,7 @@ module.exports = function (grunt) {
           // hostname: '127.0.0.1',
           hostname: '0.0.0.0',
           livereload: '<%= config.livereload %>',
-          base: ['bower_components', 'dist', 'app'],
+          base: ['bower_components', 'dist', 'app']
         }
       }
     },
@@ -79,7 +79,7 @@ module.exports = function (grunt) {
           rename: function(moduleName) {
             return 'templates.' + moduleName.split('/').pop();
           },
-          useStrict: true,
+          useStrict: true
         },
         files: {
           '.temp/templates.js': 'app/md-data-table/**/*.html'
@@ -133,29 +133,28 @@ module.exports = function (grunt) {
       },
       appScripts: {
         files: ['app/app.js', 'app/scripts/**/*.js'],
-        tasks: 'jshint:app',
+        tasks: 'jshint:app'
       },
       appTemplates: {
         files: 'app/templates/**/*.html'
       },
       buildLess: {
         files: 'app/md-data-table/**/*.less',
-        tasks: ['less:build', 'autoprefixer:build'],
+        tasks: ['less:build', 'autoprefixer:build']
       },
       buildScripts: {
         files: 'app/md-data-table/**/*.js',
-        tasks: ['jshint:build', 'concat:build'],
+        tasks: ['jshint:build', 'concat:build']
       },
       buildTemplates: {
         files: 'app/md-data-table/**/*.html',
-        tasks: ['html2js:build', 'concat:build'],
-        // tasks: ['concat:build']
+        tasks: ['html2js:build', 'concat:build']
       },
       gruntfile: {
         files: 'Gruntfile.js'
       },
       index: {
-        files: 'app/index.html',
+        files: 'app/index.html'
       }
     }
   });

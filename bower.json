@@ -10,7 +10,23 @@
     "type": "git",
     "url": "git://github.com/daniel-nagy/md-data-table.git"
   },
-  "ignore": [],
+  "authors": [
+    "Daniel Nagy"
+  ],
+  "homepage": "http://danielnagy.me/md-data-table",
+  "license": "MIT",
+  "keywords": [
+    "material",
+    "table",
+    "md-data-table"
+  ],
+  "ignore": [
+    "**/.*",
+    "app",
+    "bower_components",
+    "node_modules",
+    "Gruntfile"
+  ],
   "dependencies": {
     "angular": "~1.4.1",
     "angular-material": "~0.10.0"

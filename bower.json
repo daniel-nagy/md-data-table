@@ -25,7 +25,7 @@
     "app",
     "bower_components",
     "node_modules",
-    "Gruntfile"
+    "Gruntfile.js"
   ],
   "dependencies": {
     "angular": "~1.4.1",

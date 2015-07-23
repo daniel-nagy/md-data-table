@@ -1,5 +1,13 @@
-md-card {
-  overflow: hidden;
+md-card > md-data-table-toolbar:first-child,
+md-card > md-data-table-container:first-child {
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+md-card > md-data-table-toolbar:last-child,
+md-card > md-data-table-container:last-child,
+md-card > md-data-table-pagination:last-child {
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
 }
 md-data-table-toolbar {
   display: -webkit-flex;

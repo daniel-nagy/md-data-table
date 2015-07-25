@@ -3,12 +3,29 @@ table[md-data-table] > thead:not([md-table-progress]) {
     height: 56px;
     
     > th {
+      position: relative;
       font-size: 12px;
       color: @md-dark-secondary;
       white-space: nowrap;
       
       &.md-active {
         color: @md-dark;
+      }
+      
+      &[trim] {
+        overflow: hidden;
+        min-width: 80px;
+        
+        > div {
+          position: absolute;
+          top: 0; right: 28px;
+          bottom: 0; left: 28px;
+          
+          > div.trim {
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
       }
     }
   }

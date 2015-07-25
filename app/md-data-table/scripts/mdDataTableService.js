@@ -1,4 +1,6 @@
-angular.module('md.data.table').factory('$mdTable', function () {
+angular.module('md.data.table').factory('$mdTable', mdTableService);
+
+function mdTableService() {
   'use strict';
   
   var cache = {};
@@ -46,4 +48,4 @@ angular.module('md.data.table').factory('$mdTable', function () {
     parse: parse
   };
   
-});
+}

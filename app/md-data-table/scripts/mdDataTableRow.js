@@ -1,6 +1,8 @@
 angular.module('md.data.table')
+  .directive('mdTableRow', mdTableRow)
+  .directive('mdTableRepeat', mdTableRepeat);
 
-.directive('mdTableRow', ['$mdTable', '$timeout', function ($mdTable, $timeout) {
+function mdTableRow($mdTable, $timeout) {
   'use strict';
 
   function postLink(scope, element, attrs, tableCtrl) {
@@ -54,9 +56,11 @@ angular.module('md.data.table')
     link: postLink,
     require: '^^mdDataTable'
   };
-}])
+}
 
-.directive('mdTableRepeat', ['$mdTable', function ($mdTable) {
+mdTableRow.$inject = ['$mdTable', '$timeout'];
+
+function mdTableRepeat($mdTable) {
   'use strict';
   
   function compile(tElement, tAttrs) {
@@ -84,4 +88,6 @@ angular.module('md.data.table')
     compile: compile,
     priority: 1001
   };
-}]);
+}
+
+mdTableRepeat.$inject = ['$mdTable'];

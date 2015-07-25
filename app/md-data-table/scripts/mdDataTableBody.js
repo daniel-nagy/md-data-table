@@ -1,4 +1,6 @@
-angular.module('md.data.table').directive('mdTableBody', function () {
+angular.module('md.data.table').directive('mdTableBody', mdTableBody);
+
+function mdTableBody() {
   'use strict';
   
   function postLink(scope, element, attrs, tableCtrl) {
@@ -59,4 +61,4 @@ angular.module('md.data.table').directive('mdTableBody', function () {
       disable: '&mdDisableSelect'
     }
   };
-});
+}

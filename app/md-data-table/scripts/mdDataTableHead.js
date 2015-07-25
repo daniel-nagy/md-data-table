@@ -1,4 +1,6 @@
-angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable', '$q', function ($document, $mdTable, $q) {
+angular.module('md.data.table').directive('mdTableHead', mdTableHead);
+
+function mdTableHead($document, $mdTable, $q) {
   'use strict';
 
   function postLink(scope, element, attrs, tableCtrl) {
@@ -57,23 +59,25 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
   
   function compile(tElement, tAttrs) {
     
-    angular.forEach(tElement.find('th'), function (cell) {
-      
-      // right align numeric cells
-      if(cell.hasAttribute('numeric')) {
-        cell.style.textAlign = 'right';
-        
-        // append unit to column name
-        if(cell.hasAttribute('unit')) {
-          cell.innerHTML += ' ' + '(' + cell.getAttribute('unit') + ')';
-        }
-      }
-      
-      // trim long column names
-      if(tAttrs.hasOwnProperty('mdTrimColumnNames')) {
-        cell.innerHTML = '<trim>' + cell.innerHTML + '</trim>';
-      }
-    });
+    tElement.find('th').attr('md-column-header', '');
+    
+    // angular.forEach(tElement.find('th'), function (cell) {
+    //
+    //   // right align numeric cells
+    //   if(cell.hasAttribute('numeric')) {
+    //     cell.style.textAlign = 'right';
+    //
+    //     // append unit to column name
+    //     if(cell.hasAttribute('unit')) {
+    //       cell.innerHTML += ' ' + '(' + cell.getAttribute('unit') + ')';
+    //     }
+    //   }
+    //
+    //   // trim long column names
+    //   if(tAttrs.hasOwnProperty('mdTrimColumnNames')) {
+    //     cell.innerHTML = '<trim>' + cell.innerHTML + '</trim>';
+    //   }
+    // });
     
     // ensures a minimum width of 64px for column names
     if(tAttrs.hasOwnProperty('mdTrimColumnNames')) {
@@ -123,4 +127,6 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
     },
     compile: compile
   };
-}]);
+}
+
+mdTableHead.$inject = ['$document', '$mdTable', '$q'];

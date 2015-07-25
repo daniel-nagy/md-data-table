@@ -9,6 +9,45 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
     page: 1
   };
   
+  $scope.columns = [{
+    name: 'Dessert (100g serving)',
+    orderBy: 'name'
+  }, {
+    name: 'Calories',
+    numeric: true,
+    orderBy: 'calories.value'
+  }, {
+    name: 'Fat',
+    numeric: true,
+    orderBy: 'fat.value',
+    unit: 'g'
+  }, {
+    name: 'Carbs',
+    numeric: true,
+    orderBy: 'carbs.value',
+    unit: 'g'
+  }, {
+    name: 'Protein',
+    numeric: true,
+    orderBy: 'protein.value',
+    unit: 'g'
+  }, {
+    name: 'Sodium',
+    numeric: true,
+    orderBy: 'sodium.value',
+    unit: 'mg'
+  }, {
+    name: 'Calcium',
+    numeric: true,
+    orderBy: 'calcium.value',
+    unit: '%'
+  }, {
+    name: 'Iron',
+    numeric: true,
+    orderBy: 'iron.value',
+    unit: '%'
+  }];
+  
   $http.get('desserts.js').then(function (desserts) {
     $scope.desserts = desserts.data;
   });

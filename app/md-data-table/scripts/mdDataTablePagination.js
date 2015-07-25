@@ -1,6 +1,8 @@
 angular.module('md.data.table')
+  .directive('mdDataTablePagination', mdDataTablePagination)
+  .controller('mdPaginationCtrl', mdPaginationController);
 
-.directive('mdDataTablePagination', ['$q', function ($q) {
+function mdDataTablePagination($q) {
   'use strict';
 
   function postLink(scope, element, attrs) {
@@ -55,9 +57,11 @@ angular.module('md.data.table')
     templateUrl: 'templates.md-data-table-pagination.html',
     link: postLink
   };
-}])
+}
 
-.controller('mdPaginationCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
+mdDataTablePagination.$inject = ['$q'];
+
+function mdPaginationController($scope, $timeout) {
   'use strict';
 
   var min = 1;
@@ -131,4 +135,6 @@ angular.module('md.data.table')
     min = $scope.min();
   };
 
-}]);
+}
+
+mdPaginationController.$inject = ['$scope', '$timeout'];

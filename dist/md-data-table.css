@@ -47,12 +47,28 @@ table[md-data-table] > thead:not([md-table-progress]) > tr {
   height: 56px;
 }
 table[md-data-table] > thead:not([md-table-progress]) > tr > th {
+  position: relative;
   font-size: 12px;
   color: rgba(0, 0, 0, 0.54);
   white-space: nowrap;
 }
 table[md-data-table] > thead:not([md-table-progress]) > tr > th.md-active {
   color: rgba(0, 0, 0, 0.87);
+}
+table[md-data-table] > thead:not([md-table-progress]) > tr > th[trim] {
+  overflow: hidden;
+  min-width: 80px;
+}
+table[md-data-table] > thead:not([md-table-progress]) > tr > th[trim] > div {
+  position: absolute;
+  top: 0;
+  right: 28px;
+  bottom: 0;
+  left: 28px;
+}
+table[md-data-table] > thead:not([md-table-progress]) > tr > th[trim] > div > div.trim {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 table[md-data-table] > thead:not([md-table-progress])[md-trim-column-names] > tr > th {
   transition: color 0.25s;

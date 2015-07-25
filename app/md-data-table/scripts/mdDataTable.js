@@ -1,6 +1,8 @@
 angular.module('md.data.table')
+  .directive('mdDataTable', mdDataTable)
+  .controller('mdDataTableController', mdDataTableController);
 
-.directive('mdDataTable', function () {
+function mdDataTable() {
   'use strict';
   
   function compile(tElement, tAttrs) {
@@ -56,9 +58,9 @@ angular.module('md.data.table')
     restrict: 'A',
     scope: {}
   };
-})
+}
 
-.controller('mdDataTableController', ['$attrs', '$element', '$q', '$scope', function ($attrs, $element, $q, $scope) {
+function mdDataTableController($attrs, $element, $q, $scope) {
   'use strict';
 
   var self = this;
@@ -135,4 +137,6 @@ angular.module('md.data.table')
   };
 
   angular.forEach($element.find('th'), self.setColumns);
-}]);
+}
+
+mdDataTableController.$inject = ['$attrs', '$element', '$q', '$scope'];

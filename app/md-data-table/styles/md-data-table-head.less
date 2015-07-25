@@ -8,18 +8,32 @@ table[md-data-table] > thead:not([md-table-progress]) {
       color: @md-dark-secondary;
       white-space: nowrap;
       
-      &.md-active {
-        color: @md-dark;
+      > div {
+        display: flex;
+        align-items: center;
+        line-height: 18px;
+      }
+      
+      &[numeric] > div {
+        justify-content: flex-end;
       }
       
       &[trim] {
         overflow: hidden;
-        min-width: 80px;
+        min-width: 60px;
+        
+        &[numeric]:hover > div {
+          left: 0;
+        }
+        &:not([numeric]):hover > div {
+          right: 0;
+        }
         
         > div {
           position: absolute;
           top: 0; right: 28px;
           bottom: 0; left: 28px;
+          transition: left 0.25s ease, right 0.25s ease;
           
           > div.trim {
             overflow: hidden;
@@ -29,66 +43,45 @@ table[md-data-table] > thead:not([md-table-progress]) {
       }
     }
   }
-
-  &[md-trim-column-names] > tr > th {
-    transition: color 0.25s;
-    
-    trim {
-      display: block;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
-  
-  &[md-order][md-trim-column-names] > tr > th:not(.md-active):not(:hover) > div > md-icon {
-    display: none;
-  }
-  
-  &[md-order]:not([md-trim-column-names]) > tr > th:not(.md-active):not(:hover) > div > md-icon {
-    fill: transparent;
-  }
   
   &[md-order] > tr > th[order-by] {
     transition: color 0.25s;
+    
+    &:not(.md-active):not(:hover) > div > md-icon {
+      fill: transparent;
+    }
+    
+    &.md-active {
+      color: @md-dark;
+      
+      > div > md-icon {
+        fill: @md-dark;
+      }
+    }
     
     &:hover {
       color: @md-dark;
       cursor: pointer;
     }
-    
-    &[numeric] > div {
-      justify-content: flex-end;
-    }
-    
-    &.md-active > div > md-icon {
-      fill: @md-dark;
-    }
-    
-    &:not(.md-active) {
+
+    &:not(.md-active):hover {
       > div > md-icon {
         fill: @md-dark-disabled;
       }
     }
     
-    > div {
-      display: flex;
-      align-items: center;
-      line-height: 18px;
+    > div > md-icon {
+      flex: 0 0 auto;
+      height: 18px;
+      width: 18px;
+      margin: 0 4px;
+      transition: fill 0.25s, transform 0.25s;
       
-      > md-icon {
-        flex: 0 0 auto;
-        height: 18px;
-        width: 18px;
-        margin: 0 4px;
-        transition: fill 0.25s, transform 0.25s;
-        
-        &.down {
-          transform: rotate(180deg);
-        }
-        &.up {
-          transform: rotate(0deg);
-        }
+      &.down {
+        transform: rotate(180deg);
+      }
+      &.up {
+        transform: rotate(0deg);
       }
     }
   }

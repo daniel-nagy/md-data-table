@@ -1,5 +1,102 @@
 angular.module('md.data.table', ['md.table.templates']);
 
+angular.module('md.data.table').directive('mdColumnHeader', mdColumnHeader);
+  
+function mdColumnHeader($interpolate, $timeout) {
+  'use strict';
+
+  function template(tElement, tAttrs) {
+    var template = angular.element('<th></th>');
+    
+    template.text(tElement.text());
+    
+    if(tAttrs.unit) {
+      template.text(template.text() + ' ({{unit}})');
+    }
+    
+    if(angular.isDefined(tAttrs.trim)) {
+      template.contents().wrap('<div class="trim"></div>');
+    }
+    
+    if(tAttrs.orderBy) {
+      var sortIcon = angular.element('<md-icon></md-icon>');
+      
+      sortIcon.attr('md-svg-icon', 'templates.arrow.html');
+      sortIcon.attr('ng-class', 'getDirection()');
+      
+      if(angular.isDefined(tAttrs.numeric)) {
+        template.prepend(sortIcon);
+      } else {
+        template.append(sortIcon);
+      }
+      
+      template.attr('ng-click', 'setOrder()');
+      template.attr('ng-class', '{\'md-active\': isActive()}');
+    }
+    
+    template.html('<div>' + template.html() + '</div>');
+    
+    return template.prop('outerHTML');
+  }
+
+  function postLink(scope, element, attrs, headCtrl) {
+    
+    if(angular.isDefined(attrs.descendFirst)) {
+      attrs.$set('descendFirst', true);
+    }
+
+    // if(element.text().match(/{{[^}]+}}/)) {
+    //   var text = $interpolate('\'' + element.text() + '\'')(scope.$parent);
+    //   var trim = element.find('trim');
+    //
+    //   if(trim.length) {
+    //     trim.text(text.slice(1, -1));
+    //   } else if(angular.isDefined(attrs.numeric)) {
+    //     element.find('div').append(text.slice(1, -1));
+    //   } else {
+    //     element.find('div').prepend(text.slice(1, -1));
+    //   }
+    // }
+
+    scope.getDirection = function () {
+      if(scope.isActive()) {
+        return headCtrl.order[0] === '-' ? 'down' : 'up';
+      }
+      return attrs.descendFirst ? 'down' : 'up';
+    };
+
+    scope.isActive = function () {
+      return headCtrl.order === scope.order || headCtrl.order === '-' + scope.order;
+    };
+
+    scope.setOrder = function () {
+      if(scope.isActive()) {
+        headCtrl.order = headCtrl.order === scope.order ? '-' + scope.order : scope.order;
+      } else {
+        headCtrl.order = attrs.descendFirst ? '-' + scope.order : scope.order;
+      }
+      
+      if(headCtrl.pullTrigger) {
+        $timeout(headCtrl.pullTrigger);
+      }
+    };
+  }
+
+  return {
+    link: postLink,
+    replace: true,
+    require: '^mdTableHead',
+    restrict: 'A',
+    scope: {
+      order: '@orderBy',
+      unit: '@'
+    },
+    template: template
+  };
+}
+
+mdColumnHeader.$inject = ['$interpolate', '$timeout'];
+
 angular.module('md.data.table')
   .directive('mdDataTable', mdDataTable)
   .controller('mdDataTableController', mdDataTableController);
@@ -235,7 +332,7 @@ function mdTableFoot() {
 
 angular.module('md.data.table').directive('mdTableHead', mdTableHead);
 
-function mdTableHead($document, $mdTable, $q) {
+function mdTableHead($mdTable, $q) {
   'use strict';
 
   function postLink(scope, element, attrs, tableCtrl) {
@@ -247,86 +344,11 @@ function mdTableHead($document, $mdTable, $q) {
         $q.when(scope.trigger(scope.headCtrl.order))['finally'](deferred.resolve);
       };
     }
-    
-    // trim column names
-    if(attrs.hasOwnProperty('mdTrimColumnNames')) {
-      var div = angular.element('<div></div>').css({
-        position: 'absolute',
-        fontSize: '12px',
-        fontWeight : 'bold',
-        visibility: 'hidden'
-      });
-      
-      $document.find('body').append(div);
-      
-      angular.forEach(element.find('th'), function(cell, index) {
-        if(index === 0 || element.parent().attr('md-row-select') && index === 1) {
-          return;
-        }
-        
-        var trim = cell.querySelector('trim');
-        
-        div.html(trim.innerText);
-        
-        trim.width = div.prop('clientWidth');
-        
-        cell.addEventListener('mouseenter', function () {
-          var trim = this.querySelector('trim');
-          var iconWidth = this.querySelector('md-icon') ? 26 : 0;
-          
-          if(trim.width > (this.clientWidth - iconWidth - 56)) {
-            trim.style.minWidth = Math.min(trim.width, this.clientWidth - iconWidth - 28) + 'px';
-            this.firstChild.style.color = 'rgba(0, 0, 0, 0.87)';
-            this.firstChild.style.overflow = 'visible';
-          }
-        });
-        
-        cell.addEventListener('mouseleave', function () {
-          this.querySelector('trim').style.minWidth = '';
-          this.firstChild.style.color = '';
-          this.firstChild.style.overflow = '';
-        });
-      });
-      
-      div.remove();
-    }
   }
   
   function compile(tElement, tAttrs) {
     
     tElement.find('th').attr('md-column-header', '');
-    
-    // angular.forEach(tElement.find('th'), function (cell) {
-    //
-    //   // right align numeric cells
-    //   if(cell.hasAttribute('numeric')) {
-    //     cell.style.textAlign = 'right';
-    //
-    //     // append unit to column name
-    //     if(cell.hasAttribute('unit')) {
-    //       cell.innerHTML += ' ' + '(' + cell.getAttribute('unit') + ')';
-    //     }
-    //   }
-    //
-    //   // trim long column names
-    //   if(tAttrs.hasOwnProperty('mdTrimColumnNames')) {
-    //     cell.innerHTML = '<trim>' + cell.innerHTML + '</trim>';
-    //   }
-    // });
-    
-    // ensures a minimum width of 64px for column names
-    if(tAttrs.hasOwnProperty('mdTrimColumnNames')) {
-      var minWidth = 120 * tElement.find('th').length;
-      
-      if(tElement.parent().attr('md-row-select')) {
-        minWidth += 66;
-      }
-      
-      tElement.parent().css({
-        'min-width': minWidth + 'px',
-        'table-layout': 'fixed'
-      });
-    }
     
     // enable row selection
     if(tElement.parent().attr('md-row-select')) {
@@ -364,103 +386,7 @@ function mdTableHead($document, $mdTable, $q) {
   };
 }
 
-mdTableHead.$inject = ['$document', '$mdTable', '$q'];
-
-angular.module('md.data.table').directive('mdColumnHeader', mdColumnHeader);
-  
-function mdColumnHeader($interpolate, $timeout) {
-  'use strict';
-
-  function template(tElement, tAttrs) {
-    var template = angular.element('<th></th>');
-    
-    template.text(tElement.text());
-    
-    if(tAttrs.unit) {
-      template.text(template.text() + ' ({{unit}})');
-    }
-    
-    if(angular.isDefined(tAttrs.trim)) {
-      template.contents().wrap('<div class="trim"></div>');
-    }
-    
-    if(tAttrs.orderBy) {
-      var sortIcon = angular.element('<md-icon></md-icon>');
-      
-      sortIcon.attr('md-svg-icon', 'templates.arrow.html');
-      sortIcon.attr('ng-class', 'getDirection()');
-      
-      if(angular.isDefined(tAttrs.numeric)) {
-        template.prepend(sortIcon);
-      } else {
-        template.append(sortIcon);
-      }
-      
-      template.html('<div>' + template.html() + '</div>');
-      template.attr('ng-click', 'setOrder()');
-      template.attr('ng-class', '{\'md-active\': isActive()}');
-    }
-    
-    return template.prop('outerHTML');
-  }
-
-  function postLink(scope, element, attrs, headCtrl) {
-    
-    if(angular.isDefined(attrs.descendFirst)) {
-      attrs.$set('descendFirst', true);
-    }
-
-    // if(element.text().match(/{{[^}]+}}/)) {
-    //   var text = $interpolate('\'' + element.text() + '\'')(scope.$parent);
-    //   var trim = element.find('trim');
-    //
-    //   if(trim.length) {
-    //     trim.text(text.slice(1, -1));
-    //   } else if(angular.isDefined(attrs.numeric)) {
-    //     element.find('div').append(text.slice(1, -1));
-    //   } else {
-    //     element.find('div').prepend(text.slice(1, -1));
-    //   }
-    // }
-
-    scope.getDirection = function () {
-      if(scope.isActive()) {
-        return headCtrl.order[0] === '-' ? 'down' : 'up';
-      }
-      return attrs.descendFirst ? 'down' : 'up';
-    };
-
-    scope.isActive = function () {
-      return headCtrl.order === scope.order || headCtrl.order === '-' + scope.order;
-    };
-
-    scope.setOrder = function () {
-      if(scope.isActive()) {
-        headCtrl.order = headCtrl.order === scope.order ? '-' + scope.order : scope.order;
-      } else {
-        headCtrl.order = attrs.descendFirst ? '-' + scope.order : scope.order;
-      }
-      
-      if(headCtrl.pullTrigger) {
-        $timeout(headCtrl.pullTrigger);
-      }
-    };
-  }
-
-  return {
-    link: postLink,
-    replace: true,
-    require: '^mdTableHead',
-    restrict: 'A',
-    scope: {
-      order: '@orderBy',
-      unit: '@'
-    },
-    template: template
-  };
-}
-
-mdColumnHeader.$inject = ['$interpolate', '$timeout'];
+mdTableHead.$inject = ['$mdTable', '$q'];
 
 angular.module('md.data.table')
   .directive('mdDataTablePagination', mdDataTablePagination)

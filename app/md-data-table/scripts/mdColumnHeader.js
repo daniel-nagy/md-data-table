@@ -28,10 +28,11 @@ function mdColumnHeader($interpolate, $timeout) {
         template.append(sortIcon);
       }
       
-      template.html('<div>' + template.html() + '</div>');
       template.attr('ng-click', 'setOrder()');
       template.attr('ng-class', '{\'md-active\': isActive()}');
     }
+    
+    template.html('<div>' + template.html() + '</div>');
     
     return template.prop('outerHTML');
   }

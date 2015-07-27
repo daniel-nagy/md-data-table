@@ -64,13 +64,21 @@ function mdDataTableController($attrs, $element, $q, $scope) {
   'use strict';
 
   var self = this;
+  
+  self.columns = [];
+  self.classes = [];
+  self.repeatEnd = [];
 
-  if($attrs.mdRowSelect && !angular.isArray(self.selectedItems)) {
-    self.selectedItems = [];
-    // log warning for developer
-    console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
-    $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
-    'i.e. ' + $attrs.mdRowSelect + ' = [], two-way data binding will fail.');
+  if($attrs.mdRowSelect) {
+    self.columns.push({ isNumeric: false });
+    
+    if(!angular.isArray(self.selectedItems)) {
+      self.selectedItems = [];
+      // log warning for developer
+      console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
+      $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
+      'i.e. ' + $attrs.mdRowSelect + ' = [], two-way data binding will fail.');
+    }
   }
   
   if($attrs.mdProgress) {
@@ -79,10 +87,6 @@ function mdDataTableController($attrs, $element, $q, $scope) {
       $q.when(self.progress)['finally'](deferred.resolve);
     });
   }
-
-  self.columns = [];
-  self.classes = [];
-  self.repeatEnd = [];
 
   // support theming
   ['md-primary', 'md-hue-1', 'md-hue-2', 'md-hue-3'].forEach(function(mdClass) {
@@ -125,18 +129,16 @@ function mdDataTableController($attrs, $element, $q, $scope) {
     });
   };
 
-  self.setColumns = function (cell) {
-    if(!cell.attributes.numeric) {
-      return self.columns.push({ isNumeric: false });
+  self.setColumn = function (column, scope) {
+    if(column.hasClass('numeric')) {
+      return self.columns.push({
+        isNumeric: true,
+        unit: scope.unit || undefined,
+      });
     }
     
-    self.columns.push({
-      isNumeric: true,
-      unit: cell.attributes.unit ? cell.attributes.unit.value : undefined,
-    });
+    self.columns.push({ isNumeric: false });
   };
-
-  angular.forEach($element.find('th'), self.setColumns);
 }
 
 mdDataTableController.$inject = ['$attrs', '$element', '$q', '$scope'];

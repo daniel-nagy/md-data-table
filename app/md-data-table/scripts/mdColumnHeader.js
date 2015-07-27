@@ -1,96 +1,83 @@
-angular.module('md.data.table').directive('mdColumnHeader', mdColumnHeader);
-  
-function mdColumnHeader($interpolate, $timeout) {
+angular.module('md.data.table')
+  .directive('mdColumnHeader', mdColumnHeader);
+
+function mdColumnHeader($compile, $timeout) {
   'use strict';
 
-  function template(tElement, tAttrs) {
+  function postLink(scope, element, attrs, ctrls) {
+    var tableCtrl = ctrls[0];
+    var headCtrl = ctrls[1];
     var template = angular.element('<th></th>');
+      
+    template.text('{{name}}');
     
-    template.text(tElement.text());
-    
-    if(tAttrs.unit) {
+    if(attrs.unit) {
       template.text(template.text() + ' ({{unit}})');
     }
     
-    if(angular.isDefined(tAttrs.trim)) {
-      template.contents().wrap('<div class="trim"></div>');
+    if(angular.isDefined(attrs.numeric)){
+      template.addClass('numeric');
     }
     
-    if(tAttrs.orderBy) {
+    if(angular.isDefined(attrs.trim)) {
+      template.addClass('trim').contents().wrap('<div></div>');
+    }
+    
+    if(attrs.orderBy) {
       var sortIcon = angular.element('<md-icon></md-icon>');
-      
-      sortIcon.attr('md-svg-icon', 'templates.arrow.html');
-      sortIcon.attr('ng-class', 'getDirection()');
-      
-      if(angular.isDefined(tAttrs.numeric)) {
+    
+      if(angular.isDefined(attrs.numeric)) {
         template.prepend(sortIcon);
       } else {
         template.append(sortIcon);
       }
       
+      scope.getDirection = function () {
+        if(scope.isActive()) {
+          return headCtrl.order[0] === '-' ? 'down' : 'up';
+        }
+        return attrs.descendFirst ? 'down' : 'up';
+      };
+      
+      scope.isActive = function () {
+        return headCtrl.order === scope.order || headCtrl.order === '-' + scope.order;
+      };
+      
+      scope.setOrder = function () {
+        if(scope.isActive()) {
+          headCtrl.order = headCtrl.order === scope.order ? '-' + scope.order : scope.order;
+        } else {
+          headCtrl.order = angular.isDefined(attrs.descendFirst) ? '-' + scope.order : scope.order;
+        }
+        
+        if(headCtrl.pullTrigger) {
+          $timeout(headCtrl.pullTrigger);
+        }
+      };
+      
+      sortIcon.attr('md-svg-icon', 'templates.arrow.html');
+      sortIcon.attr('ng-class', 'getDirection()');
+      template.addClass('order');
       template.attr('ng-click', 'setOrder()');
       template.attr('ng-class', '{\'md-active\': isActive()}');
     }
     
     template.html('<div>' + template.html() + '</div>');
     
-    return template.prop('outerHTML');
-  }
-
-  function postLink(scope, element, attrs, headCtrl) {
+    element.replaceWith($compile(template)(scope));
     
-    if(angular.isDefined(attrs.descendFirst)) {
-      attrs.$set('descendFirst', true);
-    }
-
-    // if(element.text().match(/{{[^}]+}}/)) {
-    //   var text = $interpolate('\'' + element.text() + '\'')(scope.$parent);
-    //   var trim = element.find('trim');
-    //
-    //   if(trim.length) {
-    //     trim.text(text.slice(1, -1));
-    //   } else if(angular.isDefined(attrs.numeric)) {
-    //     element.find('div').append(text.slice(1, -1));
-    //   } else {
-    //     element.find('div').prepend(text.slice(1, -1));
-    //   }
-    // }
-
-    scope.getDirection = function () {
-      if(scope.isActive()) {
-        return headCtrl.order[0] === '-' ? 'down' : 'up';
-      }
-      return attrs.descendFirst ? 'down' : 'up';
-    };
-
-    scope.isActive = function () {
-      return headCtrl.order === scope.order || headCtrl.order === '-' + scope.order;
-    };
-
-    scope.setOrder = function () {
-      if(scope.isActive()) {
-        headCtrl.order = headCtrl.order === scope.order ? '-' + scope.order : scope.order;
-      } else {
-        headCtrl.order = attrs.descendFirst ? '-' + scope.order : scope.order;
-      }
-      
-      if(headCtrl.pullTrigger) {
-        $timeout(headCtrl.pullTrigger);
-      }
-    };
+    tableCtrl.setColumn(element, scope);
   }
 
   return {
     link: postLink,
-    replace: true,
-    require: '^mdTableHead',
-    restrict: 'A',
+    require: ['^^mdDataTable', '^mdTableHead'],
     scope: {
+      name: '@',
       order: '@orderBy',
       unit: '@'
-    },
-    template: template
+    }
   };
 }
 
-mdColumnHeader.$inject = ['$interpolate', '$timeout'];
+mdColumnHeader.$inject = ['$compile', '$timeout'];

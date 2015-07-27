@@ -43,9 +43,6 @@ md-data-table-container ~ md-data-table-toolbar > *:not(:first-child) {
 md-data-table-container ~ md-data-table-toolbar > *:not(:last-child) {
   margin-right: 16px;
 }
-table[md-data-table] > thead:not([md-table-progress]) > tr {
-  height: 56px;
-}
 table[md-data-table] > thead:not([md-table-progress]) > tr > th {
   position: relative;
   font-size: 12px;
@@ -59,55 +56,58 @@ table[md-data-table] > thead:not([md-table-progress]) > tr > th > div {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
+  height: 56px;
   line-height: 18px;
 }
-table[md-data-table] > thead:not([md-table-progress]) > tr > th[numeric] > div {
+table[md-data-table] > thead:not([md-table-progress]) > tr > th.numeric > div {
   -webkit-justify-content: flex-end;
       -ms-flex-pack: end;
           justify-content: flex-end;
 }
-table[md-data-table] > thead:not([md-table-progress]) > tr > th[trim] {
-  overflow: hidden;
+table[md-data-table] > thead:not([md-table-progress]) > tr > th.trim {
   min-width: 60px;
 }
-table[md-data-table] > thead:not([md-table-progress]) > tr > th[trim][numeric]:hover > div {
+table[md-data-table] > thead:not([md-table-progress]) > tr > th.trim.numeric:hover > div {
   left: 0;
 }
-table[md-data-table] > thead:not([md-table-progress]) > tr > th[trim]:not([numeric]):hover > div {
+table[md-data-table] > thead:not([md-table-progress]) > tr > th.trim:not(.numeric):hover > div {
   right: 0;
 }
-table[md-data-table] > thead:not([md-table-progress]) > tr > th[trim] > div {
+table[md-data-table] > thead:not([md-table-progress]) > tr > th.trim > div {
   position: absolute;
-  top: 0;
+  top: 1px;
   right: 28px;
   bottom: 0;
   left: 28px;
   transition: left 0.25s ease, right 0.25s ease;
 }
-table[md-data-table] > thead:not([md-table-progress]) > tr > th[trim] > div > div.trim {
+table[md-data-table] > thead:not([md-table-progress]) > tr > th.trim > div > div {
+  -webkit-flex: 0 1 auto;
+      -ms-flex: 0 1 auto;
+          flex: 0 1 auto;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th[order-by] {
+table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th.order {
   transition: color 0.25s;
 }
-table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th[order-by]:not(.md-active):not(:hover) > div > md-icon {
+table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th.order:not(.md-active):not(:hover) > div > md-icon {
   fill: transparent;
 }
-table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th[order-by].md-active {
+table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th.order.md-active {
   color: rgba(0, 0, 0, 0.87);
 }
-table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th[order-by].md-active > div > md-icon {
+table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th.order.md-active > div > md-icon {
   fill: rgba(0, 0, 0, 0.87);
 }
-table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th[order-by]:hover {
+table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th.order:hover {
   color: rgba(0, 0, 0, 0.87);
   cursor: pointer;
 }
-table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th[order-by]:not(.md-active):hover > div > md-icon {
+table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th.order:not(.md-active):hover > div > md-icon {
   fill: rgba(0, 0, 0, 0.26);
 }
-table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th[order-by] > div > md-icon {
+table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th.order > div > md-icon {
   -webkit-flex: 0 0 auto;
       -ms-flex: 0 0 auto;
           flex: 0 0 auto;
@@ -117,11 +117,11 @@ table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th[order-
   transition: fill 0.25s, -webkit-transform 0.25s;
   transition: fill 0.25s, transform 0.25s;
 }
-table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th[order-by] > div > md-icon.down {
+table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th.order > div > md-icon.down {
   -webkit-transform: rotate(180deg);
           transform: rotate(180deg);
 }
-table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th[order-by] > div > md-icon.up {
+table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th.order > div > md-icon.up {
   -webkit-transform: rotate(0deg);
           transform: rotate(0deg);
 }

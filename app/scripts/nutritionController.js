@@ -10,8 +10,9 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
   };
   
   $scope.columns = [{
-    name: 'Dessert (100g serving)',
-    orderBy: 'name'
+    name: 'Dessert',
+    orderBy: 'name',
+    unit: '100g serving'
   }, {
     name: 'Calories',
     numeric: true,
@@ -30,6 +31,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
     name: 'Protein',
     numeric: true,
     orderBy: 'protein.value',
+    trim: true,
     unit: 'g'
   }, {
     name: 'Sodium',

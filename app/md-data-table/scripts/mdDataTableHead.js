@@ -15,8 +15,11 @@ function mdTableHead($mdTable, $q) {
   }
   
   function compile(tElement, tAttrs) {
+    var head = {
+      cells: tElement.find('th')
+    };
     
-    tElement.find('th').attr('md-column-header', '');
+    head.cells.attr('md-column-header', '');
     
     // enable row selection
     if(tElement.parent().attr('md-row-select')) {

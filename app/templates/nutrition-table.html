@@ -10,15 +10,15 @@
   <table md-data-table md-row-select="selected" md-progress="deferred">
     <thead md-order="query.order" md-trigger="onorderchange">
       <tr>
-        <!-- <th ng-repeat="column in columns" order-by="{{column.orderBy}}" ng-attr-numeric="{{column.numeric}}" ng-attr-unit="{{column.unit}}">{{column.name}}</th> -->
-        <th order-by="name" unit="100g serving">Dessert</th>
-        <th numeric order-by="calories.value" trim>Calories</th>
+        <th ng-repeat="column in columns" ng-attr-order-by="{{column.orderBy}}" ng-attr-numeric="{{column.numeric}}" ng-attr-unit="{{column.unit}}" name="{{column.name}}" ng-attr-trim="{{column.trim}}"></th>
+        <!-- <th order-by="name" unit="100g serving">Dessert</th>
+        <th numeric order-by="calories.value">Calories</th>
         <th numeric unit="g" order-by="fat.value">Fat</th>
         <th numeric unit="g" order-by="carbs.value">Carbs</th>
-        <th numeric unit="g" order-by="protein.value" trim>Protein</th>
-        <th numeric unit="mg" trim>Sodium</th>
+        <th numeric unit="g" order-by="protein.value">Protein</th>
+        <th numeric unit="mg" order-by="sodium.value">Sodium</th>
         <th numeric unit="%" order-by="calcium.value">Calcium</th>
-        <th numeric unit="%" order-by="iron.value">Iron</th>
+        <th numeric unit="%" order-by="iron.value">Iron</th> -->
       </tr>
     </thead>
     <tbody md-auto-select>

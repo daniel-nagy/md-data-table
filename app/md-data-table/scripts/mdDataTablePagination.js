@@ -1,6 +1,6 @@
 angular.module('md.data.table')
   .directive('mdDataTablePagination', mdDataTablePagination)
-  .controller('mdPaginationCtrl', mdPaginationController);
+  .controller('mdPaginationCtrl', mdPaginationCtrl);
 
 function mdDataTablePagination($q) {
   'use strict';
@@ -61,7 +61,7 @@ function mdDataTablePagination($q) {
 
 mdDataTablePagination.$inject = ['$q'];
 
-function mdPaginationController($scope, $timeout) {
+function mdPaginationCtrl($scope, $timeout) {
   'use strict';
 
   var min = 1;
@@ -137,4 +137,4 @@ function mdPaginationController($scope, $timeout) {
 
 }
 
-mdPaginationController.$inject = ['$scope', '$timeout'];
+mdPaginationCtrl.$inject = ['$scope', '$timeout'];

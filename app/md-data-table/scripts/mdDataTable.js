@@ -1,6 +1,6 @@
 angular.module('md.data.table')
   .directive('mdDataTable', mdDataTable)
-  .controller('mdDataTableController', mdDataTableController);
+  .controller('mdDataTableCtrl', mdDataTableCtrl);
 
 function mdDataTable() {
   'use strict';
@@ -53,21 +53,24 @@ function mdDataTable() {
       selectedItems: '=mdRowSelect'
     },
     compile: compile,
-    controller: 'mdDataTableController',
+    controller: 'mdDataTableCtrl',
     controllerAs: 'tableCtrl',
     restrict: 'A',
     scope: {}
   };
 }
 
-function mdDataTableController($attrs, $element, $q, $scope) {
+function mdDataTableCtrl($attrs, $element, $q, $scope) {
   'use strict';
 
   var self = this;
   
   self.columns = [];
   self.classes = [];
-  self.repeatEnd = [];
+  self.isReady = {
+    body: $q.defer(),
+    head: $q.defer()
+  };
 
   if($attrs.mdRowSelect) {
     self.columns.push({ isNumeric: false });
@@ -112,9 +115,9 @@ function mdDataTableController($attrs, $element, $q, $scope) {
     self.deferred = undefined;
     self.hideProgress();
   };
-  
-  self.repeatEnd.push(function (ngRepeat) {
-    if(!self.listener && $attrs.mdRowSelect) {
+
+  self.isReady.body.promise.then(function (ngRepeat) {
+    if($attrs.mdRowSelect) {
       self.listener = $scope.$parent.$watch(ngRepeat.items, function (newValue, oldeValue) {
         if(newValue !== oldeValue) {
           self.selectedItems.splice(0);
@@ -122,18 +125,12 @@ function mdDataTableController($attrs, $element, $q, $scope) {
       });
     }
   });
-  
-  self.onRepeatEnd = function (ngRepeat) {
-    self.repeatEnd.forEach(function (listener) {
-      listener(ngRepeat);
-    });
-  };
 
-  self.setColumn = function (column, scope) {
-    if(column.hasClass('numeric')) {
+  self.setColumn = function (column) {
+    if(angular.isDefined(column.numeric)) {
       return self.columns.push({
         isNumeric: true,
-        unit: scope.unit || undefined,
+        unit: column.unit || undefined,
       });
     }
     
@@ -141,4 +138,4 @@ function mdDataTableController($attrs, $element, $q, $scope) {
   };
 }
 
-mdDataTableController.$inject = ['$attrs', '$element', '$q', '$scope'];
+mdDataTableCtrl.$inject = ['$attrs', '$element', '$q', '$scope'];

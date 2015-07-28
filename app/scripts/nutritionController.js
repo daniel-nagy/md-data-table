@@ -92,7 +92,4 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
     return deferred.promise;
   };
   
-  $scope.skip = function (dessert, index) {
-    return index >= ($scope.query.limit * ($scope.query.page - 1));
-  };
 }]);

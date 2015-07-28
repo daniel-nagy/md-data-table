@@ -1,4 +1,6 @@
-angular.module('md.data.table').directive('mdTableBody', mdTableBody);
+angular.module('md.data.table')
+  .directive('mdTableBody', mdTableBody)
+  .controller('mdTableBodyCtrl', mdTableBodyCtrl);
 
 function mdTableBody() {
   'use strict';
@@ -9,7 +11,7 @@ function mdTableBody() {
     if(element.parent().attr('md-row-select')) {
       scope.$parent.mdClasses = tableCtrl.classes;
       
-      tableCtrl.repeatEnd.push(function (ngRepeat) {
+      tableCtrl.isReady.body.promise.then(function (ngRepeat) {
         var model = {};
         var count = 0;
         
@@ -56,9 +58,20 @@ function mdTableBody() {
 
   return {
     compile: compile,
+    controller: 'mdTableBodyCtrl',
     require: '^mdDataTable',
     scope: {
       disable: '&mdDisableSelect'
     }
   };
 }
+
+function mdTableBodyCtrl($element) {
+  var row = $element.find('tr');
+  
+  this.isLastChild = function (child) {
+    return Array.prototype.indexOf.call(row.children(), child) === row.children().length - 1;
+  }
+}
+
+mdTableBodyCtrl.$inject = ['$element'];

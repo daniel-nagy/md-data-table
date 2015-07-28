@@ -1,12 +1,11 @@
-angular.module('md.data.table')
-  .directive('mdColumnHeader', mdColumnHeader);
+angular.module('md.data.table').directive('mdColumnHeader', mdColumnHeader);
 
 function mdColumnHeader($compile, $timeout) {
   'use strict';
 
   function postLink(scope, element, attrs, ctrls) {
     var tableCtrl = ctrls[0];
-    var headCtrl = ctrls[1];
+    var theadCtrl = ctrls[1];
     var template = angular.element('<th></th>');
       
     template.text('{{name}}');
@@ -34,24 +33,24 @@ function mdColumnHeader($compile, $timeout) {
       
       scope.getDirection = function () {
         if(scope.isActive()) {
-          return headCtrl.order[0] === '-' ? 'down' : 'up';
+          return theadCtrl.order[0] === '-' ? 'down' : 'up';
         }
         return attrs.descendFirst ? 'down' : 'up';
       };
       
       scope.isActive = function () {
-        return headCtrl.order === scope.order || headCtrl.order === '-' + scope.order;
+        return theadCtrl.order === scope.order || theadCtrl.order === '-' + scope.order;
       };
       
       scope.setOrder = function () {
         if(scope.isActive()) {
-          headCtrl.order = headCtrl.order === scope.order ? '-' + scope.order : scope.order;
+          theadCtrl.order = theadCtrl.order === scope.order ? '-' + scope.order : scope.order;
         } else {
-          headCtrl.order = angular.isDefined(attrs.descendFirst) ? '-' + scope.order : scope.order;
+          theadCtrl.order = angular.isDefined(attrs.descendFirst) ? '-' + scope.order : scope.order;
         }
         
-        if(headCtrl.pullTrigger) {
-          $timeout(headCtrl.pullTrigger);
+        if(theadCtrl.pullTrigger) {
+          $timeout(theadCtrl.pullTrigger);
         }
       };
       
@@ -66,7 +65,15 @@ function mdColumnHeader($compile, $timeout) {
     
     element.replaceWith($compile(template)(scope));
     
-    tableCtrl.setColumn(element, scope);
+    tableCtrl.setColumn(attrs);
+    
+    if(attrs.ngRepeat) {
+      if(scope.$parent.$last) {
+        tableCtrl.isReady.head.resolve();
+      }
+    } else if(theadCtrl.isLastChild(template[0])) {
+      tableCtrl.isReady.head.resolve();
+    }
   }
 
   return {

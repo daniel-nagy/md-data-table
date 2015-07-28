@@ -1,4 +1,6 @@
-angular.module('md.data.table').directive('mdTableHead', mdTableHead);
+angular.module('md.data.table')
+  .directive('mdTableHead', mdTableHead)
+  .controller('mdTableHeadCtrl', mdTableHeadCtrl);
 
 function mdTableHead($mdTable, $q) {
   'use strict';
@@ -7,19 +9,15 @@ function mdTableHead($mdTable, $q) {
     
     // table progress
     if(angular.isFunction(scope.trigger)) {
-      scope.headCtrl.pullTrigger = function () {
+      scope.theadCtrl.pullTrigger = function () {
         var deferred = tableCtrl.defer();
-        $q.when(scope.trigger(scope.headCtrl.order))['finally'](deferred.resolve);
+        $q.when(scope.trigger(scope.theadCtrl.order))['finally'](deferred.resolve);
       };
     }
   }
   
-  function compile(tElement, tAttrs) {
-    var head = {
-      cells: tElement.find('th')
-    };
-    
-    head.cells.attr('md-column-header', '');
+  function compile(tElement) {
+    tElement.find('th').attr('md-column-header', '');
     
     // enable row selection
     if(tElement.parent().attr('md-row-select')) {
@@ -29,6 +27,7 @@ function mdTableHead($mdTable, $q) {
         var items = $mdTable.parse(ngRepeat).items;
         var checkbox = angular.element('<md-checkbox></md-checkbox>');
         
+        checkbox.attr('select-all', '');
         checkbox.attr('aria-label', 'Select All');
         checkbox.attr('ng-click', 'toggleAll(' + items + ')');
         checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': allSelected()}]');
@@ -47,8 +46,8 @@ function mdTableHead($mdTable, $q) {
     bindToController: {
       order: '=mdOrder'
     },
-    controller: function () {},
-    controllerAs: 'headCtrl',
+    controller: 'mdTableHeadCtrl',
+    controllerAs: 'theadCtrl',
     require: '^mdDataTable',
     scope: {
       trigger: '=mdTrigger'
@@ -58,3 +57,13 @@ function mdTableHead($mdTable, $q) {
 }
 
 mdTableHead.$inject = ['$mdTable', '$q'];
+
+function mdTableHeadCtrl($element) {
+  var row = $element.find('tr');
+  
+  this.isLastChild = function (child) {
+    return Array.prototype.indexOf.call(row.children(), child) === row.children().length - 1;
+  }
+}
+
+mdTableHeadCtrl.$inject = ['$element'];

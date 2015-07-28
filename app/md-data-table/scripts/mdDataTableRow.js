@@ -5,14 +5,12 @@ angular.module('md.data.table')
 function mdTableRow($mdTable, $timeout) {
   'use strict';
 
-  function postLink(scope, element, attrs, tableCtrl) {
+  function postLink(scope, element, attrs, ctrls) {
+    var tableCtrl = ctrls[0];
+    var tbodyCtrl = ctrls[1];
     
     if(element.parent().parent().attr('md-row-select')) {
       var disable = element.parent().attr('md-disable-select');
-      
-      if(scope.$last && !tableCtrl.listener) {
-        tableCtrl.onRepeatEnd($mdTable.parse(attrs.ngRepeat));
-      }
       
       var isDisabled = function() {
         return disable ? scope.$eval(disable) : false;
@@ -37,24 +35,34 @@ function mdTableRow($mdTable, $timeout) {
       };
     }
     
-    tableCtrl.columns.forEach(function (column, index) {
-      if(column.isNumeric) {
-        var cell = element.children().eq(index);
-        
-        cell.addClass('numeric');
-        
-        if(angular.isDefined(cell.attr('show-unit'))) {
-          $timeout(function () {
-            cell.text(cell.text() + tableCtrl.columns[index].unit);
-          });
-        }
+    if(attrs.ngRepeat) {
+      if(scope.$parent.$last) {
+        tableCtrl.isReady.body.resolve();
       }
+    } else if(tbodyCtrl.isLastChild(element[0])) {
+      tableCtrl.isReady.body.resolve();
+    }
+    
+    tableCtrl.isReady.head.promise.then(function () {
+      tableCtrl.columns.forEach(function (column, index) {
+        if(column.isNumeric) {
+          var cell = element.children().eq(index);
+          
+          cell.addClass('numeric');
+          
+          if(angular.isDefined(cell.attr('show-unit'))) {
+            $timeout(function () {
+              cell.text(cell.text() + tableCtrl.columns[index].unit);
+            });
+          }
+        }
+      });
     });
   }
   
   return {
     link: postLink,
-    require: '^^mdDataTable'
+    require: ['^^mdDataTable', '^mdTableBody']
   };
 }
 

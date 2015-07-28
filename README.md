@@ -257,13 +257,7 @@ If the function assigned to the `md-triger` attribute returns a promise, a loadi
 **Example: Client Side pagination using ngRepeat.**
 
 ```html
-<tr ng-repeat="item in array | orderBy: myOrder | filter: mySkip | limitTo: myLimit">
-```
-
-```javascript
-$scope.mySkip = function (item, index) {
-  return index >= ($scope.myLimit * ($scope.myPage - 1));
-};
+<tr ng-repeat="item in array | orderBy: myOrder | limitTo: myLimit: (page - 1) * myLimit">
 ```
 
 ### Row Selection

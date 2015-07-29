@@ -1,4 +1,6 @@
-angular.module('md.data.table').directive('mdTableFoot', function () {
+angular.module('md.data.table').directive('mdTableFoot', mdTableFoot);
+
+function mdTableFoot() {
   'use strict';
 
   function postLink(scope, element, attrs, tableCtrl) {
@@ -19,4 +21,4 @@ angular.module('md.data.table').directive('mdTableFoot', function () {
     require: '^mdDataTable',
     link: postLink
   };
-});
+}

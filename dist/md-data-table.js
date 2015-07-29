@@ -1,13 +1,106 @@
 angular.module('md.data.table', ['md.table.templates']);
 
-angular.module('md.data.table')
+angular.module('md.data.table').directive('mdColumnHeader', mdColumnHeader);
 
-.directive('mdDataTable', function () {
+function mdColumnHeader($compile, $timeout) {
+  'use strict';
+
+  function postLink(scope, element, attrs, ctrls) {
+    var tableCtrl = ctrls[0];
+    var headCtrl = ctrls[1];
+    var template = angular.element('<th></th>');
+      
+    template.text('{{name}}');
+    
+    if(attrs.unit) {
+      template.text(template.text() + ' ({{unit}})');
+    }
+    
+    if(angular.isDefined(attrs.numeric)){
+      template.addClass('numeric');
+    }
+    
+    if(angular.isDefined(attrs.trim)) {
+      template.addClass('trim').contents().wrap('<div></div>');
+    }
+    
+    if(attrs.orderBy) {
+      var sortIcon = angular.element('<md-icon></md-icon>');
+    
+      if(angular.isDefined(attrs.numeric)) {
+        template.prepend(sortIcon);
+      } else {
+        template.append(sortIcon);
+      }
+      
+      scope.getDirection = function () {
+        if(scope.isActive()) {
+          return headCtrl.order[0] === '-' ? 'down' : 'up';
+        }
+        return attrs.descendFirst ? 'down' : 'up';
+      };
+      
+      scope.isActive = function () {
+        return headCtrl.order === scope.order || headCtrl.order === '-' + scope.order;
+      };
+      
+      scope.setOrder = function () {
+        if(scope.isActive()) {
+          headCtrl.order = headCtrl.order === scope.order ? '-' + scope.order : scope.order;
+        } else {
+          headCtrl.order = angular.isDefined(attrs.descendFirst) ? '-' + scope.order : scope.order;
+        }
+        
+        if(headCtrl.pullTrigger) {
+          $timeout(headCtrl.pullTrigger);
+        }
+      };
+      
+      sortIcon.attr('md-svg-icon', 'templates.arrow.html');
+      sortIcon.attr('ng-class', 'getDirection()');
+      template.addClass('order');
+      template.attr('ng-click', 'setOrder()');
+      template.attr('ng-class', '{\'md-active\': isActive()}');
+    }
+    
+    template.html('<div>' + template.html() + '</div>');
+    
+    element.replaceWith($compile(template)(scope));
+    
+    tableCtrl.setColumn(attrs);
+    
+    if(attrs.ngRepeat) {
+      if(scope.$parent.$last) {
+        tableCtrl.isReady.head.resolve();
+      }
+    } else if(tableCtrl.isLastChild(template.parent().children(), template[0])) {
+      tableCtrl.isReady.head.resolve();
+    }
+  }
+
+  return {
+    link: postLink,
+    require: ['^^mdDataTable', '^mdTableHead'],
+    scope: {
+      name: '@',
+      order: '@orderBy',
+      unit: '@'
+    }
+  };
+}
+
+mdColumnHeader.$inject = ['$compile', '$timeout'];
+
+angular.module('md.data.table')
+  .directive('mdDataTable', mdDataTable)
+  .controller('mdDataTableCtrl', mdDataTableCtrl);
+
+function mdDataTable() {
   'use strict';
   
   function compile(tElement, tAttrs) {
     var head = tElement.find('thead');
-    var body = tElement.find('tbody');
+    var rows = tElement.find('tbody').find('tr');
     var foot = tElement.find('tfoot');
     
     // make sure the table has a head element
@@ -21,12 +114,11 @@ angular.module('md.data.table')
       }
       
       head = tElement.find('thead');
-      body = tElement.find('tbody');
+      rows = tElement.find('tbody').find('tr');
     }
     
-    // notify the children to begin work
     head.attr('md-table-head', '');
-    body.attr('md-table-body', '');
+    rows.attr('md-table-row', '');
     
     if(foot.length) {
       foot.attr('md-table-foot', '');
@@ -36,14 +128,16 @@ angular.module('md.data.table')
       }
     }
     
-    // log rudimentary warnings for the developer
-    if(!body.children().attr('ng-repeat')) {
-      if(tAttrs.mdRowSelect) {
-        console.warn('Use ngRepeat to enable automatic row selection.');
-      }
-      if(head.attr('md-order')) {
-        console.warn('Column ordering without ngRepeat is not supported by this directive.');
-      }
+    if(tAttrs.mdRowSelect && rows.attr('ng-repeat')) {
+      rows.attr('md-select-row', '');
+    }
+    
+    if(tAttrs.mdRowSelect && !rows.attr('ng-repeat')) {
+      console.warn('Please use ngRepeat to enable row selection.');
+    }
+    
+    if(head.attr('md-order') && !rows.attr('ng-repeat')) {
+      console.warn('Column ordering without ngRepeat is not supported.');
     }
   }
   
@@ -53,24 +147,35 @@ angular.module('md.data.table')
       selectedItems: '=mdRowSelect'
     },
     compile: compile,
-    controller: 'mdDataTableController',
+    controller: 'mdDataTableCtrl',
     controllerAs: 'tableCtrl',
     restrict: 'A',
     scope: {}
   };
-})
+}
 
-.controller('mdDataTableController', ['$attrs', '$element', '$q', '$scope', function ($attrs, $element, $q, $scope) {
+function mdDataTableCtrl($attrs, $element, $q, $scope) {
   'use strict';
 
   var self = this;
+  
+  self.columns = [];
+  self.classes = [];
+  self.isReady = {
+    body: $q.defer(),
+    head: $q.defer()
+  };
 
-  if($attrs.mdRowSelect && !angular.isArray(self.selectedItems)) {
-    self.selectedItems = [];
-    // log warning for developer
-    console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
-    $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
-    'i.e. ' + $attrs.mdRowSelect + ' = [], two-way data binding will fail.');
+  if($attrs.mdRowSelect) {
+    self.columns.push({ isNumeric: false });
+    
+    if(!angular.isArray(self.selectedItems)) {
+      self.selectedItems = [];
+      // log warning for developer
+      console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
+      $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
+      'i.e. ' + $attrs.mdRowSelect + ' = [], two-way data binding will fail.');
+    }
   }
   
   if($attrs.mdProgress) {
@@ -79,10 +184,6 @@ angular.module('md.data.table')
       $q.when(self.progress)['finally'](deferred.resolve);
     });
   }
-
-  self.columns = [];
-  self.classes = [];
-  self.repeatEnd = [];
 
   // support theming
   ['md-primary', 'md-hue-1', 'md-hue-2', 'md-hue-3'].forEach(function(mdClass) {
@@ -109,8 +210,12 @@ angular.module('md.data.table')
     self.hideProgress();
   };
   
-  self.repeatEnd.push(function (ngRepeat) {
-    if(!self.listener && $attrs.mdRowSelect) {
+  self.isLastChild = function (siblings, child) {
+    return Array.prototype.indexOf.call(siblings, child) === siblings.length - 1;
+  }
+
+  self.isReady.body.promise.then(function (ngRepeat) {
+    if($attrs.mdRowSelect && ngRepeat) {
       self.listener = $scope.$parent.$watch(ngRepeat.items, function (newValue, oldeValue) {
         if(newValue !== oldeValue) {
           self.selectedItems.splice(0);
@@ -118,91 +223,20 @@ angular.module('md.data.table')
       });
     }
   });
-  
-  self.onRepeatEnd = function (ngRepeat) {
-    self.repeatEnd.forEach(function (listener) {
-      listener(ngRepeat);
-    });
-  };
 
-  self.setColumns = function (cell) {
-    if(!cell.attributes.numeric) {
-      return self.columns.push({ isNumeric: false });
-    }
-    
+  self.setColumn = function (column) {
     self.columns.push({
-      isNumeric: true,
-      unit: cell.attributes.unit ? cell.attributes.unit.value : undefined,
+      isNumeric: angular.isDefined(column.numeric),
+      unit: column.unit
     });
   };
+}
 
-  angular.forEach($element.find('th'), self.setColumns);
-}]);
+mdDataTableCtrl.$inject = ['$attrs', '$element', '$q', '$scope'];
 
-angular.module('md.data.table').directive('mdTableBody', function () {
-  'use strict';
-  
-  function postLink(scope, element, attrs, tableCtrl) {
-    
-    // row selection
-    if(element.parent().attr('md-row-select')) {
-      scope.$parent.mdClasses = tableCtrl.classes;
-      
-      tableCtrl.repeatEnd.push(function (ngRepeat) {
-        var model = {};
-        var count = 0;
-        
-        var getSelectableItems = function(items) {
-          return items.filter(function (item) {
-            model[ngRepeat.item] = item;
-            return !scope.disable(model);
-          });
-        };
-        
-        scope.$parent.getCount = function(items) {
-          return (count = items.reduce(function(sum, item) {
-            model[ngRepeat.item] = item;
-            return scope.disable(model) ? sum : ++sum;
-          }, 0));
-        };
-        
-        scope.$parent.allSelected = function () {
-          return count && count === tableCtrl.selectedItems.length;
-        };
-        
-        scope.$parent.toggleAll = function (items) {
-          var selectableItems = getSelectableItems(items);
-          
-          if(selectableItems.length === tableCtrl.selectedItems.length) {
-            tableCtrl.selectedItems.splice(0);
-          } else {
-            tableCtrl.selectedItems = selectableItems;
-          }
-        };
-      });
-    }
-  }
-  
-  function compile(tElement) {
-    tElement.find('tr').attr('md-table-row', '');
-    
-    if(tElement.find('tr').attr('ng-repeat') && tElement.parent().attr('md-row-select')) {
-      tElement.find('tr').attr('md-table-repeat', '');
-    }
-    
-    return postLink;
-  }
+angular.module('md.data.table').directive('mdTableFoot', mdTableFoot);
 
-  return {
-    compile: compile,
-    require: '^mdDataTable',
-    scope: {
-      disable: '&mdDisableSelect'
-    }
-  };
-});
-
-angular.module('md.data.table').directive('mdTableFoot', function () {
+function mdTableFoot() {
   'use strict';
 
   function postLink(scope, element, attrs, tableCtrl) {
@@ -223,113 +257,33 @@ angular.module('md.data.table').directive('mdTableFoot', function () {
     require: '^mdDataTable',
     link: postLink
   };
-});
+}
 
-angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable', '$q', function ($document, $mdTable, $q) {
+angular.module('md.data.table').directive('mdTableHead', mdTableHead);
+
+function mdTableHead($mdTable, $q) {
   'use strict';
 
   function postLink(scope, element, attrs, tableCtrl) {
     
     // table progress
     if(angular.isFunction(scope.trigger)) {
-      scope.headCtrl.pullTrigger = function () {
+      scope.theadCtrl.pullTrigger = function () {
         var deferred = tableCtrl.defer();
-        $q.when(scope.trigger(scope.headCtrl.order))['finally'](deferred.resolve);
+        $q.when(scope.trigger(scope.theadCtrl.order))['finally'](deferred.resolve);
       };
-    }
-    
-    // trim column names
-    if(attrs.hasOwnProperty('mdTrimColumnNames')) {
-      var div = angular.element('<div></div>').css({
-        position: 'absolute',
-        fontSize: '12px',
-        fontWeight : 'bold',
-        visibility: 'hidden'
-      });
-      
-      $document.find('body').append(div);
-      
-      angular.forEach(element.find('th'), function(cell, index) {
-        if(index === 0 || element.parent().attr('md-row-select') && index === 1) {
-          return;
-        }
-        
-        var trim = cell.querySelector('trim');
-        
-        div.html(trim.innerText);
-        
-        trim.width = div.prop('clientWidth');
-        
-        cell.addEventListener('mouseenter', function () {
-          var trim = this.querySelector('trim');
-          var iconWidth = this.querySelector('md-icon') ? 26 : 0;
-          
-          if(trim.width > (this.clientWidth - iconWidth - 56)) {
-            trim.style.minWidth = Math.min(trim.width, this.clientWidth - iconWidth - 28) + 'px';
-            this.firstChild.style.color = 'rgba(0, 0, 0, 0.87)';
-            this.firstChild.style.overflow = 'visible';
-          }
-        });
-        
-        cell.addEventListener('mouseleave', function () {
-          this.querySelector('trim').style.minWidth = '';
-          this.firstChild.style.color = '';
-          this.firstChild.style.overflow = '';
-        });
-      });
-      
-      div.remove();
     }
   }
   
-  function compile(tElement, tAttrs) {
-    
-    angular.forEach(tElement.find('th'), function (cell) {
-      
-      // right align numeric cells
-      if(cell.hasAttribute('numeric')) {
-        cell.style.textAlign = 'right';
-        
-        // append unit to column name
-        if(cell.hasAttribute('unit')) {
-          cell.innerHTML += ' ' + '(' + cell.getAttribute('unit') + ')';
-        }
-      }
-      
-      // trim long column names
-      if(tAttrs.hasOwnProperty('mdTrimColumnNames')) {
-        cell.innerHTML = '<trim>' + cell.innerHTML + '</trim>';
-      }
-    });
-    
-    // ensures a minimum width of 64px for column names
-    if(tAttrs.hasOwnProperty('mdTrimColumnNames')) {
-      var minWidth = 120 * tElement.find('th').length;
-      
-      if(tElement.parent().attr('md-row-select')) {
-        minWidth += 66;
-      }
-      
-      tElement.parent().css({
-        'min-width': minWidth + 'px',
-        'table-layout': 'fixed'
-      });
-    }
+  function compile(tElement) {
+    tElement.find('th').attr('md-column-header', '');
     
     // enable row selection
     if(tElement.parent().attr('md-row-select')) {
       var ngRepeat = tElement.parent().find('tbody').find('tr').attr('ng-repeat');
       
       if(ngRepeat) {
-        var items = $mdTable.parse(ngRepeat).items;
-        var checkbox = angular.element('<md-checkbox></md-checkbox>');
-        
-        checkbox.attr('aria-label', 'Select All');
-        checkbox.attr('ng-click', 'toggleAll(' + items + ')');
-        checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': allSelected()}]');
-        checkbox.attr('ng-disabled', '!getCount(' + items + ')');
-        
-        tElement.find('tr').prepend(angular.element('<th></th>').append(checkbox));
+        tElement.find('tr').prepend(angular.element('<th md-select-all="' + $mdTable.parse(ngRepeat).items + '"></th>'));
       }
     }
     
@@ -342,99 +296,23 @@ angular.module('md.data.table').directive('mdTableHead', ['$document', '$mdTable
     bindToController: {
       order: '=mdOrder'
     },
+    compile: compile,
     controller: function () {},
-    controllerAs: 'headCtrl',
+    controllerAs: 'theadCtrl',
     require: '^mdDataTable',
     scope: {
       trigger: '=mdTrigger'
-    },
-    compile: compile
+    }
   };
-}]);
+}
 
-
-angular.module('md.data.table').directive('orderBy', ['$interpolate', '$timeout', function ($interpolate, $timeout) {
-  'use strict';
-
-  function template(tElement) {
-    return '<th ng-click="setOrder()" ng-class="{\'md-active\': isActive()}">' + tElement.html() + '</th>';
-  }
-
-  function postLink(scope, element, attrs, headCtrl) {
-    
-    if(angular.isDefined(attrs.descendFirst)) {
-      attrs.$set('descendFirst', true);
-    }
-
-    if(element.text().match(/{{[^}]+}}/)) {
-      var text = $interpolate('\'' + element.text() + '\'')(scope.$parent);
-      var trim = element.find('trim');
-
-      if(trim.length) {
-        trim.text(text.slice(1, -1));
-      } else if(angular.isDefined(attrs.numeric)) {
-        element.find('div').append(text.slice(1, -1));
-      } else {
-        element.find('div').prepend(text.slice(1, -1));
-      }
-    }
-
-    scope.getDirection = function () {
-      if(scope.isActive()) {
-        return headCtrl.order[0] === '-' ? 'down' : 'up';
-      }
-      return attrs.descendFirst ? 'down' : 'up';
-    };
-
-    scope.isActive = function () {
-      return headCtrl.order === scope.order || headCtrl.order === '-' + scope.order;
-    };
-
-    scope.setOrder = function () {
-      if(scope.isActive()) {
-        headCtrl.order = headCtrl.order === scope.order ? '-' + scope.order : scope.order;
-      } else {
-        headCtrl.order = attrs.descendFirst ? '-' + scope.order : scope.order;
-      }
-      
-      if(headCtrl.pullTrigger) {
-        $timeout(headCtrl.pullTrigger);
-      }
-    };
-  }
-
-  function compile(tElement, tAttrs) {
-    var sortIcon = angular.element('<md-icon></md-icon>');
-
-    sortIcon.attr('md-svg-icon', 'templates.arrow.html');
-    sortIcon.attr('ng-class', 'getDirection()');
-
-    if(angular.isDefined(tAttrs.numeric)) {
-      tElement.prepend(sortIcon);
-    } else {
-      tElement.append(sortIcon);
-    }
-
-    tElement.html('<div>' + tElement.html() + '</div>');
-
-    return postLink;
-  }
-
-  return {
-    compile: compile,
-    replace: true,
-    require: '^mdTableHead',
-    restrict: 'A',
-    scope: {
-      order: '@orderBy'
-    },
-    template: template
-  };
-}]);
+mdTableHead.$inject = ['$mdTable', '$q'];
 
 angular.module('md.data.table')
+  .directive('mdDataTablePagination', mdDataTablePagination)
+  .controller('mdPaginationCtrl', mdPaginationCtrl);
 
-.directive('mdDataTablePagination', ['$q', function ($q) {
+function mdDataTablePagination($q) {
   'use strict';
 
   function postLink(scope, element, attrs) {
@@ -489,9 +367,11 @@ angular.module('md.data.table')
     templateUrl: 'templates.md-data-table-pagination.html',
     link: postLink
   };
-}])
+}
 
-.controller('mdPaginationCtrl', ['$scope', '$timeout', function ($scope, $timeout) {
+mdDataTablePagination.$inject = ['$q'];
+
+function mdPaginationCtrl($scope, $timeout) {
   'use strict';
 
   var min = 1;
@@ -565,10 +445,14 @@ angular.module('md.data.table')
     min = $scope.min();
   };
 
-}]);
+}
+
+mdPaginationCtrl.$inject = ['$scope', '$timeout'];
 
 
-angular.module('md.data.table').directive('mdTableProgress', function () {
+angular.module('md.data.table').directive('mdTableProgress', mdTableProgress);
+
+function mdTableProgress() {
   'use strict';
   
   function postLink(scope, element, attrs, tableCtrl) {
@@ -592,25 +476,21 @@ angular.module('md.data.table').directive('mdTableProgress', function () {
     replace: true,
     templateUrl: 'templates.md-data-table-progress.html'
   };
-});
+}
 
 
-angular.module('md.data.table')
+angular.module('md.data.table').directive('mdTableRow', mdTableRow);
 
-.directive('mdTableRow', ['$mdTable', '$timeout', function ($mdTable, $timeout) {
+function mdTableRow($mdTable, $timeout) {
   'use strict';
 
   function postLink(scope, element, attrs, tableCtrl) {
     
-    if(element.parent().parent().attr('md-row-select')) {
-      var disable = element.parent().attr('md-disable-select');
+    if(angular.isDefined(attrs.mdSelectRow)) {
+      scope.mdClasses = tableCtrl.classes;
       
-      if(scope.$last && !tableCtrl.listener) {
-        tableCtrl.onRepeatEnd($mdTable.parse(attrs.ngRepeat));
-      }
-      
-      var isDisabled = function() {
-        return disable ? scope.$eval(disable) : false;
+      scope.isDisabled = function() {
+        return scope.$eval(attrs.mdDisableSelect);
       };
       
       scope.isSelected = function (item) {
@@ -620,7 +500,7 @@ angular.module('md.data.table')
       scope.toggleRow = function (item, event) {
         event.stopPropagation();
         
-        if(isDisabled()) {
+        if(scope.isDisabled()) {
           return;
         }
         
@@ -632,18 +512,28 @@ angular.module('md.data.table')
       };
     }
     
-    tableCtrl.columns.forEach(function (column, index) {
-      if(column.isNumeric) {
-        var cell = element.children().eq(index);
-        
-        cell.addClass('numeric');
-        
-        if(angular.isDefined(cell.attr('show-unit'))) {
-          $timeout(function () {
-            cell.text(cell.text() + tableCtrl.columns[index].unit);
-          });
-        }
+    if(attrs.ngRepeat) {
+      if(scope.$last) {
+        tableCtrl.isReady.body.resolve($mdTable.parse(attrs.ngRepeat));
       }
+    } else if(tableCtrl.isLastChild(element.parent().children(), element[0])) {
+      tableCtrl.isReady.body.resolve();
+    }
+    
+    tableCtrl.isReady.head.promise.then(function () {
+      tableCtrl.columns.forEach(function (column, index) {
+        if(column.isNumeric) {
+          var cell = element.children().eq(index);
+          
+          cell.addClass('numeric');
+          
+          if(angular.isDefined(cell.attr('show-unit'))) {
+            $timeout(function () {
+              cell.text(cell.text() + tableCtrl.columns[index].unit);
+            });
+          }
+        }
+      });
     });
   }
   
@@ -651,39 +541,13 @@ angular.module('md.data.table')
     link: postLink,
     require: '^^mdDataTable'
   };
-}])
+}
 
-.directive('mdTableRepeat', ['$mdTable', function ($mdTable) {
-  'use strict';
-  
-  function compile(tElement, tAttrs) {
-    var item = $mdTable.parse(tAttrs.ngRepeat).item;
-    var checkbox = angular.element('<md-checkbox></md-checkbox>');
-    
-    checkbox.attr('aria-label', 'Select Row');
-    checkbox.attr('ng-click', 'toggleRow(' + item + ', $event)');
-    checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': isSelected(' + item + ')}]');
-    
-    if(tElement.parent().attr('md-disable-select')) {
-      checkbox.attr('ng-disabled', tElement.parent().attr('md-disable-select'));
-    }
-    
-    tElement.prepend(angular.element('<td></td>').append(checkbox));
-    
-    if(angular.isDefined(tElement.parent().attr('md-auto-select'))) {
-      tAttrs.$set('ngClick', 'toggleRow(' + item + ', $event)');
-    }
-    
-    tAttrs.$set('ngClass', '{\'md-selected\': isSelected(' + item + ')}');
-  }
-  
-  return {
-    compile: compile,
-    priority: 1001
-  };
-}]);
+mdTableRow.$inject = ['$mdTable', '$timeout'];
 
-angular.module('md.data.table').factory('$mdTable', function () {
+angular.module('md.data.table').factory('$mdTable', mdTableService);
+
+function mdTableService() {
   'use strict';
   
   var cache = {};
@@ -731,7 +595,119 @@ angular.module('md.data.table').factory('$mdTable', function () {
     parse: parse
   };
   
-});
+}
+
+angular.module('md.data.table').directive('mdSelectAll', mdSelectAll);
+
+function mdSelectAll() {
+
+  function template(tElement) {
+		var checkbox = angular.element('<md-checkbox></md-checkbox>');
+	
+		checkbox.attr('aria-label', 'Select All');
+		checkbox.attr('ng-click', 'toggleAll()');
+		checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': allSelected()}]');
+		checkbox.attr('ng-disabled', '!getCount()');
+	
+		tElement.append(checkbox);
+  }
+
+  function postLink(scope, element, attrs, tableCtrl) {
+		var count = 0;
+		
+		var getSelectableItems = function() {
+		  return scope.items.filter(function (item) {
+			  	return !tableCtrl.isDisabled(item);
+		  });
+		};
+		
+		tableCtrl.isReady.body.promise.then(function () {
+			scope.mdClasses = tableCtrl.classes;
+			
+			scope.getCount = function() {
+				return (count = scope.items.reduce(function(sum, item) {
+						return tableCtrl.isDisabled(item) ? sum : ++sum;
+				}, 0));
+			};
+			
+			scope.allSelected = function () {
+				return count && count === tableCtrl.selectedItems.length;
+			};
+			
+			scope.toggleAll = function () {
+				var selectableItems = getSelectableItems(scope.items);
+			
+				if(selectableItems.length === tableCtrl.selectedItems.length) {
+						tableCtrl.selectedItems.splice(0);
+				} else {
+						tableCtrl.selectedItems = selectableItems;
+				}
+			};
+		});
+  }
+
+  return {
+		link: postLink,
+		require: '^^mdDataTable',
+		scope: {
+		  items: '=mdSelectAll'
+		},
+		template: template
+  };
+}
+
+angular.module('md.data.table').directive('mdSelectRow', mdSelectRow);
+
+function mdSelectRow($mdTable) {
+	'use strict';
+
+	function template(tElement, tAttrs) {
+		var item = $mdTable.parse(tAttrs.ngRepeat).item;
+		var checkbox = angular.element('<md-checkbox></md-checkbox>');
+
+		checkbox.attr('aria-label', 'Select Row');
+		checkbox.attr('ng-click', 'toggleRow(' + item + ', $event)');
+		checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': isSelected(' + item + ')}]');
+
+		if(tAttrs.mdDisableSelect) {
+			checkbox.attr('ng-disabled', 'isDisabled()');
+		}
+
+		tElement.prepend(angular.element('<td></td>').append(checkbox));
+
+		if(angular.isDefined(tAttrs.mdAutoSelect)) {
+			tAttrs.$set('ngClick', 'toggleRow(' + item + ', $event)');
+		}
+
+		tAttrs.$set('ngClass', '{\'md-selected\': isSelected(' + item + ')}');
+	}
+
+	function postLink(scope, element, attrs, tableCtrl) {
+		var model = {};
+		var ngRepeat = $mdTable.parse(attrs.ngRepeat);
+		
+		if(!angular.isFunction(scope.isDisabled)) {
+			scope.isDisabled = function () { return false; };
+		}
+		
+		tableCtrl.isDisabled = function (item) {
+			model[ngRepeat.item] = item;
+			return scope.isDisabled(model);
+		}
+	}
+
+	return {
+		link: postLink,
+		priority: 1001,
+		require: '^^mdDataTable',
+		scope: {
+			isDisabled: '&?mdDisableSelect'
+		},
+		template: template
+	};
+}
+
+mdSelectRow.$inject = ['$mdTable'];
 
 angular.module('md.table.templates', ['templates.arrow.html', 'templates.navigate-before.html', 'templates.navigate-first.html', 'templates.navigate-last.html', 'templates.navigate-next.html', 'templates.md-data-table-pagination.html', 'templates.md-data-table-progress.html']);
 

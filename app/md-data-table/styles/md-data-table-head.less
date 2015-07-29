@@ -1,77 +1,85 @@
 table[md-data-table] > thead:not([md-table-progress]) {
-  > tr {
-    height: 56px;
+
+  > tr > th {
+    font-size: 12px;
+    color: @md-dark-secondary;
+    white-space: nowrap;
     
-    > th {
-      font-size: 12px;
-      color: @md-dark-secondary;
-      white-space: nowrap;
+    > div {
+      display: flex;
+      align-items: center;
+      height: 56px;
+      line-height: 18px;
+    }
+    
+    &.numeric > div {
+      justify-content: flex-end;
+    }
+    
+    &.trim {
+      position: relative;
+      min-width: 60px;
       
-      &.md-active {
-        color: @md-dark;
+      &.numeric:hover > div {
+        left: 0;
+      }
+      &:not(.numeric):hover > div {
+        right: 0;
+      }
+      
+      > div {
+        position: absolute;
+        top: 1px; right: 28px;
+        bottom: 0; left: 28px;
+        transition: left 0.25s ease, right 0.25s ease;
+        
+        > div {
+          flex: 0 1 auto;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
     }
   }
-
-  &[md-trim-column-names] > tr > th {
+  
+  &[md-order] > tr > th.order {
     transition: color 0.25s;
     
-    trim {
-      display: block;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    &:not(.md-active):not(:hover) > div > md-icon {
+      fill: transparent;
     }
-  }
-  
-  &[md-order][md-trim-column-names] > tr > th:not(.md-active):not(:hover) > div > md-icon {
-    display: none;
-  }
-  
-  &[md-order]:not([md-trim-column-names]) > tr > th:not(.md-active):not(:hover) > div > md-icon {
-    fill: transparent;
-  }
-  
-  &[md-order] > tr > th[order-by] {
-    transition: color 0.25s;
+    
+    &.md-active {
+      color: @md-dark;
+      
+      > div > md-icon {
+        fill: @md-dark;
+      }
+    }
     
     &:hover {
       color: @md-dark;
       cursor: pointer;
     }
-    
-    &[numeric] > div {
-      justify-content: flex-end;
-    }
-    
-    &.md-active > div > md-icon {
-      fill: @md-dark;
-    }
-    
-    &:not(.md-active) {
+
+    &:not(.md-active):hover {
       > div > md-icon {
         fill: @md-dark-disabled;
       }
     }
     
-    > div {
-      display: flex;
-      align-items: center;
-      line-height: 18px;
+    > div > md-icon {
+      flex: 0 0 auto;
+      height: 18px;
+      width: 18px;
+      margin: 0 4px;
+      transition: fill 0.25s, transform 0.25s;
       
-      > md-icon {
-        flex: 0 0 auto;
-        height: 18px;
-        width: 18px;
-        margin: 0 4px;
-        transition: fill 0.25s, transform 0.25s;
-        
-        &.down {
-          transform: rotate(180deg);
-        }
-        &.up {
-          transform: rotate(0deg);
-        }
+      &.down {
+        transform: rotate(180deg);
+      }
+      &.up {
+        transform: rotate(0deg);
       }
     }
   }

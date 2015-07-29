@@ -1,11 +1,13 @@
 angular.module('md.data.table')
+  .directive('mdDataTable', mdDataTable)
+  .controller('mdDataTableCtrl', mdDataTableCtrl);
 
-.directive('mdDataTable', function () {
+function mdDataTable() {
   'use strict';
   
   function compile(tElement, tAttrs) {
     var head = tElement.find('thead');
-    var body = tElement.find('tbody');
+    var rows = tElement.find('tbody').find('tr');
     var foot = tElement.find('tfoot');
     
     // make sure the table has a head element
@@ -19,12 +21,11 @@ angular.module('md.data.table')
       }
       
       head = tElement.find('thead');
-      body = tElement.find('tbody');
+      rows = tElement.find('tbody').find('tr');
     }
     
-    // notify the children to begin work
     head.attr('md-table-head', '');
-    body.attr('md-table-body', '');
+    rows.attr('md-table-row', '');
     
     if(foot.length) {
       foot.attr('md-table-foot', '');
@@ -34,14 +35,16 @@ angular.module('md.data.table')
       }
     }
     
-    // log rudimentary warnings for the developer
-    if(!body.children().attr('ng-repeat')) {
-      if(tAttrs.mdRowSelect) {
-        console.warn('Use ngRepeat to enable automatic row selection.');
-      }
-      if(head.attr('md-order')) {
-        console.warn('Column ordering without ngRepeat is not supported by this directive.');
-      }
+    if(tAttrs.mdRowSelect && rows.attr('ng-repeat')) {
+      rows.attr('md-select-row', '');
+    }
+    
+    if(tAttrs.mdRowSelect && !rows.attr('ng-repeat')) {
+      console.warn('Please use ngRepeat to enable row selection.');
+    }
+    
+    if(head.attr('md-order') && !rows.attr('ng-repeat')) {
+      console.warn('Column ordering without ngRepeat is not supported.');
     }
   }
   
@@ -51,24 +54,35 @@ angular.module('md.data.table')
       selectedItems: '=mdRowSelect'
     },
     compile: compile,
-    controller: 'mdDataTableController',
+    controller: 'mdDataTableCtrl',
     controllerAs: 'tableCtrl',
     restrict: 'A',
     scope: {}
   };
-})
+}
 
-.controller('mdDataTableController', ['$attrs', '$element', '$q', '$scope', function ($attrs, $element, $q, $scope) {
+function mdDataTableCtrl($attrs, $element, $q, $scope) {
   'use strict';
 
   var self = this;
+  
+  self.columns = [];
+  self.classes = [];
+  self.isReady = {
+    body: $q.defer(),
+    head: $q.defer()
+  };
 
-  if($attrs.mdRowSelect && !angular.isArray(self.selectedItems)) {
-    self.selectedItems = [];
-    // log warning for developer
-    console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
-    $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
-    'i.e. ' + $attrs.mdRowSelect + ' = [], two-way data binding will fail.');
+  if($attrs.mdRowSelect) {
+    self.columns.push({ isNumeric: false });
+    
+    if(!angular.isArray(self.selectedItems)) {
+      self.selectedItems = [];
+      // log warning for developer
+      console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
+      $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
+      'i.e. ' + $attrs.mdRowSelect + ' = [], two-way data binding will fail.');
+    }
   }
   
   if($attrs.mdProgress) {
@@ -77,10 +91,6 @@ angular.module('md.data.table')
       $q.when(self.progress)['finally'](deferred.resolve);
     });
   }
-
-  self.columns = [];
-  self.classes = [];
-  self.repeatEnd = [];
 
   // support theming
   ['md-primary', 'md-hue-1', 'md-hue-2', 'md-hue-3'].forEach(function(mdClass) {
@@ -107,8 +117,12 @@ angular.module('md.data.table')
     self.hideProgress();
   };
   
-  self.repeatEnd.push(function (ngRepeat) {
-    if(!self.listener && $attrs.mdRowSelect) {
+  self.isLastChild = function (siblings, child) {
+    return Array.prototype.indexOf.call(siblings, child) === siblings.length - 1;
+  }
+
+  self.isReady.body.promise.then(function (ngRepeat) {
+    if($attrs.mdRowSelect && ngRepeat) {
       self.listener = $scope.$parent.$watch(ngRepeat.items, function (newValue, oldeValue) {
         if(newValue !== oldeValue) {
           self.selectedItems.splice(0);
@@ -116,23 +130,13 @@ angular.module('md.data.table')
       });
     }
   });
-  
-  self.onRepeatEnd = function (ngRepeat) {
-    self.repeatEnd.forEach(function (listener) {
-      listener(ngRepeat);
-    });
-  };
 
-  self.setColumns = function (cell) {
-    if(!cell.attributes.numeric) {
-      return self.columns.push({ isNumeric: false });
-    }
-    
+  self.setColumn = function (column) {
     self.columns.push({
-      isNumeric: true,
-      unit: cell.attributes.unit ? cell.attributes.unit.value : undefined,
+      isNumeric: angular.isDefined(column.numeric),
+      unit: column.unit
     });
   };
+}
 
-  angular.forEach($element.find('th'), self.setColumns);
-}]);
+mdDataTableCtrl.$inject = ['$attrs', '$element', '$q', '$scope'];

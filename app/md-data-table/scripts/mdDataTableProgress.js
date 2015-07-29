@@ -1,4 +1,6 @@
-angular.module('md.data.table').directive('mdTableProgress', function () {
+angular.module('md.data.table').directive('mdTableProgress', mdTableProgress);
+
+function mdTableProgress() {
   'use strict';
   
   function postLink(scope, element, attrs, tableCtrl) {
@@ -22,4 +24,4 @@ angular.module('md.data.table').directive('mdTableProgress', function () {
     replace: true,
     templateUrl: 'templates.md-data-table-progress.html'
   };
-});
+}

@@ -7,12 +7,6 @@
 @import 'md-data-table-pagination';
 @import 'md-data-table-progress';
 
-.column-padding(@skip) {
-  &:nth-child(n + @{skip}):not(:last-child) {
-    padding-right: 0;
-  }
-}
-
 md-data-table-container {
   display: block;
   max-width: 100%;
@@ -47,7 +41,7 @@ table[md-data-table] {
       padding: 0 24px;
     }
     &:nth-child(2) {
-      padding-right: 28px;
+      padding: 0 28px 0 0;
     }
     &:nth-child(n+3):nth-last-child(n+2) {
       padding: 0 28px;
@@ -60,7 +54,7 @@ table[md-data-table] {
     text-align: left;
     
     &:last-child {
-      padding: 0 24px;
+      padding: 0 24px 0 28px;
     }
     
     &:focus {

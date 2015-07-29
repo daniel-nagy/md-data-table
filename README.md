@@ -8,7 +8,7 @@ Specification for Material Design data tables can be found [here](http://www.goo
 
 http://danielnagy.me/md-data-table
 
-Here is a fork-able [Codepen](http://codepen.io/anon/pen/rVZWRg?editors=101) of the demo application. Please use this to reproduce any issues you may be experiencing.
+Here is a fork-able [Codepen](http://codepen.io/anon/pen/EjOobZ?editors=101) of the demo application. Please use this to reproduce any issues you may be experiencing.
 
 ## License
 

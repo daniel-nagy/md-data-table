@@ -43,6 +43,22 @@ md-data-table-container ~ md-data-table-toolbar > *:not(:first-child) {
 md-data-table-container ~ md-data-table-toolbar > *:not(:last-child) {
   margin-right: 16px;
 }
+table[md-data-table]:not([md-row-select]) > thead:not([md-table-progress]) > tr > th.trim:first-child > div {
+  right: 28px;
+  left: 24px;
+}
+table[md-data-table]:not([md-row-select]) > thead:not([md-table-progress]) > tr > th.trim:nth-child(n+2):nth-last-child(n+2) > div {
+  right: 28px;
+  left: 28px;
+}
+table[md-data-table][md-row-select] > thead:not([md-table-progress]) > tr > th.trim:nth-child(2) > div {
+  right: 28px;
+  left: 0;
+}
+table[md-data-table][md-row-select] > thead:not([md-table-progress]) > tr > th.trim:nth-child(n+3):nth-last-child(n+2) > div {
+  right: 28px;
+  left: 28px;
+}
 table[md-data-table] > thead:not([md-table-progress]) > tr > th {
   font-size: 12px;
   color: rgba(0, 0, 0, 0.54);
@@ -68,18 +84,20 @@ table[md-data-table] > thead:not([md-table-progress]) > tr > th.trim {
   min-width: 60px;
 }
 table[md-data-table] > thead:not([md-table-progress]) > tr > th.trim.numeric:hover > div {
-  left: 0;
+  left: 0 !important;
 }
 table[md-data-table] > thead:not([md-table-progress]) > tr > th.trim:not(.numeric):hover > div {
-  right: 0;
+  right: 0 !important;
+}
+table[md-data-table] > thead:not([md-table-progress]) > tr > th.trim:last-child > div {
+  right: 24px;
+  left: 24px;
 }
 table[md-data-table] > thead:not([md-table-progress]) > tr > th.trim > div {
   position: absolute;
-  top: 1px;
-  right: 28px;
+  top: 0;
   bottom: 0;
-  left: 28px;
-  transition: left 0.25s ease, right 0.25s ease;
+  transition: left 0.35s ease, right 0.35s ease;
 }
 table[md-data-table] > thead:not([md-table-progress]) > tr > th.trim > div > div {
   -webkit-flex: 0 1 auto;
@@ -364,7 +382,7 @@ table[md-data-table][md-row-select] > tfoot > tr > td:first-child {
 table[md-data-table][md-row-select] > thead:not([md-table-progress]) > tr > th:nth-child(2),
 table[md-data-table][md-row-select] > tbody > tr > td:nth-child(2),
 table[md-data-table][md-row-select] > tfoot > tr > td:nth-child(2) {
-  padding-right: 28px;
+  padding: 0 28px 0 0;
 }
 table[md-data-table][md-row-select] > thead:not([md-table-progress]) > tr > th:nth-child(n+3):nth-last-child(n+2),
 table[md-data-table][md-row-select] > tbody > tr > td:nth-child(n+3):nth-last-child(n+2),
@@ -379,7 +397,7 @@ table[md-data-table] > tfoot > tr > td {
 table[md-data-table] > thead:not([md-table-progress]) > tr > th:last-child,
 table[md-data-table] > tbody > tr > td:last-child,
 table[md-data-table] > tfoot > tr > td:last-child {
-  padding: 0 24px;
+  padding: 0 24px 0 28px;
 }
 table[md-data-table] > thead:not([md-table-progress]) > tr > th:focus,
 table[md-data-table] > tbody > tr > td:focus,

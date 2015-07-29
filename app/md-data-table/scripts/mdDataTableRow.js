@@ -6,6 +6,8 @@ function mdTableRow($mdTable, $timeout) {
   function postLink(scope, element, attrs, tableCtrl) {
     
     if(angular.isDefined(attrs.mdSelectRow)) {
+      scope.mdClasses = tableCtrl.classes;
+      
       scope.isDisabled = function() {
         return scope.$eval(attrs.mdDisableSelect);
       };

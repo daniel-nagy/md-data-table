@@ -1,19 +1,13 @@
-angular.module('md.data.table')
-  .directive('mdTableRow', mdTableRow)
-  .directive('mdTableRepeat', mdTableRepeat);
+angular.module('md.data.table').directive('mdTableRow', mdTableRow);
 
 function mdTableRow($mdTable, $timeout) {
   'use strict';
 
-  function postLink(scope, element, attrs, ctrls) {
-    var tableCtrl = ctrls[0];
-    var tbodyCtrl = ctrls[1];
+  function postLink(scope, element, attrs, tableCtrl) {
     
-    if(element.parent().parent().attr('md-row-select')) {
-      var disable = element.parent().attr('md-disable-select');
-      
-      var isDisabled = function() {
-        return disable ? scope.$eval(disable) : false;
+    if(angular.isDefined(attrs.mdSelectRow)) {
+      scope.isDisabled = function() {
+        return scope.$eval(attrs.mdDisableSelect);
       };
       
       scope.isSelected = function (item) {
@@ -23,7 +17,7 @@ function mdTableRow($mdTable, $timeout) {
       scope.toggleRow = function (item, event) {
         event.stopPropagation();
         
-        if(isDisabled()) {
+        if(scope.isDisabled()) {
           return;
         }
         
@@ -36,10 +30,10 @@ function mdTableRow($mdTable, $timeout) {
     }
     
     if(attrs.ngRepeat) {
-      if(scope.$parent.$last) {
-        tableCtrl.isReady.body.resolve();
+      if(scope.$last) {
+        tableCtrl.isReady.body.resolve($mdTable.parse(attrs.ngRepeat));
       }
-    } else if(tbodyCtrl.isLastChild(element[0])) {
+    } else if(tableCtrl.isLastChild(element.parent().children(), element[0])) {
       tableCtrl.isReady.body.resolve();
     }
     
@@ -62,40 +56,8 @@ function mdTableRow($mdTable, $timeout) {
   
   return {
     link: postLink,
-    require: ['^^mdDataTable', '^mdTableBody']
+    require: '^^mdDataTable'
   };
 }
 
 mdTableRow.$inject = ['$mdTable', '$timeout'];
-
-function mdTableRepeat($mdTable) {
-  'use strict';
-  
-  function compile(tElement, tAttrs) {
-    var item = $mdTable.parse(tAttrs.ngRepeat).item;
-    var checkbox = angular.element('<md-checkbox></md-checkbox>');
-    
-    checkbox.attr('aria-label', 'Select Row');
-    checkbox.attr('ng-click', 'toggleRow(' + item + ', $event)');
-    checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': isSelected(' + item + ')}]');
-    
-    if(tElement.parent().attr('md-disable-select')) {
-      checkbox.attr('ng-disabled', tElement.parent().attr('md-disable-select'));
-    }
-    
-    tElement.prepend(angular.element('<td></td>').append(checkbox));
-    
-    if(angular.isDefined(tElement.parent().attr('md-auto-select'))) {
-      tAttrs.$set('ngClick', 'toggleRow(' + item + ', $event)');
-    }
-    
-    tAttrs.$set('ngClass', '{\'md-selected\': isSelected(' + item + ')}');
-  }
-  
-  return {
-    compile: compile,
-    priority: 1001
-  };
-}
-
-mdTableRepeat.$inject = ['$mdTable'];

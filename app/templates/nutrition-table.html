@@ -21,8 +21,8 @@
         <th numeric unit="%" order-by="iron.value" name="Iron"></th>
       </tr>
     </thead>
-    <tbody md-auto-select>
-      <tr ng-repeat="dessert in desserts.data | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+    <tbody>
+      <tr md-auto-select md-disable-select="dessert.calories.value > 300" ng-repeat="dessert in desserts.data | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
         <td>{{dessert.name}}</td>
         <td>{{dessert.calories.value}}</td>
         <td>{{dessert.fat.value | number: 2}}</td>

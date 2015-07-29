@@ -1,6 +1,39 @@
 ## Version History
 
+### 0.8.x
+
+**Version 0.8.0**
+
+#### Syntax Changes
+
+* The name of a column is now placed in a `name` attribute. This was decided do to the difficulty of transforming a template with interpolate strings and `ng-repeat`.
+* The `unit` and `show-unit` attributes can be used regardless of weather or not the column in numeric (if you want).
+* `md-trim-column-names` has been renamed to just `trim` and is now enabled individually for each column.
+* The `md-auto-select` and `md-disable-select` attributes have been moved to the `tr` element within the `tbody` element.
+
+#### Improvements
+
+* You may now use `ng-repeat` and `ng-attr-*` on column headers.
+* This version fixes issue #41.
+* This version fixes issue #57.
+* Trimming long column names is achieve cleanly with CSS and no longer uses `table-layout: fixed` or Javascript.
+
+#### Issues
+
+I have discovered an issue in Chrome's (and Opera's) web browser. This issue has existed for sometime and either no one has noticed it or no one has really cared. It appears Chrome has issues with properly rendering the table when the container is small enough to allow the table to scroll horizontally and the viewport is short enough that it can be scrolled vertically. This results in an undesirable laggy/rubber-band-ish effect when scrolling vertically for cells that meet one of the following criteria:
+
+* The cell is positioned relative.
+* The cell contains an `md-checkbox` element.
+* The cell contains an `md-icon` element.
+
+I have tested Safari, FireFox, Mobile Safari, and even IE 10 and was not able to reproduce this issue. I will open an issue for this momentarily. Please leave a comment if you have any ideas on how to fix this. If you know anyone who works for Google, make them fix it :stuck_out_tongue_closed_eyes:.
+
 ### 0.7.x
+
+**Version 0.7.6**
+
+* **Important:** Pagination is now its own toolbar and should not be wrapped in a `md-data-table-toolbar` element.
+* The pagination toolbar will now collapse into two separate toolbars on screens less than or equal to `600px` wide.
 
 **Version 0.7.5**
 

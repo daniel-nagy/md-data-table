@@ -44,7 +44,6 @@ md-data-table-container ~ md-data-table-toolbar > *:not(:last-child) {
   margin-right: 16px;
 }
 table[md-data-table] > thead:not([md-table-progress]) > tr > th {
-  position: relative;
   font-size: 12px;
   color: rgba(0, 0, 0, 0.54);
   white-space: nowrap;
@@ -65,6 +64,7 @@ table[md-data-table] > thead:not([md-table-progress]) > tr > th.numeric > div {
           justify-content: flex-end;
 }
 table[md-data-table] > thead:not([md-table-progress]) > tr > th.trim {
+  position: relative;
   min-width: 60px;
 }
 table[md-data-table] > thead:not([md-table-progress]) > tr > th.trim.numeric:hover > div {
@@ -125,12 +125,12 @@ table[md-data-table] > thead:not([md-table-progress])[md-order] > tr > th.order 
   -webkit-transform: rotate(0deg);
           transform: rotate(0deg);
 }
-table[md-data-table] > tbody[md-auto-select] > tr:focus {
-  outline: none;
-}
 table[md-data-table] > tbody > tr {
   height: 48px;
   transition: background-color 0.2s;
+}
+table[md-data-table] > tbody > tr[md-auto-select]:focus {
+  outline: none;
 }
 table[md-data-table] > tbody > tr:hover {
   background-color: #eeeeee !important;

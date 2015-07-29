@@ -1,7 +1,6 @@
 table[md-data-table] > thead:not([md-table-progress]) {
 
   > tr > th {
-    position: relative;
     font-size: 12px;
     color: @md-dark-secondary;
     white-space: nowrap;
@@ -18,6 +17,7 @@ table[md-data-table] > thead:not([md-table-progress]) {
     }
     
     &.trim {
+      position: relative;
       min-width: 60px;
       
       &.numeric:hover > div {

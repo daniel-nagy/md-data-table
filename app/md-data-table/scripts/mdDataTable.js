@@ -7,7 +7,7 @@ function mdDataTable() {
   
   function compile(tElement, tAttrs) {
     var head = tElement.find('thead');
-    var body = tElement.find('tbody');
+    var rows = tElement.find('tbody').find('tr');
     var foot = tElement.find('tfoot');
     
     // make sure the table has a head element
@@ -21,12 +21,11 @@ function mdDataTable() {
       }
       
       head = tElement.find('thead');
-      body = tElement.find('tbody');
+      rows = tElement.find('tbody').find('tr');
     }
     
-    // notify the children to begin work
     head.attr('md-table-head', '');
-    body.attr('md-table-body', '');
+    rows.attr('md-table-row', '');
     
     if(foot.length) {
       foot.attr('md-table-foot', '');
@@ -36,14 +35,16 @@ function mdDataTable() {
       }
     }
     
-    // log rudimentary warnings for the developer
-    if(!body.children().attr('ng-repeat')) {
-      if(tAttrs.mdRowSelect) {
-        console.warn('Use ngRepeat to enable automatic row selection.');
-      }
-      if(head.attr('md-order')) {
-        console.warn('Column ordering without ngRepeat is not supported by this directive.');
-      }
+    if(tAttrs.mdRowSelect && rows.attr('ng-repeat')) {
+      rows.attr('md-select-row', '');
+    }
+    
+    if(tAttrs.mdRowSelect && !rows.attr('ng-repeat')) {
+      console.warn('Please use ngRepeat to enable row selection.');
+    }
+    
+    if(head.attr('md-order') && !rows.attr('ng-repeat')) {
+      console.warn('Column ordering without ngRepeat is not supported.');
     }
   }
   
@@ -115,9 +116,13 @@ function mdDataTableCtrl($attrs, $element, $q, $scope) {
     self.deferred = undefined;
     self.hideProgress();
   };
+  
+  self.isLastChild = function (siblings, child) {
+    return Array.prototype.indexOf.call(siblings, child) === siblings.length - 1;
+  }
 
   self.isReady.body.promise.then(function (ngRepeat) {
-    if($attrs.mdRowSelect) {
+    if($attrs.mdRowSelect && ngRepeat) {
       self.listener = $scope.$parent.$watch(ngRepeat.items, function (newValue, oldeValue) {
         if(newValue !== oldeValue) {
           self.selectedItems.splice(0);
@@ -127,14 +132,10 @@ function mdDataTableCtrl($attrs, $element, $q, $scope) {
   });
 
   self.setColumn = function (column) {
-    if(angular.isDefined(column.numeric)) {
-      return self.columns.push({
-        isNumeric: true,
-        unit: column.unit || undefined,
-      });
-    }
-    
-    self.columns.push({ isNumeric: false });
+    self.columns.push({
+      isNumeric: angular.isDefined(column.numeric),
+      unit: column.unit
+    });
   };
 }
 

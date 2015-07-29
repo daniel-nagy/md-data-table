@@ -5,7 +5,7 @@ function mdColumnHeader($compile, $timeout) {
 
   function postLink(scope, element, attrs, ctrls) {
     var tableCtrl = ctrls[0];
-    var theadCtrl = ctrls[1];
+    var headCtrl = ctrls[1];
     var template = angular.element('<th></th>');
       
     template.text('{{name}}');
@@ -33,24 +33,24 @@ function mdColumnHeader($compile, $timeout) {
       
       scope.getDirection = function () {
         if(scope.isActive()) {
-          return theadCtrl.order[0] === '-' ? 'down' : 'up';
+          return headCtrl.order[0] === '-' ? 'down' : 'up';
         }
         return attrs.descendFirst ? 'down' : 'up';
       };
       
       scope.isActive = function () {
-        return theadCtrl.order === scope.order || theadCtrl.order === '-' + scope.order;
+        return headCtrl.order === scope.order || headCtrl.order === '-' + scope.order;
       };
       
       scope.setOrder = function () {
         if(scope.isActive()) {
-          theadCtrl.order = theadCtrl.order === scope.order ? '-' + scope.order : scope.order;
+          headCtrl.order = headCtrl.order === scope.order ? '-' + scope.order : scope.order;
         } else {
-          theadCtrl.order = angular.isDefined(attrs.descendFirst) ? '-' + scope.order : scope.order;
+          headCtrl.order = angular.isDefined(attrs.descendFirst) ? '-' + scope.order : scope.order;
         }
         
-        if(theadCtrl.pullTrigger) {
-          $timeout(theadCtrl.pullTrigger);
+        if(headCtrl.pullTrigger) {
+          $timeout(headCtrl.pullTrigger);
         }
       };
       
@@ -71,7 +71,7 @@ function mdColumnHeader($compile, $timeout) {
       if(scope.$parent.$last) {
         tableCtrl.isReady.head.resolve();
       }
-    } else if(theadCtrl.isLastChild(template[0])) {
+    } else if(tableCtrl.isLastChild(template.parent().children(), template[0])) {
       tableCtrl.isReady.head.resolve();
     }
   }

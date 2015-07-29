@@ -89,18 +89,18 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
   <table md-data-table md-row-select="selected" md-progress="deferred">
     <thead md-order="query.order" md-trigger="onOrderChange">
       <tr>
-        <th order-by="name">Dessert (100g serving)</th>
-        <th numeric order-by="calories.value">Calories</th>
-        <th numeric unit="g" order-by="fat.value">Fat</th>
-        <th numeric unit="g" order-by="carbs.value">Carbs</th>
-        <th numeric unit="g" order-by="protein.value">Protein</th>
-        <th numeric unit="mg" order-by="sodium.value">Sodium</th>
-        <th numeric unit="%" order-by="calcium.value">Calcium</th>
-        <th numeric unit="%" order-by="iron.value">Iron</th>
+        <th name="Dessert" unit="100g serving" order-by="name"></th>
+        <th numeric name="Calories" order-by="calories.value"></th>
+        <th numeric name="Fat" unit="g" order-by="fat.value"></th>
+        <th numeric name="Carbs" unit="g" order-by="carbs.value"></th>
+        <th numeric name="Protein" unit="g" order-by="protein.value"></th>
+        <th numeric name="Sodium" unit="mg" order-by="sodium.value"></th>
+        <th numeric name="Calcium" unit="%" order-by="calcium.value"></th>
+        <th numeric name="Iron" unit="%" order-by="iron.value"></th>
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="dessert in desserts.data">
+      <tr md-auto-select ng-repeat="dessert in desserts.data">
         <td>{{dessert.name}}</td>
         <td>{{dessert.calories.value}}</td>
         <td>{{dessert.fat.value | number: 1}}</td>
@@ -119,6 +119,32 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 ```
 
 ## Change Log
+
+**Version 0.8.0**
+
+#### Syntax Changes
+
+* The name of a column is now placed in a `name` attribute. This decision was made do to the difficulty of transforming the template with interpolate strings and `ng-repeat`.
+* The `unit` and `show-unit` attributes can be used regardless of weather or not the column in numeric (if you want).
+* `md-trim-column-names` has been renamed to just `trim` and is now enabled individually for each column.
+* The `md-auto-select` and `md-disable-select` attributes have been moved to the `tr` element within the `tbody` element.
+
+#### Improvements
+
+* You may now (properly) use `ng-repeat` and `ng-attr-*` on column headers.
+* This version fixes issue #41.
+* This version fixes issue #57.
+* Trimming long column names is achieved cleanly with CSS and no longer uses `table-layout: fixed` or Javascript.
+
+#### Issues
+
+I have discovered an issue in Chrome's (and Opera's) web browser. This issue has existed for sometime and either no one has noticed it or no one has really cared. It appears Chrome has issues with properly rendering the table when the container is small enough to allow the table to scroll horizontally and the viewport is short enough that it can be scrolled vertically. This results in an undesirable laggy/rubber-band-ish effect when scrolling vertically for cells that meet one of the following criteria:
+
+* The cell is positioned relative.
+* The cell contains an `md-checkbox` element.
+* The cell contains an `md-icon` element.
+
+I have tested Safari, FireFox, Mobile Safari, and even IE 10 and was not able to reproduce this issue. I will open an issue for this momentarily. Please leave a comment if you have any ideas on how to fix this. If you know anyone who works for Google, make them fix it :stuck_out_tongue_closed_eyes:.
 
 **Version 0.7.6**
 
@@ -200,13 +226,21 @@ Just add an `orderBy:` property to the `ng-repeat` attribute that matches the `m
 </md-data-table-container>
 ```
 
-### Long Header Titles
+### Long Column Headers
 
-| Attribute              | Target    | Type   | Description |
-| :--------------------- | :-------- | :----- | :---------- |
-| `md-trim-column-names` | `<thead>` | `NULL` | Enable truncating column names. |
+| Attribute | Target    | Type   | Description |
+| :-------- | :-------- | :----- | :---------- |
+| `trim`    | `<th>`    | `NULL` | trim long column names. |
 
-Column names will be shortened if they exceed the width of the cell minus the `56px` of padding between cells. If the name exceeds the width of the cell plus the `56px` of padding between cells, then only an additional `56px` of text will be shown the rest will remain truncated.
+When `trim` is place on a column header, the width of the column will be determined by the column body. If the width of the column header exceeds the width of the column body, it will be truncated with ellipsis.
+
+I believe it is wise to restrict the minimum width of a column. By default column headers will enforce a minimum width of `60px`. This is a just a CSS property; however, you may overwrite it in your style sheet.
+
+```css
+table[md-data-table] > thead > tr > th > div.trim {
+  min-width: 100px;
+}
+```
 
 ### Numeric Columns
 
@@ -273,18 +307,16 @@ $scope.mySkip = function (item, index) {
 | Attribute           | Target    | Type    | Description |
 | :------------------ | :-------- | :------ | :---------- |
 | `md-row-select`     | `<table>` | `Array` | Two-way data binding of selected items |
-| `md-auto-select`    | `<tbody>` | `NULL`  | allow row selection by clicking anywhere inside the row. |
-| `md-disable-select` | `<tbody>` | `expression | function` | Conditionally disable row selection |
+| `md-auto-select`    | `<tr>`    | `NULL`  | allow row selection by clicking anywhere inside the row. |
+| `md-disable-select` | `<tr>`    | `expression | function` | Conditionally disable row selection |
 
 **Example: Disable all desserts with more than 400 calories.**
 
 ```html
-<tbody md-disable-select="dessert.calories.value > 4000"></tbody>
+<tr md-disable-select="dessert.calories.value > 4000"></tr>
 <!-- or assuming isDisabled is defined in you controller -->
-<tbody md-disable-select="isDisabled(dessert)"></tbody>
+<tr md-disable-select="isDisabled(dessert)"></tr>
 ```
-
-> Be sure to define the variable in your controller for two-way data binding to work. If you fail to do so, a friendly reminder will be logged to the console.
 
 ### Table Progress
 

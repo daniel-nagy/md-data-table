@@ -30,18 +30,18 @@
   <table md-data-table md-row-select="selected" md-progress="deferred" class="md-primary">
     <thead md-order="query.order" md-trigger="onChange">
       <tr>
-        <th order-by="nameToLower">Dessert (100g serving)</th>
-        <th numeric order-by="calories.value">Calories</th>
-        <th numeric unit="g">Fat</th>
-        <th numeric unit="g">Carbs</th>
-        <th numeric unit="g">Protein</th>
-        <th numeric unit="mg">Sodium</th>
-        <th numeric unit="%">Calcium</th>
-        <th numeric unit="%">Iron</th>
+        <th name="Dessert" unit="100g serving" order-by="name"></th>
+        <th numeric name="Calories" order-by="calories.value"></th>
+        <th numeric name="Fat" unit="g"></th>
+        <th numeric name="Carbs" unit="g"></th>
+        <th numeric name="Protein" unit="g"></th>
+        <th numeric name="Sodium" unit="mg"></th>
+        <th numeric name="Calcium" unit="%"></th>
+        <th numeric name="Iron" unit="%"></th>
       </tr>
     </thead>
-    <tbody md-auto-select>
-      <tr ng-repeat="dessert in desserts.data">
+    <tbody>
+      <tr md-auto-select ng-repeat="dessert in desserts.data">
         <td>{{dessert.name}}</td>
         <td>{{dessert.calories.value}}</td>
         <td>{{dessert.fat.value | number: 1}}</td>

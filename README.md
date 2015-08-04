@@ -146,6 +146,10 @@ I have discovered an issue in Chrome's (and Opera's) web browser. This issue has
 
 I have tested Safari, FireFox, Mobile Safari, and even IE 10 and was not able to reproduce this issue. I will open an issue for this momentarily. Please leave a comment if you have any ideas on how to fix this. If you know anyone who works for Google, make them fix it :stuck_out_tongue_closed_eyes:.
 
+**Update**
+
+It appears the latest version of Chrome (v44.0.2403.130) for OS X has resolved this issue, yay! :smiley:
+
 **Version 0.7.6**
 
 * **Important:** Pagination is now its own toolbar and should not be wrapped in a `md-data-table-toolbar` element.

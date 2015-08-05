@@ -148,7 +148,9 @@ I have tested Safari, FireFox, Mobile Safari, and even IE 10 and was not able to
 
 **Update**
 
-It appears the latest version of Chrome (v44.0.2403.130) for OS X has resolved this issue, yay! :smiley:
+~~It appears the latest version of Chrome (v44.0.2403.130) for OS X has resolved this issue, yay!~~
+
+I spoke too soon. On my work machine, an older non-retina display Macbook Pro, this is not experienced; however, on my personal machine, a retina display Macbook Pro, this is still experienced. It is clear that not all OS X Chrome users are effected by this bug. This bug seems to be related to hardware in some way? My personal machine has an Intel Iris Pro GPU with 1536 MB of VRAM. Hardware is not really my thing. Maybe someone else with a retina display Macbook Pro can reproduce this issue?
 
 **Version 0.7.6**
 

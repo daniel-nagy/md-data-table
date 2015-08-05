@@ -10,36 +10,36 @@ function mdDataTablePagination($q) {
       text: 'Rows per page:',
       of: 'of'
     };
-
+    
     if(angular.isObject(scope.label)) {
       angular.extend(scope.paginationLabel, scope.label);
     }
-
+    
     // table progress
     if(angular.isFunction(scope.trigger)) {
-
+      
       // the pagination directive is outside the table directive so we need
       // to locate the controller
       var findTable = function(element, callback) {
         while(element.localName !== 'md-data-table-container' && element.previousElementSibling) {
-          parent = parent.previousElementSibling;
+          element = element.previousElementSibling;
         }
         callback(angular.element(element.firstElementChild));
       };
-
+      
       var setTrigger = function(table) {
         var tableCtrl = table.controller('mdDataTable');
-
+        
         if(!tableCtrl) {
           return console.warn('Table Pagination: Could not locate your table directive, your ' + attrs.mdTrigger + ' function will not work.');
         }
-
+        
         scope.pullTrigger = function () {
           var deferred = tableCtrl.defer();
           $q.when(scope.trigger(scope.page, scope.limit))['finally'](deferred.resolve);
         };
       };
-
+      
       findTable(element.prop('previousElementSibling'), setTrigger);
     }
   }
@@ -76,21 +76,21 @@ function mdPaginationCtrl($scope, $timeout) {
 
   $scope.next = function () {
     $scope.page++;
-
+    
     if($scope.pullTrigger) {
       $timeout($scope.pullTrigger);
     }
-
+    
     min = $scope.min();
   };
 
   $scope.last = function () {
     $scope.page = Math.ceil($scope.total / $scope.limit);
-
+    
     if($scope.pullTrigger) {
       $timeout($scope.pullTrigger);
     }
-
+    
     min = $scope.min();
   };
 
@@ -104,11 +104,11 @@ function mdPaginationCtrl($scope, $timeout) {
 
   $scope.onSelect = function () {
     $scope.page = Math.floor(min / $scope.limit) + 1;
-
+    
     if($scope.pullTrigger) {
       $timeout($scope.pullTrigger);
     }
-
+    
     min = $scope.min();
     while((min > $scope.total) && $scope.hasPrevious()) {
       $scope.previous();
@@ -117,21 +117,21 @@ function mdPaginationCtrl($scope, $timeout) {
 
   $scope.previous = function () {
     $scope.page--;
-
+    
     if($scope.pullTrigger) {
       $timeout($scope.pullTrigger);
     }
-
+    
     min = $scope.min();
   };
 
   $scope.first = function () {
     $scope.page = 1;
-
+    
     if($scope.pullTrigger) {
       $timeout($scope.pullTrigger);
     }
-
+    
     min = $scope.min();
   };
 

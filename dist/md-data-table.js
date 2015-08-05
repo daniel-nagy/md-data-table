@@ -9,7 +9,7 @@ function mdColumnHeader($compile, $timeout) {
     var tableCtrl = ctrls[0];
     var headCtrl = ctrls[1];
     var template = angular.element('<th></th>');
-      
+    
     template.text('{{name}}');
     
     if(attrs.unit) {
@@ -26,7 +26,7 @@ function mdColumnHeader($compile, $timeout) {
     
     if(attrs.orderBy) {
       var sortIcon = angular.element('<md-icon></md-icon>');
-    
+      
       if(angular.isDefined(attrs.numeric)) {
         template.prepend(sortIcon);
       } else {
@@ -198,10 +198,10 @@ function mdDataTableCtrl($attrs, $element, $q, $scope) {
     } else {
       self.showProgress();
     }
-
+    
     self.deferred = $q.defer();
     self.deferred.promise.then(self.resolve);
-
+    
     return self.deferred;
   };
 
@@ -212,7 +212,7 @@ function mdDataTableCtrl($attrs, $element, $q, $scope) {
   
   self.isLastChild = function (siblings, child) {
     return Array.prototype.indexOf.call(siblings, child) === siblings.length - 1;
-  }
+  };
 
   self.isReady.body.promise.then(function (ngRepeat) {
     if($attrs.mdRowSelect && ngRepeat) {
@@ -320,36 +320,36 @@ function mdDataTablePagination($q) {
       text: 'Rows per page:',
       of: 'of'
     };
-
+    
     if(angular.isObject(scope.label)) {
       angular.extend(scope.paginationLabel, scope.label);
     }
-
+    
     // table progress
     if(angular.isFunction(scope.trigger)) {
-
+      
       // the pagination directive is outside the table directive so we need
       // to locate the controller
       var findTable = function(element, callback) {
         while(element.localName !== 'md-data-table-container' && element.previousElementSibling) {
-          parent = parent.previousElementSibling;
+          element = element.previousElementSibling;
         }
         callback(angular.element(element.firstElementChild));
       };
-
+      
       var setTrigger = function(table) {
         var tableCtrl = table.controller('mdDataTable');
-
+        
         if(!tableCtrl) {
           return console.warn('Table Pagination: Could not locate your table directive, your ' + attrs.mdTrigger + ' function will not work.');
         }
-
+        
         scope.pullTrigger = function () {
           var deferred = tableCtrl.defer();
           $q.when(scope.trigger(scope.page, scope.limit))['finally'](deferred.resolve);
         };
       };
-
+      
       findTable(element.prop('previousElementSibling'), setTrigger);
     }
   }
@@ -386,21 +386,21 @@ function mdPaginationCtrl($scope, $timeout) {
 
   $scope.next = function () {
     $scope.page++;
-
+    
     if($scope.pullTrigger) {
       $timeout($scope.pullTrigger);
     }
-
+    
     min = $scope.min();
   };
 
   $scope.last = function () {
     $scope.page = Math.ceil($scope.total / $scope.limit);
-
+    
     if($scope.pullTrigger) {
       $timeout($scope.pullTrigger);
     }
-
+    
     min = $scope.min();
   };
 
@@ -414,11 +414,11 @@ function mdPaginationCtrl($scope, $timeout) {
 
   $scope.onSelect = function () {
     $scope.page = Math.floor(min / $scope.limit) + 1;
-
+    
     if($scope.pullTrigger) {
       $timeout($scope.pullTrigger);
     }
-
+    
     min = $scope.min();
     while((min > $scope.total) && $scope.hasPrevious()) {
       $scope.previous();
@@ -427,21 +427,21 @@ function mdPaginationCtrl($scope, $timeout) {
 
   $scope.previous = function () {
     $scope.page--;
-
+    
     if($scope.pullTrigger) {
       $timeout($scope.pullTrigger);
     }
-
+    
     min = $scope.min();
   };
 
   $scope.first = function () {
     $scope.page = 1;
-
+    
     if($scope.pullTrigger) {
       $timeout($scope.pullTrigger);
     }
-
+    
     min = $scope.min();
   };
 
@@ -600,111 +600,112 @@ function mdTableService() {
 angular.module('md.data.table').directive('mdSelectAll', mdSelectAll);
 
 function mdSelectAll() {
-
+  'use strict';
+  
   function template(tElement) {
-		var checkbox = angular.element('<md-checkbox></md-checkbox>');
-	
-		checkbox.attr('aria-label', 'Select All');
-		checkbox.attr('ng-click', 'toggleAll()');
-		checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': allSelected()}]');
-		checkbox.attr('ng-disabled', '!getCount()');
-	
-		tElement.append(checkbox);
+    var checkbox = angular.element('<md-checkbox></md-checkbox>');
+    
+    checkbox.attr('aria-label', 'Select All');
+    checkbox.attr('ng-click', 'toggleAll()');
+    checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': allSelected()}]');
+    checkbox.attr('ng-disabled', '!getCount()');
+    
+    tElement.append(checkbox);
   }
-
+  
   function postLink(scope, element, attrs, tableCtrl) {
-		var count = 0;
-		
-		var getSelectableItems = function() {
-		  return scope.items.filter(function (item) {
-			  	return !tableCtrl.isDisabled(item);
-		  });
-		};
-		
-		tableCtrl.isReady.body.promise.then(function () {
-			scope.mdClasses = tableCtrl.classes;
-			
-			scope.getCount = function() {
-				return (count = scope.items.reduce(function(sum, item) {
-						return tableCtrl.isDisabled(item) ? sum : ++sum;
-				}, 0));
-			};
-			
-			scope.allSelected = function () {
-				return count && count === tableCtrl.selectedItems.length;
-			};
-			
-			scope.toggleAll = function () {
-				var selectableItems = getSelectableItems(scope.items);
-			
-				if(selectableItems.length === tableCtrl.selectedItems.length) {
-						tableCtrl.selectedItems.splice(0);
-				} else {
-						tableCtrl.selectedItems = selectableItems;
-				}
-			};
-		});
+    var count = 0;
+    
+    var getSelectableItems = function() {
+      return scope.items.filter(function (item) {
+        return !tableCtrl.isDisabled(item);
+      });
+    };
+    
+    tableCtrl.isReady.body.promise.then(function () {
+      scope.mdClasses = tableCtrl.classes;
+      
+      scope.getCount = function() {
+        return (count = scope.items.reduce(function(sum, item) {
+          return tableCtrl.isDisabled(item) ? sum : ++sum;
+        }, 0));
+      };
+      
+      scope.allSelected = function () {
+        return count && count === tableCtrl.selectedItems.length;
+      };
+      
+      scope.toggleAll = function () {
+        var selectableItems = getSelectableItems(scope.items);
+        
+        if(selectableItems.length === tableCtrl.selectedItems.length) {
+          tableCtrl.selectedItems.splice(0);
+        } else {
+          tableCtrl.selectedItems = selectableItems;
+        }
+      };
+    });
   }
-
+  
   return {
-		link: postLink,
-		require: '^^mdDataTable',
-		scope: {
-		  items: '=mdSelectAll'
-		},
-		template: template
+    link: postLink,
+    require: '^^mdDataTable',
+    scope: {
+      items: '=mdSelectAll'
+    },
+    template: template
   };
 }
 
 angular.module('md.data.table').directive('mdSelectRow', mdSelectRow);
 
 function mdSelectRow($mdTable) {
-	'use strict';
-
-	function template(tElement, tAttrs) {
-		var item = $mdTable.parse(tAttrs.ngRepeat).item;
-		var checkbox = angular.element('<md-checkbox></md-checkbox>');
-
-		checkbox.attr('aria-label', 'Select Row');
-		checkbox.attr('ng-click', 'toggleRow(' + item + ', $event)');
-		checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': isSelected(' + item + ')}]');
-
-		if(tAttrs.mdDisableSelect) {
-			checkbox.attr('ng-disabled', 'isDisabled()');
-		}
-
-		tElement.prepend(angular.element('<td></td>').append(checkbox));
-
-		if(angular.isDefined(tAttrs.mdAutoSelect)) {
-			tAttrs.$set('ngClick', 'toggleRow(' + item + ', $event)');
-		}
-
-		tAttrs.$set('ngClass', '{\'md-selected\': isSelected(' + item + ')}');
-	}
-
-	function postLink(scope, element, attrs, tableCtrl) {
-		var model = {};
-		var ngRepeat = $mdTable.parse(attrs.ngRepeat);
-		
-		if(!angular.isFunction(scope.isDisabled)) {
-			scope.isDisabled = function () { return false; };
-		}
-		
-		tableCtrl.isDisabled = function (item) {
-			model[ngRepeat.item] = item;
-			return scope.isDisabled(model);
-		}
-	}
-
-	return {
-		link: postLink,
-		priority: 1001,
-		require: '^^mdDataTable',
-		scope: {
-			isDisabled: '&?mdDisableSelect'
-		},
-		template: template
-	};
+  'use strict';
+  
+  function template(tElement, tAttrs) {
+    var item = $mdTable.parse(tAttrs.ngRepeat).item;
+    var checkbox = angular.element('<md-checkbox></md-checkbox>');
+    
+    checkbox.attr('aria-label', 'Select Row');
+    checkbox.attr('ng-click', 'toggleRow(' + item + ', $event)');
+    checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': isSelected(' + item + ')}]');
+    
+    if(tAttrs.mdDisableSelect) {
+      checkbox.attr('ng-disabled', 'isDisabled()');
+    }
+    
+    tElement.prepend(angular.element('<td></td>').append(checkbox));
+    
+    if(angular.isDefined(tAttrs.mdAutoSelect)) {
+      tAttrs.$set('ngClick', 'toggleRow(' + item + ', $event)');
+    }
+    
+    tAttrs.$set('ngClass', '{\'md-selected\': isSelected(' + item + ')}');
+  }
+  
+  function postLink(scope, element, attrs, tableCtrl) {
+    var model = {};
+    var ngRepeat = $mdTable.parse(attrs.ngRepeat);
+    
+    if(!angular.isFunction(scope.isDisabled)) {
+      scope.isDisabled = function () { return false; };
+    }
+    
+    tableCtrl.isDisabled = function (item) {
+      model[ngRepeat.item] = item;
+      return scope.isDisabled(model);
+    };
+  }
+  
+  return {
+    link: postLink,
+    priority: 1001,
+    require: '^^mdDataTable',
+    scope: {
+      isDisabled: '&?mdDisableSelect'
+    },
+    template: template
+  };
 }
 
 mdSelectRow.$inject = ['$mdTable'];

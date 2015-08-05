@@ -105,10 +105,10 @@ function mdDataTableCtrl($attrs, $element, $q, $scope) {
     } else {
       self.showProgress();
     }
-
+    
     self.deferred = $q.defer();
     self.deferred.promise.then(self.resolve);
-
+    
     return self.deferred;
   };
 
@@ -119,7 +119,7 @@ function mdDataTableCtrl($attrs, $element, $q, $scope) {
   
   self.isLastChild = function (siblings, child) {
     return Array.prototype.indexOf.call(siblings, child) === siblings.length - 1;
-  }
+  };
 
   self.isReady.body.promise.then(function (ngRepeat) {
     if($attrs.mdRowSelect && ngRepeat) {

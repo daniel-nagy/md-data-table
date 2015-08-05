@@ -7,7 +7,7 @@ function mdColumnHeader($compile, $timeout) {
     var tableCtrl = ctrls[0];
     var headCtrl = ctrls[1];
     var template = angular.element('<th></th>');
-      
+    
     template.text('{{name}}');
     
     if(attrs.unit) {
@@ -24,7 +24,7 @@ function mdColumnHeader($compile, $timeout) {
     
     if(attrs.orderBy) {
       var sortIcon = angular.element('<md-icon></md-icon>');
-    
+      
       if(angular.isDefined(attrs.numeric)) {
         template.prepend(sortIcon);
       } else {

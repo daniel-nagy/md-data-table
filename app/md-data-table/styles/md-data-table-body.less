@@ -25,6 +25,40 @@ table[md-data-table] > tbody > tr {
     
     &.numeric {
       text-align: right;
+      
+      md-select {
+        justify-content: flex-end;
+      }
+    }
+    
+    &:not(.numeric) {
+      md-select > md-select-label {
+        flex: 1 0 auto;
+      }
+    }
+    
+    md-select {
+      padding: 0;
+      
+      &:not([disabled]):focus .md-select-label {
+        border-bottom: 0;
+      }
+      
+      > md-select-label {
+        padding: 0;
+        min-width: 0;
+        border-bottom: 0;
+        
+        > .md-select-icon {
+          margin: 0;
+          color: @md-dark-icon;
+          
+          &:after {
+            top: 3px;
+            transform: scaleY(0.4) scaleX(0.8);
+          }
+        }
+      }
     }
   }
 }

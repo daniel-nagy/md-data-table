@@ -167,6 +167,36 @@ table[md-data-table] > tbody > tr > td {
 table[md-data-table] > tbody > tr > td.numeric {
   text-align: right;
 }
+table[md-data-table] > tbody > tr > td.numeric md-select {
+  -webkit-justify-content: flex-end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+table[md-data-table] > tbody > tr > td:not(.numeric) md-select > md-select-label {
+  -webkit-flex: 1 0 auto;
+      -ms-flex: 1 0 auto;
+          flex: 1 0 auto;
+}
+table[md-data-table] > tbody > tr > td md-select {
+  padding: 0;
+}
+table[md-data-table] > tbody > tr > td md-select:not([disabled]):focus .md-select-label {
+  border-bottom: 0;
+}
+table[md-data-table] > tbody > tr > td md-select > md-select-label {
+  padding: 0;
+  min-width: 0;
+  border-bottom: 0;
+}
+table[md-data-table] > tbody > tr > td md-select > md-select-label > .md-select-icon {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.54);
+}
+table[md-data-table] > tbody > tr > td md-select > md-select-label > .md-select-icon:after {
+  top: 3px;
+  -webkit-transform: scaleY(0.4) scaleX(0.8);
+          transform: scaleY(0.4) scaleX(0.8);
+}
 table[md-data-table] > tfoot > tr {
   height: 48px;
 }

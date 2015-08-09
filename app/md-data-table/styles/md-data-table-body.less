@@ -47,14 +47,18 @@ table[md-data-table] > tbody > tr {
       > md-select-label {
         padding: 0;
         min-width: 0;
+        min-height: 0;
         border-bottom: 0;
+        
+        > span {
+          transform: none !important;
+        }
         
         > .md-select-icon {
           margin: 0;
           color: @md-dark-icon;
           
           &:after {
-            top: 3px;
             transform: scaleY(0.4) scaleX(0.8);
           }
         }

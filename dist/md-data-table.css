@@ -186,14 +186,18 @@ table[md-data-table] > tbody > tr > td md-select:not([disabled]):focus .md-selec
 table[md-data-table] > tbody > tr > td md-select > md-select-label {
   padding: 0;
   min-width: 0;
+  min-height: 0;
   border-bottom: 0;
+}
+table[md-data-table] > tbody > tr > td md-select > md-select-label > span {
+  -webkit-transform: none !important;
+          transform: none !important;
 }
 table[md-data-table] > tbody > tr > td md-select > md-select-label > .md-select-icon {
   margin: 0;
   color: rgba(0, 0, 0, 0.54);
 }
 table[md-data-table] > tbody > tr > td md-select > md-select-label > .md-select-icon:after {
-  top: 3px;
   -webkit-transform: scaleY(0.4) scaleX(0.8);
           transform: scaleY(0.4) scaleX(0.8);
 }

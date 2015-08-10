@@ -7,7 +7,6 @@ function mdDataTable() {
   
   function compile(tElement, tAttrs) {
     var head = tElement.find('thead');
-    var rows = tElement.find('tbody').find('tr');
     var foot = tElement.find('tfoot');
     
     // make sure the table has a head element
@@ -21,11 +20,13 @@ function mdDataTable() {
       }
       
       head = tElement.find('thead');
-      rows = tElement.find('tbody').find('tr');
     }
+    
+    var rows = tElement.find('tbody').find('tr');
     
     head.attr('md-table-head', '');
     rows.attr('md-table-row', '');
+    rows.find('td').attr('md-table-cell', '');
     
     if(foot.length) {
       foot.attr('md-table-foot', '');

@@ -23,6 +23,10 @@ table[md-data-table] > tbody > tr {
     color: @md-dark;
     border-top: 1px @md-dark-divider solid;
     
+    &.clickable {
+      cursor: pointer;
+    }
+    
     &.numeric {
       text-align: right;
       
@@ -56,9 +60,11 @@ table[md-data-table] > tbody > tr {
         
         > .md-select-icon {
           margin: 0;
+          height: 13px;
           color: @md-dark-icon;
           
           &:after {
+            top: 0;
             transform: scaleY(0.4) scaleX(0.8);
           }
         }

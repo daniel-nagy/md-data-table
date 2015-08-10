@@ -164,6 +164,9 @@ table[md-data-table] > tbody > tr > td {
   color: rgba(0, 0, 0, 0.87);
   border-top: 1px rgba(0, 0, 0, 0.12) solid;
 }
+table[md-data-table] > tbody > tr > td.clickable {
+  cursor: pointer;
+}
 table[md-data-table] > tbody > tr > td.numeric {
   text-align: right;
 }
@@ -195,9 +198,11 @@ table[md-data-table] > tbody > tr > td md-select > md-select-label > span {
 }
 table[md-data-table] > tbody > tr > td md-select > md-select-label > .md-select-icon {
   margin: 0;
+  height: 13px;
   color: rgba(0, 0, 0, 0.54);
 }
 table[md-data-table] > tbody > tr > td md-select > md-select-label > .md-select-icon:after {
+  top: 0;
   -webkit-transform: scaleY(0.4) scaleX(0.8);
           transform: scaleY(0.4) scaleX(0.8);
 }

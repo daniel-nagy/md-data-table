@@ -684,8 +684,7 @@ function mdSelectAll() {
   };
 }
 
-angular.module('md.data.table')
-  .directive('mdSelectRow', mdSelectRow);
+angular.module('md.data.table').directive('mdSelectRow', mdSelectRow);
 
 function mdSelectRow($mdTable) {
   'use strict';

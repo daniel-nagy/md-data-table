@@ -4,6 +4,14 @@ This module is an effort to implement Material Design data tables in [Angular Ma
 
 Specification for Material Design data tables can be found [here](http://www.google.com/design/spec/components/data-tables.html).
 
+* [Demo](#demo)
+* [License](#license)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Change Log](#change-log)
+* [API Documentation](#api-documentation)
+* [Contributing] (#contributing)
+
 ## Demo
 
 http://danielnagy.me/md-data-table
@@ -120,6 +128,14 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.8.2** August 9, 2015
+
+* Support for [inline menus](#inline-menus)
+
+#### Notes
+
+I targeted the latest version of Angular Material which is currently v0.10.0. There have been changes to the template for the select element since this release, so if you are using a version of Angular Material greater than v0.10.0 you will notice inconsistencies in the styling of the element. I will fix this as soon as v0.10.1 is released.
+
 **Version 0.8.1** August 9, 2015
 
 * I am now using the `$interpolate` service to get the start and stop symbols
@@ -165,15 +181,12 @@ I spoke too soon. On my work machine, an older non-retina display Macbook Pro, t
 
 * First and last page navigation links courtesy of [@vcastello](https://github.com/vcastello).
 
-**Version 0.7.4**
-
-* The `precision` attribute has been removed from numeric columns, use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) filter instead.
-
 View the [archives](ARCHIVE.md) for a complete version history.
 
 ## API Documentation
 
 * [Column Ordering](#column-ordering)
+* [Inline Menus](#inline-menus)
 * [Long Header Titles](#long-header-titles)
 * [Numeric Columns](#numeric-columns)
 * [Pagination](#pagination)
@@ -219,6 +232,22 @@ Just add an `orderBy:` property to the `ng-repeat` attribute that matches the `m
   </table>
 </md-data-table-container>
 ```
+
+### Inline Menus
+
+Table cells support inline menus. To use an inline menu, place an `md-select` element inside a table cell.
+
+**Example**
+
+```html
+<td>
+  <md-select ng-model="dessert.type" placeholder="Other">
+    <md-option ng-value="type" ng-repeat="type in getTypes()">{{type}}</md-option>
+  </md-select>
+</td>
+```
+
+Clicking anywhere in the cell will activate the menu. In addition, the row will not be selected when the cell is clicked if you have automatic row selection enabled.
 
 ### Long Column Headers
 

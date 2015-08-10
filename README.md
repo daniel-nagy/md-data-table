@@ -120,6 +120,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.8.1** August 9, 2015
+
+* I am now using the `$interpolate` service to get the start and stop symbols
+
 **Version 0.8.0**
 
 #### Syntax Changes
@@ -164,22 +168,6 @@ I spoke too soon. On my work machine, an older non-retina display Macbook Pro, t
 **Version 0.7.4**
 
 * The `precision` attribute has been removed from numeric columns, use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) filter instead.
-
-**Version 0.7.3**
-
-* I've added an `md-progress` [attribute](#table-progress) to the table element to trigger the progress indicator from outside the table scope.
-
-* I'm also using `ng-value` instead of `value` in the pagination directive now, which should hopefully fix the issue some people are having with their trigger function being called on page load.
-
-**Version 0.7.2**
-
-* I've rewrapped the trigger functions in timeouts because I realize it's unexpected and inconvenient for the scope to be stale.
-
-**Version 0.7.1**
-
-* I've removed the `$timeout` when calling your `md-trigger` function meaning the function will be call **before** two-way data binding has had a chance to update your model scope.
-
-* The reason your `md-trigger` function is being called when the page loads is because of a bug in the `mdSelect` module. I've created a pull request to fix this issue but as an immediate fix you can use a `String` instead of a `Number` for your `md-limit` value. For more information see the issue I opened awhile back [#3233](https://github.com/angular/material/issues/3233).
 
 View the [archives](ARCHIVE.md) for a complete version history.
 

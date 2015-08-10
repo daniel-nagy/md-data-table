@@ -2,6 +2,10 @@
 
 ### 0.8.x
 
+**Version 0.8.1** August 9, 2015
+
+* I am now using the `$interpolate` service to get the start and stop symbols
+
 **Version 0.8.0**
 
 #### Syntax Changes
@@ -27,6 +31,12 @@ I have discovered an issue in Chrome's (and Opera's) web browser. This issue has
 * The cell contains an `md-icon` element.
 
 I have tested Safari, FireFox, Mobile Safari, and even IE 10 and was not able to reproduce this issue. I will open an issue for this momentarily. Please leave a comment if you have any ideas on how to fix this. If you know anyone who works for Google, make them fix it :stuck_out_tongue_closed_eyes:.
+
+**Update**
+
+~~It appears the latest version of Chrome (v44.0.2403.130) for OS X has resolved this issue, yay!~~
+
+I spoke too soon. On my work machine, an older non-retina display Macbook Pro, this is not experienced; however, on my personal machine, a retina display Macbook Pro, this is still experienced. It is clear that not all OS X Chrome users are effected by this bug. This bug seems to be related to hardware in some way? My personal machine has an Intel Iris Pro GPU with 1536 MB of VRAM. Hardware is not really my thing. Maybe someone else with a retina display Macbook Pro can reproduce this issue?
 
 ### 0.7.x
 

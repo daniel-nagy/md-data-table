@@ -1,6 +1,6 @@
 angular.module('md.data.table').directive('mdColumnHeader', mdColumnHeader);
 
-function mdColumnHeader($compile, $timeout) {
+function mdColumnHeader($compile, $interpolate, $timeout) {
   'use strict';
 
   function postLink(scope, element, attrs, ctrls) {
@@ -8,10 +8,10 @@ function mdColumnHeader($compile, $timeout) {
     var headCtrl = ctrls[1];
     var template = angular.element('<th></th>');
     
-    template.text('{{name}}');
+    template.text($interpolate.startSymbol() +'name' + $interpolate.endSymbol());
     
     if(attrs.unit) {
-      template.text(template.text() + ' ({{unit}})');
+      template.text(template.text() + ' (' + $interpolate.startSymbol() + 'unit' + $interpolate.endSymbol() + ')');
     }
     
     if(angular.isDefined(attrs.numeric)){
@@ -87,4 +87,4 @@ function mdColumnHeader($compile, $timeout) {
   };
 }
 
-mdColumnHeader.$inject = ['$compile', '$timeout'];
+mdColumnHeader.$inject = ['$compile', '$interpolate', '$timeout'];

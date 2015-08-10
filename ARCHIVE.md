@@ -2,6 +2,14 @@
 
 ### 0.8.x
 
+**Version 0.8.2** August 9, 2015
+
+* Support for [inline menus](#inline-menus)
+
+#### Notes
+
+I targeted the latest version of Angular Material which is currently v0.10.0. There have been changes to the template for the select element since this release, so if you are using a version of Angular Material greater than v0.10.0 you will notice inconsistencies in the styling of the element. I will fix this as soon as v0.10.1 is released.
+
 **Version 0.8.1** August 9, 2015
 
 * I am now using the `$interpolate` service to get the start and stop symbols

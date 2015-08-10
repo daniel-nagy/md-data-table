@@ -14,6 +14,9 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
     orderBy: 'name',
     unit: '100g serving'
   }, {
+    name: 'Type',
+    orderBy: 'type'
+  }, {
     name: 'Calories',
     numeric: true,
     orderBy: 'calories.value'
@@ -53,6 +56,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
   $http.get('desserts.js').then(function (desserts) {
     $scope.desserts = desserts.data;
   });
+  
+  $scope.getTypes = function () {
+    return ['Candy', 'Ice cream', 'Other', 'Pastry'];
+  };
   
   $scope.onpagechange = function(page, limit) {
     

@@ -12,6 +12,7 @@
       <tr>
         <!-- <th ng-repeat="column in columns" ng-attr-order-by="{{column.orderBy}}" ng-attr-numeric="{{column.numeric}}" ng-attr-unit="{{column.unit}}" name="{{column.name}}" ng-attr-trim="{{column.trim}}"></th> -->
         <th order-by="name" unit="100g serving" name="Dessert"></th>
+        <th order-by="type" name="Type"></th>
         <th numeric order-by="calories.value" name="Calories"></th>
         <th numeric unit="g" order-by="fat.value" name="Fat"></th>
         <th numeric unit="g" order-by="carbs.value" name="Carbs"></th>
@@ -24,6 +25,11 @@
     <tbody>
       <tr md-auto-select md-disable-select="dessert.calories.value > 300" ng-repeat="dessert in desserts.data | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
         <td>{{dessert.name}}</td>
+        <td>
+          <md-select ng-model="dessert.type" placeholder="Other">
+            <md-option ng-value="type" ng-repeat="type in getTypes()">{{type}}</md-option>
+          </md-select>
+        </td>
         <td>{{dessert.calories.value}}</td>
         <td>{{dessert.fat.value | number: 2}}</td>
         <td>{{dessert.carbs.value}}</td>

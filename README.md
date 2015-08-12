@@ -132,6 +132,8 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 * Inline menus have been updated for Angular Material 0.10.1
 
+**Note:** Menus are going to look bad in the Codepen because Google has not yet updated the CDN for Angular Material to version 0.10.1
+
 **Version 0.8.2** August 9, 2015
 
 * Support for [inline menus](#inline-menus)

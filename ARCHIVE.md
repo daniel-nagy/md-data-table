@@ -2,6 +2,10 @@
 
 ### 0.8.x
 
+**Version 0.8.3** August 11, 2015
+
+* Inline menus have been updated for Angular Material 0.10.1
+
 **Version 0.8.2** August 9, 2015
 
 * Support for [inline menus](#inline-menus)

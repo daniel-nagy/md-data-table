@@ -19,7 +19,12 @@ function mdTableCell() {
     }
   }
   
+  function compile(tElement) {
+    tElement.find('md-select').attr('md-container-class', 'md-table-select');
+    return postLink;
+  }
+  
   return {
-    link: postLink
+    compile: compile
   };
 }

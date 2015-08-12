@@ -1,6 +1,6 @@
 <div>
   <span class="label">{{paginationLabel.text}}</span>
-  <md-select ng-model="limit" ng-change="onSelect()" aria-label="Row Count" placeholder="{{rowSelect ? rowSelect[0] : 5}}">
+  <md-select ng-model="limit" md-container-class="md-pagination-select" ng-change="onSelect()" aria-label="Row Count" placeholder="{{rowSelect ? rowSelect[0] : 5}}">
     <md-option ng-repeat="rows in rowSelect ? rowSelect : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>
   </md-select>
   <span>{{min()}} - {{max()}} {{paginationLabel.of}} {{total}}</span>

@@ -32,29 +32,31 @@ md-data-table-pagination {
       > md-select {
         flex: 0 0 auto;
         padding: 0;
-        margin-right: 32px;
+        margin: 0 32px 0 0;
         
-        > .md-select-label {
-          min-height: 0;
-          min-width: 0;
+        > md-select-value {
           padding: 0;
-          color: @md-dark-secondary !important;
+          min-width: 0;
+          min-height: 0;
           border-bottom: 0 !important;
           
-          > * {
-            transform: none !important;
+          > span:first-child {
+            flex: 1 0 auto;
+            max-width: none;
+            color: @md-dark-secondary !important;
+            transform: none;
           }
           
           > .md-select-icon {
-            display: flex;
             align-items: center;
-            justify-content: center;
             margin: 0;
-            width: 24px;
-            height: 24px;
+            color: @md-dark-icon !important;
+            text-align: center;
+            transform: none;
             
             &:after {
               top: 1px;
+              transform: scaleY(0.5) scaleX(1);
             }
           }
         }
@@ -91,6 +93,20 @@ md-data-table-pagination {
           margin: 0 18px 0 0;
         }
       }
+    }
+  }
+}
+
+.md-select-menu-container.md-pagination-select {
+  margin-top: -2px;
+  margin-left: -2px;
+
+  md-content {
+    padding: 0;
+
+    md-option .md-text {
+      font-size: 12px;
+      font-weight: 500;
     }
   }
 }

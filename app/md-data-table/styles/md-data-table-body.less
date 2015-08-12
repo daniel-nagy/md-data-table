@@ -41,30 +41,31 @@ table[md-data-table] > tbody > tr {
       }
     }
     
-    md-select {
+    > md-select {
+      flex: 0 0 auto;
       padding: 0;
+      margin: 0;
       
-      &:not([disabled]):focus .md-select-label {
-        border-bottom: 0;
-      }
-      
-      > md-select-label {
+      > md-select-value {
         padding: 0;
         min-width: 0;
         min-height: 0;
-        border-bottom: 0;
+        border-bottom: 0 !important;
         
-        > span {
-          transform: none !important;
+        > span:first-child {
+          flex: 1 0 auto;
+          max-width: none;
+          transform: none;
         }
         
         > .md-select-icon {
+          align-items: center;
           margin: 0;
-          height: 13px;
-          color: @md-dark-icon;
+          color: @md-dark-icon !important;
+          text-align: center;
+          transform: none;
           
           &:after {
-            top: 0;
             transform: scaleY(0.4) scaleX(0.8);
           }
         }

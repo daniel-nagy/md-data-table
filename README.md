@@ -128,6 +128,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+**Version 0.8.3** August 11, 2015
+
+* Inline menus have been updated for Angular Material 0.10.1
+
 **Version 0.8.2** August 9, 2015
 
 * Support for [inline menus](#inline-menus)
@@ -176,10 +180,6 @@ I spoke too soon. On my work machine, an older non-retina display Macbook Pro, t
 
 * **Important:** Pagination is now its own toolbar and should not be wrapped in a `md-data-table-toolbar` element.
 * The pagination toolbar will now collapse into two separate toolbars on screens less than or equal to `600px` wide.
-
-**Version 0.7.5**
-
-* First and last page navigation links courtesy of [@vcastello](https://github.com/vcastello).
 
 View the [archives](ARCHIVE.md) for a complete version history.
 

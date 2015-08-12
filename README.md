@@ -296,8 +296,6 @@ You may use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) 
 
 ### Pagination
 
-To use pagination add a `md-data-table-pagination` element to the `md-data-table-toolbar`.
-
 | Attribute       | Type       | Description |
 | :---------------| :--------- | :---------- |
 | `md-label`      | `Object`   | Change the pagination label. The default is 'Rows per page:'.|
@@ -319,7 +317,10 @@ If the function assigned to the `md-triger` attribute returns a promise, a loadi
 **Example: Client Side pagination using ngRepeat.**
 
 ```html
-<tr ng-repeat="item in array | orderBy: myOrder | limitTo: myLimit: (page - 1) * myLimit">
+<tr ng-repeat="item in array | orderBy: myOrder | limitTo: myLimit: (myPage - 1) * myLimit">
+
+<!-- and your pagination element will look something like... -->
+<md-data-table-pagination md-limit="myLimit" md-page="myPage" md-total="{{array.length}}"></md-data-table-pagination>
 ```
 
 ### Row Selection

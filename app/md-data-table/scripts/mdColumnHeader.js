@@ -35,7 +35,7 @@ function mdColumnHeader($compile, $interpolate, $timeout) {
         if(scope.isActive()) {
           return headCtrl.order[0] === '-' ? 'down' : 'up';
         }
-        return attrs.descendFirst ? 'down' : 'up';
+        return angular.isDefined(attrs.descendFirst) ? 'down' : 'up';
       };
       
       scope.isActive = function () {

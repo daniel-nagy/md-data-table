@@ -14,6 +14,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
     orderBy: 'name',
     unit: '100g serving'
   }, {
+    descendFirst: true,
     name: 'Type',
     orderBy: 'type'
   }, {

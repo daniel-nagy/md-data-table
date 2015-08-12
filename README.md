@@ -128,41 +128,49 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
-**Version 0.8.3** August 11, 2015
+#### Version 0.8.4
+###### August 12, 2015
+
+* Fixing bug where the arrow icon, while hovering an inactive column name with the `descend-first` attribute, would not point in the appropriate direction.
+
+#### Version 0.8.3
+###### August 11, 2015
 
 * Inline menus have been updated for Angular Material 0.10.1
 
 **Note:** Menus are going to look bad in the Codepen because Google has not yet updated the CDN for Angular Material to version 0.10.1
 
-**Version 0.8.2** August 9, 2015
+#### Version 0.8.2
+###### August 9, 2015
 
 * Support for [inline menus](#inline-menus)
 
-#### Notes
+**Notes**
 
 I targeted the latest version of Angular Material which is currently v0.10.0. There have been changes to the template for the select element since this release, so if you are using a version of Angular Material greater than v0.10.0 you will notice inconsistencies in the styling of the element. I will fix this as soon as v0.10.1 is released.
 
-**Version 0.8.1** August 9, 2015
+#### Version 0.8.1
+###### August 9, 2015
 
 * I am now using the `$interpolate` service to get the start and stop symbols
 
-**Version 0.8.0**
+#### Version 0.8.0
 
-#### Syntax Changes
+**Syntax Changes**
 
 * The name of a column is now placed in a `name` attribute. This decision was made do to the difficulty of transforming the template with interpolate strings and `ng-repeat`.
 * The `unit` and `show-unit` attributes can be used regardless of weather or not the column in numeric (if you want).
 * `md-trim-column-names` has been renamed to just `trim` and is now enabled individually for each column.
 * The `md-auto-select` and `md-disable-select` attributes have been moved to the `tr` element within the `tbody` element.
 
-#### Improvements
+**Improvements**
 
 * You may now (properly) use `ng-repeat` and `ng-attr-*` on column headers.
 * This version fixes issue #41.
 * This version fixes issue #57.
 * Trimming long column names is achieved cleanly with CSS and no longer uses `table-layout: fixed` or Javascript.
 
-#### Issues
+**Issues**
 
 I have discovered an issue in Chrome's (and Opera's) web browser. This issue has existed for sometime and either no one has noticed it or no one has really cared. It appears Chrome has issues with properly rendering the table when the container is small enough to allow the table to scroll horizontally and the viewport is short enough that it can be scrolled vertically. This results in an undesirable laggy/rubber-band-ish effect when scrolling vertically for cells that meet one of the following criteria:
 
@@ -177,11 +185,6 @@ I have tested Safari, FireFox, Mobile Safari, and even IE 10 and was not able to
 ~~It appears the latest version of Chrome (v44.0.2403.130) for OS X has resolved this issue, yay!~~
 
 I spoke too soon. On my work machine, an older non-retina display Macbook Pro, this is not experienced; however, on my personal machine, a retina display Macbook Pro, this is still experienced. It is clear that not all OS X Chrome users are effected by this bug. This bug seems to be related to hardware in some way? My personal machine has an Intel Iris Pro GPU with 1536 MB of VRAM. Hardware is not really my thing. Maybe someone else with a retina display Macbook Pro can reproduce this issue?
-
-**Version 0.7.6**
-
-* **Important:** Pagination is now its own toolbar and should not be wrapped in a `md-data-table-toolbar` element.
-* The pagination toolbar will now collapse into two separate toolbars on screens less than or equal to `600px` wide.
 
 View the [archives](ARCHIVE.md) for a complete version history.
 

@@ -128,6 +128,11 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+#### Version 0.8.5
+###### August 12, 2015
+
+* Fixing bug where developer defined attributes on `<th>` elements were not preserved.
+
 #### Version 0.8.4
 ###### August 12, 2015
 
@@ -153,38 +158,6 @@ I targeted the latest version of Angular Material which is currently v0.10.0. Th
 ###### August 9, 2015
 
 * I am now using the `$interpolate` service to get the start and stop symbols
-
-#### Version 0.8.0
-
-**Syntax Changes**
-
-* The name of a column is now placed in a `name` attribute. This decision was made do to the difficulty of transforming the template with interpolate strings and `ng-repeat`.
-* The `unit` and `show-unit` attributes can be used regardless of weather or not the column in numeric (if you want).
-* `md-trim-column-names` has been renamed to just `trim` and is now enabled individually for each column.
-* The `md-auto-select` and `md-disable-select` attributes have been moved to the `tr` element within the `tbody` element.
-
-**Improvements**
-
-* You may now (properly) use `ng-repeat` and `ng-attr-*` on column headers.
-* This version fixes issue #41.
-* This version fixes issue #57.
-* Trimming long column names is achieved cleanly with CSS and no longer uses `table-layout: fixed` or Javascript.
-
-**Issues**
-
-I have discovered an issue in Chrome's (and Opera's) web browser. This issue has existed for sometime and either no one has noticed it or no one has really cared. It appears Chrome has issues with properly rendering the table when the container is small enough to allow the table to scroll horizontally and the viewport is short enough that it can be scrolled vertically. This results in an undesirable laggy/rubber-band-ish effect when scrolling vertically for cells that meet one of the following criteria:
-
-* The cell is positioned relative.
-* The cell contains an `md-checkbox` element.
-* The cell contains an `md-icon` element.
-
-I have tested Safari, FireFox, Mobile Safari, and even IE 10 and was not able to reproduce this issue. I will open an issue for this momentarily. Please leave a comment if you have any ideas on how to fix this. If you know anyone who works for Google, make them fix it :stuck_out_tongue_closed_eyes:.
-
-**Update**
-
-~~It appears the latest version of Chrome (v44.0.2403.130) for OS X has resolved this issue, yay!~~
-
-I spoke too soon. On my work machine, an older non-retina display Macbook Pro, this is not experienced; however, on my personal machine, a retina display Macbook Pro, this is still experienced. It is clear that not all OS X Chrome users are effected by this bug. This bug seems to be related to hardware in some way? My personal machine has an Intel Iris Pro GPU with 1536 MB of VRAM. Hardware is not really my thing. Maybe someone else with a retina display Macbook Pro can reproduce this issue?
 
 View the [archives](ARCHIVE.md) for a complete version history.
 

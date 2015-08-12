@@ -8,6 +8,12 @@ function mdColumnHeader($compile, $interpolate, $timeout) {
     var headCtrl = ctrls[1];
     var template = angular.element('<th></th>');
     
+    angular.forEach(element.prop('attributes'), function (attr) {
+      if(attr.name !== 'md-column-header') {
+        template.attr(attr.name, attr.value);
+      }
+    });
+    
     template.text($interpolate.startSymbol() +'name' + $interpolate.endSymbol());
     
     if(attrs.unit) {

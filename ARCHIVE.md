@@ -9,6 +9,11 @@
 
 ### 0.8.x
 
+#### Version 0.8.6
+###### August 13, 2015
+
+* Temporary patch to prevent tables that use `ng-repeat` on header columns from not working. Changes will need to be made to the `mdColumnHeader` directive to insure that no other directives, that transform the template, will conflict with it in the future.
+
 #### Version 0.8.4
 ###### August 12, 2015
 

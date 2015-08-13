@@ -128,6 +128,11 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+#### Version 0.8.6
+###### August 13, 2015
+
+* Temporary patch to prevent tables that use `ng-repeat` on header columns from not working. Changes will need to be made to the `mdColumnHeader` directive to insure that no other directives, that transform the template, will conflict with it in the future.
+
 #### Version 0.8.5
 ###### August 12, 2015
 
@@ -153,11 +158,6 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 **Notes**
 
 I targeted the latest version of Angular Material which is currently v0.10.0. There have been changes to the template for the select element since this release, so if you are using a version of Angular Material greater than v0.10.0 you will notice inconsistencies in the styling of the element. I will fix this as soon as v0.10.1 is released.
-
-#### Version 0.8.1
-###### August 9, 2015
-
-* I am now using the `$interpolate` service to get the start and stop symbols
 
 View the [archives](ARCHIVE.md) for a complete version history.
 

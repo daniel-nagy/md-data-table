@@ -2,14 +2,21 @@ angular.module('md.data.table').directive('mdColumnHeader', mdColumnHeader);
 
 function mdColumnHeader($compile, $interpolate, $timeout) {
   'use strict';
+  
+  /*
+   * Note To Self: replacing the `th` element entirely may not be the best idea
+   * unless I create a seperate directive to modify the template that executes
+   * at a higher priority than any other directive that may effect the template.
+   */
 
   function postLink(scope, element, attrs, ctrls) {
     var tableCtrl = ctrls[0];
     var headCtrl = ctrls[1];
+    var unsafeAttrs = ['md-column-header', 'ng-repeat'];
     var template = angular.element('<th></th>');
     
     angular.forEach(element.prop('attributes'), function (attr) {
-      if(attr.name !== 'md-column-header') {
+      if(unsafeAttrs.indexOf(attr.name) === -1) {
         template.attr(attr.name, attr.value);
       }
     });

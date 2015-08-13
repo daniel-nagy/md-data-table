@@ -16,7 +16,7 @@ Specification for Material Design data tables can be found [here](http://www.goo
 
 http://danielnagy.me/md-data-table
 
-Here is a fork-able [Codepen](http://codepen.io/anon/pen/EjOobZ?editors=101) of the demo application. Please use this to reproduce any issues you may be experiencing.
+Here is a fork-able [Codepen](http://codepen.io/anon/pen/zGXWWp?editors=101) of the demo application. Please use this to reproduce any issues you may be experiencing.
 
 ## License
 
@@ -149,6 +149,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 * Inline menus have been updated for Angular Material 0.10.1
 
 **Note:** Menus are going to look bad in the Codepen because Google has not yet updated the CDN for Angular Material to version 0.10.1
+
+**Update:** August 13, 2015
+
+Google posted a CDN for Angular Material v0.10.1, the select menus in the Codepen should look fine now.
 
 #### Version 0.8.2
 ###### August 9, 2015

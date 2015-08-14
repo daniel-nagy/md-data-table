@@ -5,60 +5,30 @@ angular.module('md.data.table').directive('mdColumnHeader', mdColumnHeader);
 function mdColumnHeader($compile, $interpolate, $timeout) {
   'use strict';
   
-  /*
-   * Note To Self: replacing the `th` element entirely may not be the best idea
-   * unless I create a seperate directive to modify the template that executes
-   * at a higher priority than any other directive that may effect the template.
-   */
-
   function postLink(scope, element, attrs, ctrls) {
     var tableCtrl = ctrls[0];
     var headCtrl = ctrls[1];
-    var unsafeAttrs = ['md-column-header', 'ng-repeat'];
-    var template = angular.element('<th></th>');
+    var template = angular.element('<div></div>');
     
-    angular.forEach(element.prop('attributes'), function (attr) {
-      if(unsafeAttrs.indexOf(attr.name) === -1) {
-        template.attr(attr.name, attr.value);
-      }
-    });
-    
-    template.text($interpolate.startSymbol() +'name' + $interpolate.endSymbol());
+    template.text($interpolate.startSymbol() + 'name' + $interpolate.endSymbol());
     
     if(attrs.unit) {
       template.text(template.text() + ' (' + $interpolate.startSymbol() + 'unit' + $interpolate.endSymbol() + ')');
     }
     
-    if(angular.isDefined(attrs.numeric)){
-      template.addClass('numeric');
-    }
-    
     if(angular.isDefined(attrs.trim)) {
-      template.addClass('trim').contents().wrap('<div></div>');
+      template.contents().wrap('<div></div>');
     }
     
     if(attrs.orderBy) {
       var sortIcon = angular.element('<md-icon></md-icon>');
       
-      if(angular.isDefined(attrs.numeric)) {
-        template.prepend(sortIcon);
-      } else {
-        template.append(sortIcon);
-      }
-      
-      scope.getDirection = function () {
-        if(scope.isActive()) {
-          return headCtrl.order[0] === '-' ? 'down' : 'up';
-        }
-        return angular.isDefined(attrs.descendFirst) ? 'down' : 'up';
-      };
-      
-      scope.isActive = function () {
+      var isActive = function () {
         return headCtrl.order === scope.order || headCtrl.order === '-' + scope.order;
       };
       
-      scope.setOrder = function () {
-        if(scope.isActive()) {
+      var setOrder = function () {
+        if(isActive()) {
           headCtrl.order = headCtrl.order === scope.order ? '-' + scope.order : scope.order;
         } else {
           headCtrl.order = angular.isDefined(attrs.descendFirst) ? '-' + scope.order : scope.order;
@@ -69,16 +39,31 @@ function mdColumnHeader($compile, $interpolate, $timeout) {
         }
       };
       
+      scope.getDirection = function () {
+        if(isActive()) {
+          return headCtrl.order[0] === '-' ? 'down' : 'up';
+        }
+        return angular.isDefined(attrs.descendFirst) ? 'down' : 'up';
+      };
+      
       sortIcon.attr('md-svg-icon', 'templates.arrow.html');
       sortIcon.attr('ng-class', 'getDirection()');
-      template.addClass('order');
-      template.attr('ng-click', 'setOrder()');
-      template.attr('ng-class', '{\'md-active\': isActive()}');
+      // template.attr('ng-class', '{\'md-active\': isActive()}');
+      
+      if(angular.isDefined(attrs.numeric)) {
+        template.prepend(sortIcon);
+      } else {
+        template.append(sortIcon);
+      }
+      
+      element.on('click', setOrder);
+      
+      scope.$watch(isActive, function (active) {
+        if(active) element.addClass('md-active'); else element.removeClass('md-active');
+      });
     }
     
-    template.html('<div>' + template.html() + '</div>');
-    
-    element.replaceWith($compile(template)(scope));
+    element.append($compile(template)(scope));
     
     tableCtrl.setColumn(attrs);
     

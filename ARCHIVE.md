@@ -9,6 +9,11 @@
 
 ### 0.8.x
 
+#### Version 0.8.7
+###### August 14, 2015
+
+* I no longer replace the `th` element, instead I build the template and append it to the original `th` element. This should fix issues with `ng-repeat`.
+
 #### Version 0.8.6
 ###### August 13, 2015
 

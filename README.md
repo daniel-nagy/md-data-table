@@ -128,6 +128,11 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+#### Version 0.8.7
+###### August 14, 2015
+
+* I no longer replace the `th` element, instead I build the template and append it to the original `th` element. This should fix issues with `ng-repeat`.
+
 #### Version 0.8.6
 ###### August 13, 2015
 
@@ -153,15 +158,6 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 **Update:** August 13, 2015
 
 Google posted a CDN for Angular Material v0.10.1, the select menus in the Codepen should look fine now.
-
-#### Version 0.8.2
-###### August 9, 2015
-
-* Support for [inline menus](#inline-menus)
-
-**Notes**
-
-I targeted the latest version of Angular Material which is currently v0.10.0. There have been changes to the template for the select element since this release, so if you are using a version of Angular Material greater than v0.10.0 you will notice inconsistencies in the styling of the element. I will fix this as soon as v0.10.1 is released.
 
 View the [archives](ARCHIVE.md) for a complete version history.
 

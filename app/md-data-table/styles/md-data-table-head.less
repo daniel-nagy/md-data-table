@@ -1,6 +1,6 @@
 table[md-data-table] {
 
-  &:not([md-row-select]) > thead:not([md-table-progress]) > tr > th.trim {
+  &:not([md-row-select]) > thead:not([md-table-progress]) > tr > th[trim] {
     &:first-child > div {
       right: 28px; left: 24px;
     }
@@ -9,7 +9,7 @@ table[md-data-table] {
     }
   }
   
-  &[md-row-select] > thead:not([md-table-progress]) > tr > th.trim {
+  &[md-row-select] > thead:not([md-table-progress]) > tr > th[trim] {
     &:nth-child(2) > div {
       right: 28px; left: 0;
     }
@@ -32,18 +32,18 @@ table[md-data-table] {
         line-height: 18px;
       }
       
-      &.numeric > div {
+      &[numeric] > div {
         justify-content: flex-end;
       }
       
-      &.trim {
+      &[trim] {
         position: relative;
         min-width: 60px;
         
-        &.numeric:hover > div {
+        &[numeric]:hover > div {
           left: 0 !important;
         }
-        &:not(.numeric):hover > div {
+        &:not([numeric]):hover > div {
           right: 0 !important;
         }
         
@@ -65,7 +65,7 @@ table[md-data-table] {
       }
     }
     
-    &[md-order] > tr > th.order {
+    &[md-order] > tr > th[order-by] {
       transition: color 0.25s;
       
       &:not(.md-active):not(:hover) > div > md-icon {

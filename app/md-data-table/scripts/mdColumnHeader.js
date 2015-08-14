@@ -46,7 +46,6 @@ function mdColumnHeader($compile, $interpolate, $timeout) {
       
       sortIcon.attr('md-svg-icon', 'templates.arrow.html');
       sortIcon.attr('ng-class', 'getDirection()');
-      // template.attr('ng-class', '{\'md-active\': isActive()}');
       
       if(angular.isDefined(attrs.numeric)) {
         template.prepend(sortIcon);
@@ -57,7 +56,7 @@ function mdColumnHeader($compile, $interpolate, $timeout) {
       element.on('click', setOrder);
       
       scope.$watch(isActive, function (active) {
-        if(active) element.addClass('md-active'); else element.removeClass('md-active');
+        if(active) { element.addClass('md-active'); } else { element.removeClass('md-active'); }
       });
     }
     

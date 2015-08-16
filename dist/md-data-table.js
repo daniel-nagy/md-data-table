@@ -64,14 +64,16 @@ function mdColumnHeader($compile, $interpolate, $timeout) {
     
     element.append($compile(template)(scope));
     
-    tableCtrl.setColumn(attrs);
-    
-    if(attrs.ngRepeat) {
-      if(scope.$parent.$last) {
+    if(headCtrl.isSignificant(element.parent())) {
+      tableCtrl.setColumn(attrs);
+      
+      if(attrs.ngRepeat) {
+        if(scope.$parent.$last) {
+          tableCtrl.isReady.head.resolve();
+        }
+      } else if(tableCtrl.isLastChild(element.parent().children(), element[0])) {
         tableCtrl.isReady.head.resolve();
       }
-    } else if(tableCtrl.isLastChild(template.parent().children(), template[0])) {
-      tableCtrl.isReady.head.resolve();
     }
   }
 
@@ -88,9 +90,7 @@ function mdColumnHeader($compile, $interpolate, $timeout) {
 
 mdColumnHeader.$inject = ['$compile', '$interpolate', '$timeout'];
 
-angular.module('md.data.table')
-  .directive('mdDataTable', mdDataTable)
-  .controller('mdDataTableCtrl', mdDataTableCtrl);
+angular.module('md.data.table').directive('mdDataTable', mdDataTable);
 
 function mdDataTable() {
   'use strict';
@@ -139,98 +139,96 @@ function mdDataTable() {
     }
   }
   
+  function Controller($attrs, $element, $q, $scope) {
+    var self = this;
+    
+    self.columns = [];
+    self.classes = [];
+    self.isReady = {
+      body: $q.defer(),
+      head: $q.defer()
+    };
+    
+    if($attrs.mdRowSelect) {
+      self.columns.push({ isNumeric: false });
+      
+      if(!angular.isArray(self.selectedItems)) {
+        self.selectedItems = [];
+        // log warning for developer
+        console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
+        $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
+        'i.e. ' + $attrs.mdRowSelect + ' = [], two-way data binding will fail.');
+      }
+    }
+    
+    if($attrs.mdProgress) {
+      $scope.$watch('tableCtrl.progress', function () {
+        var deferred = self.defer();
+        $q.when(self.progress)['finally'](deferred.resolve);
+      });
+    }
+    
+    // support theming
+    ['md-primary', 'md-hue-1', 'md-hue-2', 'md-hue-3'].forEach(function(mdClass) {
+      if($element.hasClass(mdClass)) {
+        self.classes.push(mdClass);
+      }
+    });
+    
+    self.defer = function () {
+      if(self.deferred) {
+        self.deferred.reject('cancel');
+      } else {
+        self.showProgress();
+      }
+      
+      self.deferred = $q.defer();
+      self.deferred.promise.then(self.resolve);
+      
+      return self.deferred;
+    };
+    
+    self.resolve = function () {
+      self.deferred = undefined;
+      self.hideProgress();
+    };
+    
+    self.isLastChild = function (siblings, child) {
+      return Array.prototype.indexOf.call(siblings, child) === siblings.length - 1;
+    };
+    
+    self.isReady.body.promise.then(function (ngRepeat) {
+      if($attrs.mdRowSelect && ngRepeat) {
+        self.listener = $scope.$parent.$watch(ngRepeat.items, function (newValue, oldeValue) {
+          if(newValue !== oldeValue) {
+            self.selectedItems.splice(0);
+          }
+        });
+      }
+    });
+    
+    self.setColumn = function (column) {
+      self.columns.push({
+        isNumeric: angular.isDefined(column.numeric),
+        unit: column.unit
+      });
+    };
+  }
+  
+  Controller.$inject = ['$attrs', '$element', '$q', '$scope'];
+  
   return {
     bindToController: {
       progress: '=mdProgress',
       selectedItems: '=mdRowSelect'
     },
     compile: compile,
-    controller: 'mdDataTableCtrl',
-    controllerAs: 'tableCtrl',
+    controller: Controller,
+    controllerAs: '$mdDataTableCtrl',
     restrict: 'A',
     scope: {}
   };
 }
-
-function mdDataTableCtrl($attrs, $element, $q, $scope) {
-  'use strict';
-
-  var self = this;
-  
-  self.columns = [];
-  self.classes = [];
-  self.isReady = {
-    body: $q.defer(),
-    head: $q.defer()
-  };
-
-  if($attrs.mdRowSelect) {
-    self.columns.push({ isNumeric: false });
-    
-    if(!angular.isArray(self.selectedItems)) {
-      self.selectedItems = [];
-      // log warning for developer
-      console.warn('md-row-select="' + $attrs.mdRowSelect + '" : ' +
-      $attrs.mdRowSelect + ' is not defined as an array in your controller, ' +
-      'i.e. ' + $attrs.mdRowSelect + ' = [], two-way data binding will fail.');
-    }
-  }
-  
-  if($attrs.mdProgress) {
-    $scope.$watch('tableCtrl.progress', function () {
-      var deferred = self.defer();
-      $q.when(self.progress)['finally'](deferred.resolve);
-    });
-  }
-
-  // support theming
-  ['md-primary', 'md-hue-1', 'md-hue-2', 'md-hue-3'].forEach(function(mdClass) {
-    if($element.hasClass(mdClass)) {
-      self.classes.push(mdClass);
-    }
-  });
-
-  self.defer = function () {
-    if(self.deferred) {
-      self.deferred.reject('cancel');
-    } else {
-      self.showProgress();
-    }
-    
-    self.deferred = $q.defer();
-    self.deferred.promise.then(self.resolve);
-    
-    return self.deferred;
-  };
-
-  self.resolve = function () {
-    self.deferred = undefined;
-    self.hideProgress();
-  };
-  
-  self.isLastChild = function (siblings, child) {
-    return Array.prototype.indexOf.call(siblings, child) === siblings.length - 1;
-  };
-
-  self.isReady.body.promise.then(function (ngRepeat) {
-    if($attrs.mdRowSelect && ngRepeat) {
-      self.listener = $scope.$parent.$watch(ngRepeat.items, function (newValue, oldeValue) {
-        if(newValue !== oldeValue) {
-          self.selectedItems.splice(0);
-        }
-      });
-    }
-  });
-
-  self.setColumn = function (column) {
-    self.columns.push({
-      isNumeric: angular.isDefined(column.numeric),
-      unit: column.unit
-    });
-  };
-}
-
-mdDataTableCtrl.$inject = ['$attrs', '$element', '$q', '$scope'];
 
 angular.module('md.data.table').directive('mdTableCell', mdTableCell);
 
@@ -293,17 +291,6 @@ angular.module('md.data.table').directive('mdTableHead', mdTableHead);
 function mdTableHead($mdTable, $q) {
   'use strict';
 
-  function postLink(scope, element, attrs, tableCtrl) {
-    
-    // table progress
-    if(angular.isFunction(scope.trigger)) {
-      scope.theadCtrl.pullTrigger = function () {
-        var deferred = tableCtrl.defer();
-        $q.when(scope.trigger(scope.theadCtrl.order))['finally'](deferred.resolve);
-      };
-    }
-  }
-  
   function compile(tElement) {
     tElement.find('th').attr('md-column-header', '');
     
@@ -321,25 +308,53 @@ function mdTableHead($mdTable, $q) {
     return postLink;
   }
   
+  function Controller($element, $scope) {
+    var rows = $element.find('tr');
+    
+    if(!$scope.sigRow || parseInt($scope.sigRow, 10) === isNaN() || $scope.sigRow < 0) {
+      $scope.sigRow = rows.length - 1;
+    }
+    
+    // when tables headers have multiple rows we need a significant row
+    // to append the checkbox to and to controll the text alignment for
+    // numeric columns
+    this.isSignificant = function (row) {
+      return row.prop('rowIndex') === $scope.sigRow;
+    };
+  }
+  
+  function postLink(scope, element, attrs, tableCtrl) {
+    var controller = element.data('$mdTableHeadController');
+    
+    // table progress
+    if(angular.isFunction(scope.trigger)) {
+      controller.pullTrigger = function () {
+        var deferred = tableCtrl.defer();
+        $q.when(scope.trigger(controller.order))['finally'](deferred.resolve);
+      };
+    }
+  }
+  
+  Controller.$inject = ['$element', '$scope'];
+  
   return {
     bindToController: {
       order: '=mdOrder'
     },
     compile: compile,
-    controller: function () {},
-    controllerAs: 'theadCtrl',
+    controller: Controller,
+    controllerAs: '$mdDataTableHeadCtrl',
     require: '^mdDataTable',
     scope: {
-      trigger: '=mdTrigger'
+      trigger: '=?mdTrigger',
+      sigRow: '=?'
     }
   };
 }
 
 mdTableHead.$inject = ['$mdTable', '$q'];
 
-angular.module('md.data.table')
-  .directive('mdDataTablePagination', mdDataTablePagination)
-  .controller('mdPaginationCtrl', mdPaginationCtrl);
+angular.module('md.data.table').directive('mdDataTablePagination', mdDataTablePagination);
 
 function mdDataTablePagination($q) {
   'use strict';
@@ -382,9 +397,84 @@ function mdDataTablePagination($q) {
       findTable(element.prop('previousElementSibling'), setTrigger);
     }
   }
+  
+  function Controller($scope, $timeout) {
+    var min = 1;
+    
+    $scope.hasNext = function () {
+      return (($scope.page * $scope.limit) < $scope.total);
+    };
+    
+    $scope.hasPrevious = function () {
+      return ($scope.page > 1);
+    };
+    
+    $scope.next = function () {
+      $scope.page++;
+      
+      if($scope.pullTrigger) {
+        $timeout($scope.pullTrigger);
+      }
+      
+      min = $scope.min();
+    };
+    
+    $scope.last = function () {
+      $scope.page = Math.ceil($scope.total / $scope.limit);
+      
+      if($scope.pullTrigger) {
+        $timeout($scope.pullTrigger);
+      }
+      
+      min = $scope.min();
+    };
+    
+    $scope.min = function () {
+      return ((($scope.page - 1) * $scope.limit) + 1);
+    };
+    
+    $scope.max = function () {
+      return $scope.hasNext() ? $scope.page * $scope.limit : $scope.total;
+    };
+    
+    $scope.onSelect = function () {
+      $scope.page = Math.floor(min / $scope.limit) + 1;
+      
+      if($scope.pullTrigger) {
+        $timeout($scope.pullTrigger);
+      }
+      
+      min = $scope.min();
+      while((min > $scope.total) && $scope.hasPrevious()) {
+        $scope.previous();
+      }
+    };
+    
+    $scope.previous = function () {
+      $scope.page--;
+      
+      if($scope.pullTrigger) {
+        $timeout($scope.pullTrigger);
+      }
+      
+      min = $scope.min();
+    };
+    
+    $scope.first = function () {
+      $scope.page = 1;
+      
+      if($scope.pullTrigger) {
+        $timeout($scope.pullTrigger);
+      }
+      
+      min = $scope.min();
+    };
+  }
+  
+  Controller.$inject = ['$scope', '$timeout'];
 
   return {
-    controller: 'mdPaginationCtrl',
+    controller: Controller,
     scope: {
       label: '=mdLabel',
       limit: '=mdLimit',
@@ -399,85 +489,6 @@ function mdDataTablePagination($q) {
 }
 
 mdDataTablePagination.$inject = ['$q'];
-
-function mdPaginationCtrl($scope, $timeout) {
-  'use strict';
-
-  var min = 1;
-
-  $scope.hasNext = function () {
-    return (($scope.page * $scope.limit) < $scope.total);
-  };
-
-  $scope.hasPrevious = function () {
-    return ($scope.page > 1);
-  };
-
-  $scope.next = function () {
-    $scope.page++;
-    
-    if($scope.pullTrigger) {
-      $timeout($scope.pullTrigger);
-    }
-    
-    min = $scope.min();
-  };
-
-  $scope.last = function () {
-    $scope.page = Math.ceil($scope.total / $scope.limit);
-    
-    if($scope.pullTrigger) {
-      $timeout($scope.pullTrigger);
-    }
-    
-    min = $scope.min();
-  };
-
-  $scope.min = function () {
-    return ((($scope.page - 1) * $scope.limit) + 1);
-  };
-
-  $scope.max = function () {
-    return $scope.hasNext() ? $scope.page * $scope.limit : $scope.total;
-  };
-
-  $scope.onSelect = function () {
-    $scope.page = Math.floor(min / $scope.limit) + 1;
-    
-    if($scope.pullTrigger) {
-      $timeout($scope.pullTrigger);
-    }
-    
-    min = $scope.min();
-    while((min > $scope.total) && $scope.hasPrevious()) {
-      $scope.previous();
-    }
-  };
-
-  $scope.previous = function () {
-    $scope.page--;
-    
-    if($scope.pullTrigger) {
-      $timeout($scope.pullTrigger);
-    }
-    
-    min = $scope.min();
-  };
-
-  $scope.first = function () {
-    $scope.page = 1;
-    
-    if($scope.pullTrigger) {
-      $timeout($scope.pullTrigger);
-    }
-    
-    min = $scope.min();
-  };
-
-}
-
-mdPaginationCtrl.$inject = ['$scope', '$timeout'];
-
 
 angular.module('md.data.table').directive('mdTableProgress', mdTableProgress);
 

@@ -128,6 +128,11 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+#### Version 0.8.8
+###### August 14, 2015
+
+* Tables with multi-row headers can now specify a significant row that will be used to append the checkbox to and set the text alignment for numeric columns. The default is to use the last row. See [Numeric Columns](#numeric-columns) and [Row Selection](#row-selection).
+
 #### Version 0.8.7
 ###### August 14, 2015
 
@@ -147,17 +152,6 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 ###### August 12, 2015
 
 * Fixing bug where the arrow icon, while hovering an inactive column name with the `descend-first` attribute, would not point in the appropriate direction.
-
-#### Version 0.8.3
-###### August 11, 2015
-
-* Inline menus have been updated for Angular Material 0.10.1
-
-**Note:** Menus are going to look bad in the Codepen because Google has not yet updated the CDN for Angular Material to version 0.10.1
-
-**Update:** August 13, 2015
-
-Google posted a CDN for Angular Material v0.10.1, the select menus in the Codepen should look fine now.
 
 View the [archives](ARCHIVE.md) for a complete version history.
 
@@ -238,7 +232,7 @@ When `trim` is place on a column header, the width of the column will be determi
 I believe it is wise to restrict the minimum width of a column. By default column headers will enforce a minimum width of `60px`. This is a just a CSS property; however, you may overwrite it in your style sheet.
 
 ```css
-table[md-data-table] > thead > tr > th > div.trim {
+table[md-data-table] > thead > tr > th > div[trim] {
   min-width: 100px;
 }
 ```
@@ -249,10 +243,11 @@ Numeric columns align to the right of table cells. Column headers support the fo
 
 ##### Header Cells
 
-| Attribute    | Target  | Type     | Description |
-| :----------- | :------ | :------- | :---------- |
-| `numeric`    | `<th>`  | `NULL`   | Informs the directive the column is numeric in nature. |
-| `unit`       | `<th>`  | `String` | Specifies the unit. Providing a unit will automatically add the unit, wrapped in parenthesis, to the header cell. |
+| Attribute    | Target    | Type      | Description |
+| :----------- | :-------- | :-------  | :---------- |
+| `sig-row`    | `<thead>` | `Integer` | The index of the row to use to determine the column type. The default is the last row |
+| `numeric`    | `<th>`    | `NULL`    | Informs the directive the column is numeric in nature. |
+| `unit`       | `<th>`    | `String`  | Specifies the unit. Providing a unit will automatically add the unit, wrapped in parenthesis, to the header cell. |
 
 ##### Body Cells
 
@@ -302,8 +297,9 @@ If the function assigned to the `md-triger` attribute returns a promise, a loadi
 
 | Attribute           | Target    | Type    | Description |
 | :------------------ | :-------- | :------ | :---------- |
-| `md-row-select`     | `<table>` | `Array` | Two-way data binding of selected items |
-| `md-auto-select`    | `<tr>`    | `NULL`  | allow row selection by clicking anywhere inside the row. |
+| `md-row-select`     | `<table>` | `Array`   | Two-way data binding of selected items |
+| `sig-row`           | `<thead>` | `Integer` | The index of the row to append the master toggle to in the column header. The default is the last row |
+| `md-auto-select`    | `<tr>`    | `NULL`    | allow row selection by clicking anywhere inside the row. |
 | `md-disable-select` | `<tr>`    | `expression | function` | Conditionally disable row selection |
 
 **Example: Disable all desserts with more than 400 calories.**

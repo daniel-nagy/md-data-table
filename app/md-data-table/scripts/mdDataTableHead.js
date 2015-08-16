@@ -3,17 +3,6 @@ angular.module('md.data.table').directive('mdTableHead', mdTableHead);
 function mdTableHead($mdTable, $q) {
   'use strict';
 
-  function postLink(scope, element, attrs, tableCtrl) {
-    
-    // table progress
-    if(angular.isFunction(scope.trigger)) {
-      scope.theadCtrl.pullTrigger = function () {
-        var deferred = tableCtrl.defer();
-        $q.when(scope.trigger(scope.theadCtrl.order))['finally'](deferred.resolve);
-      };
-    }
-  }
-  
   function compile(tElement) {
     tElement.find('th').attr('md-column-header', '');
     
@@ -31,16 +20,46 @@ function mdTableHead($mdTable, $q) {
     return postLink;
   }
   
+  function Controller($element, $scope) {
+    var rows = $element.find('tr');
+    
+    if(!$scope.sigRow || parseInt($scope.sigRow, 10) === isNaN() || $scope.sigRow < 0) {
+      $scope.sigRow = rows.length - 1;
+    }
+    
+    // when tables headers have multiple rows we need a significant row
+    // to append the checkbox to and to controll the text alignment for
+    // numeric columns
+    this.isSignificant = function (row) {
+      return row.prop('rowIndex') === $scope.sigRow;
+    };
+  }
+  
+  function postLink(scope, element, attrs, tableCtrl) {
+    var controller = element.data('$mdTableHeadController');
+    
+    // table progress
+    if(angular.isFunction(scope.trigger)) {
+      controller.pullTrigger = function () {
+        var deferred = tableCtrl.defer();
+        $q.when(scope.trigger(controller.order))['finally'](deferred.resolve);
+      };
+    }
+  }
+  
+  Controller.$inject = ['$element', '$scope'];
+  
   return {
     bindToController: {
       order: '=mdOrder'
     },
     compile: compile,
-    controller: function () {},
-    controllerAs: 'theadCtrl',
+    controller: Controller,
+    controllerAs: '$mdDataTableHeadCtrl',
     require: '^mdDataTable',
     scope: {
-      trigger: '=mdTrigger'
+      trigger: '=?mdTrigger',
+      sigRow: '=?'
     }
   };
 }

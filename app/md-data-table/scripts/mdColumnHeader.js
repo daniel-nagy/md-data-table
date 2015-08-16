@@ -62,14 +62,16 @@ function mdColumnHeader($compile, $interpolate, $timeout) {
     
     element.append($compile(template)(scope));
     
-    tableCtrl.setColumn(attrs);
-    
-    if(attrs.ngRepeat) {
-      if(scope.$parent.$last) {
+    if(headCtrl.isSignificant(element.parent())) {
+      tableCtrl.setColumn(attrs);
+      
+      if(attrs.ngRepeat) {
+        if(scope.$parent.$last) {
+          tableCtrl.isReady.head.resolve();
+        }
+      } else if(tableCtrl.isLastChild(element.parent().children(), element[0])) {
         tableCtrl.isReady.head.resolve();
       }
-    } else if(tableCtrl.isLastChild(template.parent().children(), template[0])) {
-      tableCtrl.isReady.head.resolve();
     }
   }
 

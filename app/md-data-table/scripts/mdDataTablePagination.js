@@ -1,6 +1,4 @@
-angular.module('md.data.table')
-  .directive('mdDataTablePagination', mdDataTablePagination)
-  .controller('mdPaginationCtrl', mdPaginationCtrl);
+angular.module('md.data.table').directive('mdDataTablePagination', mdDataTablePagination);
 
 function mdDataTablePagination($q) {
   'use strict';
@@ -43,9 +41,84 @@ function mdDataTablePagination($q) {
       findTable(element.prop('previousElementSibling'), setTrigger);
     }
   }
+  
+  function Controller($scope, $timeout) {
+    var min = 1;
+    
+    $scope.hasNext = function () {
+      return (($scope.page * $scope.limit) < $scope.total);
+    };
+    
+    $scope.hasPrevious = function () {
+      return ($scope.page > 1);
+    };
+    
+    $scope.next = function () {
+      $scope.page++;
+      
+      if($scope.pullTrigger) {
+        $timeout($scope.pullTrigger);
+      }
+      
+      min = $scope.min();
+    };
+    
+    $scope.last = function () {
+      $scope.page = Math.ceil($scope.total / $scope.limit);
+      
+      if($scope.pullTrigger) {
+        $timeout($scope.pullTrigger);
+      }
+      
+      min = $scope.min();
+    };
+    
+    $scope.min = function () {
+      return ((($scope.page - 1) * $scope.limit) + 1);
+    };
+    
+    $scope.max = function () {
+      return $scope.hasNext() ? $scope.page * $scope.limit : $scope.total;
+    };
+    
+    $scope.onSelect = function () {
+      $scope.page = Math.floor(min / $scope.limit) + 1;
+      
+      if($scope.pullTrigger) {
+        $timeout($scope.pullTrigger);
+      }
+      
+      min = $scope.min();
+      while((min > $scope.total) && $scope.hasPrevious()) {
+        $scope.previous();
+      }
+    };
+    
+    $scope.previous = function () {
+      $scope.page--;
+      
+      if($scope.pullTrigger) {
+        $timeout($scope.pullTrigger);
+      }
+      
+      min = $scope.min();
+    };
+    
+    $scope.first = function () {
+      $scope.page = 1;
+      
+      if($scope.pullTrigger) {
+        $timeout($scope.pullTrigger);
+      }
+      
+      min = $scope.min();
+    };
+  }
+  
+  Controller.$inject = ['$scope', '$timeout'];
 
   return {
-    controller: 'mdPaginationCtrl',
+    controller: Controller,
     scope: {
       label: '=mdLabel',
       limit: '=mdLimit',
@@ -60,81 +133,3 @@ function mdDataTablePagination($q) {
 }
 
 mdDataTablePagination.$inject = ['$q'];
-
-function mdPaginationCtrl($scope, $timeout) {
-  'use strict';
-
-  var min = 1;
-
-  $scope.hasNext = function () {
-    return (($scope.page * $scope.limit) < $scope.total);
-  };
-
-  $scope.hasPrevious = function () {
-    return ($scope.page > 1);
-  };
-
-  $scope.next = function () {
-    $scope.page++;
-    
-    if($scope.pullTrigger) {
-      $timeout($scope.pullTrigger);
-    }
-    
-    min = $scope.min();
-  };
-
-  $scope.last = function () {
-    $scope.page = Math.ceil($scope.total / $scope.limit);
-    
-    if($scope.pullTrigger) {
-      $timeout($scope.pullTrigger);
-    }
-    
-    min = $scope.min();
-  };
-
-  $scope.min = function () {
-    return ((($scope.page - 1) * $scope.limit) + 1);
-  };
-
-  $scope.max = function () {
-    return $scope.hasNext() ? $scope.page * $scope.limit : $scope.total;
-  };
-
-  $scope.onSelect = function () {
-    $scope.page = Math.floor(min / $scope.limit) + 1;
-    
-    if($scope.pullTrigger) {
-      $timeout($scope.pullTrigger);
-    }
-    
-    min = $scope.min();
-    while((min > $scope.total) && $scope.hasPrevious()) {
-      $scope.previous();
-    }
-  };
-
-  $scope.previous = function () {
-    $scope.page--;
-    
-    if($scope.pullTrigger) {
-      $timeout($scope.pullTrigger);
-    }
-    
-    min = $scope.min();
-  };
-
-  $scope.first = function () {
-    $scope.page = 1;
-    
-    if($scope.pullTrigger) {
-      $timeout($scope.pullTrigger);
-    }
-    
-    min = $scope.min();
-  };
-
-}
-
-mdPaginationCtrl.$inject = ['$scope', '$timeout'];

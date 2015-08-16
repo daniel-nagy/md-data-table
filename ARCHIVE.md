@@ -10,7 +10,7 @@
 ### 0.8.x
 
 #### Version 0.8.8
-###### August 14, 2015
+###### August 16, 2015
 
 * Tables with multi-row headers can now specify a significant row that will be used to append the checkbox to and set the text alignment for numeric columns. The default is to use the last row. See [Numeric Columns](#numeric-columns) and [Row Selection](#row-selection).
 

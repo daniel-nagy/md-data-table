@@ -4,7 +4,7 @@ This module is an effort to implement Material Design data tables in [Angular Ma
 
 Specification for Material Design data tables can be found [here](http://www.google.com/design/spec/components/data-tables.html).
 
-* [voting](#voting)
+* [voting](#Voting)
 * [Demo](#demo)
 * [License](#license)
 * [Installation](#installation)
@@ -15,7 +15,7 @@ Specification for Material Design data tables can be found [here](http://www.goo
 
 ## Voting
 
-Voting is my attempt to get receive organized feedback from the community on how new features should work or how existing features should be changed. This was inspired by the different request for how row selection should work. This may be the only time I do this but it may be useful again in the future.
+Voting is my attempt to receive more organized feedback from the community on how new features should work or how existing features should be changed. This was inspired by the different request for how row selection should work. This may be the only time I do this but it may be useful again in the future.
 
 I ask that you visit any issues below and follow the instructions for voting for or against it.
 

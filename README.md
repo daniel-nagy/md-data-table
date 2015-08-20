@@ -4,7 +4,7 @@ This module is an effort to implement Material Design data tables in [Angular Ma
 
 Specification for Material Design data tables can be found [here](http://www.google.com/design/spec/components/data-tables.html).
 
-* [voting](#Voting)
+* [Voting](#voting)
 * [Demo](#demo)
 * [License](#license)
 * [Installation](#installation)

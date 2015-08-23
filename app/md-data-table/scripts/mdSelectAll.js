@@ -8,7 +8,8 @@ function mdSelectAll() {
     
     checkbox.attr('aria-label', 'Select All');
     checkbox.attr('ng-click', 'toggleAll()');
-    checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': allSelected()}]');
+    checkbox.attr('ng-class', 'mdClasses');
+    checkbox.attr('ng-checked', 'allSelected()');
     checkbox.attr('ng-disabled', '!getCount()');
     
     tElement.append(checkbox);

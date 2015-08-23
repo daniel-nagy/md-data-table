@@ -1,6 +1,6 @@
 {
   "name": "angular-material-data-table",
-  "version": "0.8.8",
+  "version": "0.8.9",
   "description": "Material Design data table.",
   "main": [
     "dist/md-data-table.min.js",
@@ -28,7 +28,7 @@
     "Gruntfile.js"
   ],
   "dependencies": {
-    "angular": "~1.4.1",
+    "angular": "~1.4.4",
     "angular-material": "~0.10.1"
   }
 }

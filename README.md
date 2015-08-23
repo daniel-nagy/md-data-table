@@ -137,6 +137,14 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+#### Version 0.8.9
+###### August 23, 2015
+
+* Fix for issue #84
+* Fix for issue #93
+
+Thanks [@pavelhoral](https://github.com/pavelhoral)!
+
 #### Version 0.8.8
 ###### August 16, 2015
 
@@ -156,11 +164,6 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 ###### August 12, 2015
 
 * Fixing bug where developer defined attributes on `<th>` elements were not preserved.
-
-#### Version 0.8.4
-###### August 12, 2015
-
-* Fixing bug where the arrow icon, while hovering an inactive column name with the `descend-first` attribute, would not point in the appropriate direction.
 
 View the [archives](ARCHIVE.md) for a complete version history.
 

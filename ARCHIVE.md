@@ -9,6 +9,14 @@
 
 ### 0.8.x
 
+#### Version 0.8.9
+###### August 23, 2015
+
+* Fix for issue #84
+* Fix for issue #93
+
+Thanks [@pavelhoral](https://github.com/pavelhoral)!
+
 #### Version 0.8.8
 ###### August 16, 2015
 

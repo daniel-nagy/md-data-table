@@ -162,7 +162,7 @@ function mdDataTable() {
     }
     
     if($attrs.mdProgress) {
-      $scope.$watch('tableCtrl.progress', function () {
+      $scope.$watch('$mdDataTableCtrl.progress', function () {
         var deferred = self.defer();
         $q.when(self.progress)['finally'](deferred.resolve);
       });
@@ -229,6 +229,7 @@ function mdDataTable() {
     scope: {}
   };
 }
+
 
 angular.module('md.data.table').directive('mdTableCell', mdTableCell);
 

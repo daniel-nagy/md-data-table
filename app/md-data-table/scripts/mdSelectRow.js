@@ -9,7 +9,8 @@ function mdSelectRow($mdTable) {
     
     checkbox.attr('aria-label', 'Select Row');
     checkbox.attr('ng-click', 'toggleRow(' + ngRepeat.item + ', $event)');
-    checkbox.attr('ng-class', '[mdClasses, {\'md-checked\': isSelected(' + ngRepeat.item + ')}]');
+    checkbox.attr('ng-class', 'mdClasses');
+    checkbox.attr('ng-checked', 'isSelected(' + ngRepeat.item + ')');
     
     if(tAttrs.mdDisableSelect) {
       checkbox.attr('ng-disabled', 'isDisabled()');

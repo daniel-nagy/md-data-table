@@ -140,8 +140,8 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 #### Version 0.8.9
 ###### August 23, 2015
 
-* Fix for issue #84
-* Fix for issue #93
+* Fix for issue [#84](https://github.com/daniel-nagy/md-data-table/issues/84)
+* Fix for issue [#93](https://github.com/daniel-nagy/md-data-table/issues/93)
 
 Thanks [@pavelhoral](https://github.com/pavelhoral)!
 

@@ -13,6 +13,10 @@ function mdColumnHeader($compile, $interpolate, $timeout) {
     if(attrs.unit) {
       template.text(template.text() + ' (' + $interpolate.startSymbol() + 'unit' + $interpolate.endSymbol() + ')');
     }
+
+    if (attrs.mdClass) {
+      element.addClass(attrs.mdClass);
+    }
     
     if(angular.isDefined(attrs.trim)) {
       template.contents().wrap('<div></div>');

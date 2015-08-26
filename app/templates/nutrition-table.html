@@ -10,7 +10,7 @@
   <table md-data-table md-row-select="selected" md-progress="deferred">
     <thead md-order="query.order" md-trigger="onorderchange">
       <tr>
-        <th ng-repeat="column in columns" ng-attr-order-by="{{column.orderBy}}" ng-attr-numeric="{{column.numeric}}" ng-attr-unit="{{column.unit}}" name="{{column.name}}" ng-attr-descend-first="{{column.descendFirst}}" ng-attr-trim="{{column.trim}}"></th>
+        <th ng-repeat="column in columns" ng-attr-order-by="{{column.orderBy}}" ng-attr-numeric="{{column.numeric}}" ng-attr-unit="{{column.unit}}" name="{{column.name}}" ng-attr-md-class="{{column.class}}" ng-attr-descend-first="{{column.descendFirst}}" ng-attr-trim="{{column.trim}}"></th>
         <!-- <th class="custom" order-by="name" unit="100g serving" name="Dessert"></th>
         <th order-by="type" name="Type" descend-first></th>
         <th numeric order-by="calories.value" name="Calories"></th>

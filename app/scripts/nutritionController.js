@@ -12,11 +12,13 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
   $scope.columns = [{
     name: 'Dessert',
     orderBy: 'name',
-    unit: '100g serving'
+    unit: '100g serving',
+    'class': 'test'
   }, {
     descendFirst: true,
     name: 'Type',
-    orderBy: 'type'
+    orderBy: 'type',
+    'class': 'test multiple-class-test'
   }, {
     name: 'Calories',
     numeric: true,

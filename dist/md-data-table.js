@@ -28,10 +28,11 @@ function mdColumnHeader($compile, $interpolate, $timeout) {
       };
       
       var setOrder = function () {
+        
         if(isActive()) {
-          headCtrl.order = headCtrl.order === scope.order ? '-' + scope.order : scope.order;
+          scope.$apply(headCtrl.order = headCtrl.order === scope.order ? '-' + scope.order : scope.order);
         } else {
-          headCtrl.order = angular.isDefined(attrs.descendFirst) ? '-' + scope.order : scope.order;
+          scope.$apply(headCtrl.order = angular.isDefined(attrs.descendFirst) ? '-' + scope.order : scope.order);
         }
         
         if(headCtrl.pullTrigger) {

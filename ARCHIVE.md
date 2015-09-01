@@ -9,11 +9,16 @@
 
 ### 0.8.x
 
+#### Version 0.8.10
+###### August 31, 2015
+
+* Fix for issues [#117](https://github.com/daniel-nagy/md-data-table/issues/117) and [#119](https://github.com/daniel-nagy/md-data-table/issues/119)
+
 #### Version 0.8.9
 ###### August 23, 2015
 
-* Fix for issue #84
-* Fix for issue #93
+* Fix for issue [#84](https://github.com/daniel-nagy/md-data-table/issues/84)
+* Fix for issue [#93](https://github.com/daniel-nagy/md-data-table/issues/93)
 
 Thanks [@pavelhoral](https://github.com/pavelhoral)!
 

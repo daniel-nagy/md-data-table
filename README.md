@@ -137,6 +137,11 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+#### Version 0.8.10
+###### August 31, 2015
+
+* Fix for issues [#117](https://github.com/daniel-nagy/md-data-table/issues/117) and [#119](https://github.com/daniel-nagy/md-data-table/issues/119)
+
 #### Version 0.8.9
 ###### August 23, 2015
 
@@ -159,11 +164,6 @@ Thanks [@pavelhoral](https://github.com/pavelhoral)!
 ###### August 13, 2015
 
 * Temporary patch to prevent tables that use `ng-repeat` on header columns from not working. Changes will need to be made to the `mdColumnHeader` directive to insure that no other directives, that transform the template, will conflict with it in the future.
-
-#### Version 0.8.5
-###### August 12, 2015
-
-* Fixing bug where developer defined attributes on `<th>` elements were not preserved.
 
 View the [archives](ARCHIVE.md) for a complete version history.
 

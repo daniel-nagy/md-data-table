@@ -33,6 +33,8 @@ This software is provided free of change and without restriction under the [MIT 
 
 ## Installation
 
+#### Using Bower
+
 This package is installable through the Bower package manager.
 
 ```
@@ -52,6 +54,20 @@ Include the `md.data.table` module as a dependency in your application.
 
 ```javascript
 angular.module('myApp', ['md.data.table', 'ngMaterial']);
+```
+
+#### Using npm and Browserify
+
+In addition, this package may be installed using npm.
+
+```
+npm install angular-material-data-table --save
+```
+
+You may use Browserify to inject this module into your application.
+
+```javascript
+angular.module('myApp', [require('angular-material-data-table')]);
 ```
 
 > Tested in IE 10 and on IOS 7.
@@ -137,6 +153,11 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+#### Version 0.8.11
+###### September 6, 2015
+
+* Adding support for Browserify.
+
 #### Version 0.8.10
 ###### August 31, 2015
 
@@ -159,11 +180,6 @@ Thanks [@pavelhoral](https://github.com/pavelhoral)!
 ###### August 14, 2015
 
 * I no longer replace the `th` element, instead I build the template and append it to the original `th` element. This should fix issues with `ng-repeat`.
-
-#### Version 0.8.6
-###### August 13, 2015
-
-* Temporary patch to prevent tables that use `ng-repeat` on header columns from not working. Changes will need to be made to the `mdColumnHeader` directive to insure that no other directives, that transform the template, will conflict with it in the future.
 
 View the [archives](ARCHIVE.md) for a complete version history.
 

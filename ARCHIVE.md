@@ -9,6 +9,11 @@
 
 ### 0.8.x
 
+#### Version 0.8.11
+###### September 6, 2015
+
+* Adding support for Browserify.
+
 #### Version 0.8.10
 ###### August 31, 2015
 

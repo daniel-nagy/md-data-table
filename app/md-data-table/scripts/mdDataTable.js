@@ -87,7 +87,9 @@ function mdDataTable() {
       if(self.deferred) {
         self.deferred.reject('cancel');
       } else {
-        self.showProgress();
+        if (self.showProgress) {
+          self.showProgress();
+        }
       }
       
       self.deferred = $q.defer();
@@ -98,7 +100,9 @@ function mdDataTable() {
     
     self.resolve = function () {
       self.deferred = undefined;
-      self.hideProgress();
+      if (self.hideProgress) {
+        self.hideProgress();
+      }
     };
     
     self.isLastChild = function (siblings, child) {

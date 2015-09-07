@@ -100,7 +100,9 @@ function mdDataTable() {
     
     self.resolve = function () {
       self.deferred = undefined;
-      self.hideProgress();
+      if (self.hideProgress) {
+        self.hideProgress();
+      }
     };
     
     self.isLastChild = function (siblings, child) {

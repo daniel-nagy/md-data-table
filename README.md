@@ -222,9 +222,9 @@ Just add an `orderBy:` property to the `ng-repeat` attribute that matches the `m
   <table md-data-table>
     <thead md-order="order">
       <!-- this cell will order by the name property -->
-      <th order-by="name">Dessert (100g serving)</th>
+      <th order-by="name" name="Dessert (100g serving)"></th>
       <!-- this cell will not change the order when clicked -->
-      <th numeric>Calories</th>
+      <th numeric name="Calories"></th>
     </thead>
     <tbody>
       <tr ng-repeat="dessert in desserts | orderBy: order"></tr>

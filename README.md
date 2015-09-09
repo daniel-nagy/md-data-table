@@ -61,7 +61,7 @@ angular.module('myApp', ['md.data.table', 'ngMaterial']);
 In addition, this package may be installed using npm.
 
 ```
-npm install daniel-nagy/md-data-table --save
+npm install angular-material-data-table --save
 ```
 
 You may use Browserify to inject this module into your application.

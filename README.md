@@ -153,6 +153,11 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+#### Version 0.8.12
+###### September 25, 2015
+
+* Changing Angular Material dependency version to allow versions greater than 0.10.x
+
 #### Version 0.8.11
 ###### September 6, 2015
 

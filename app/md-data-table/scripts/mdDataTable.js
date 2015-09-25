@@ -86,10 +86,8 @@ function mdDataTable() {
     self.defer = function () {
       if(self.deferred) {
         self.deferred.reject('cancel');
-      } else {
-        if (self.showProgress) {
-          self.showProgress();
-        }
+      } else if(self.showProgress) {
+        self.showProgress();
       }
       
       self.deferred = $q.defer();
@@ -100,7 +98,8 @@ function mdDataTable() {
     
     self.resolve = function () {
       self.deferred = undefined;
-      if (self.hideProgress) {
+      
+      if(self.hideProgress) {
         self.hideProgress();
       }
     };

@@ -153,6 +153,11 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 
 ## Change Log
 
+#### Version 0.8.13
+###### September 29, 2015
+
+* As [@sbehun](https://github.com/sbehun) pointed out, the default type for `buttons` across browsers is unpredictable and it is safest to always define a type. This version will prevent tables that are wrapped in forms from submitting the form when the pagination buttons are clicked.
+
 #### Version 0.8.12
 ###### September 25, 2015
 
@@ -175,16 +180,6 @@ angular.module('nutritionApp').controller('nutritionController', ['$nutrition', 
 * Fix for issue [#93](https://github.com/daniel-nagy/md-data-table/issues/93)
 
 Thanks [@pavelhoral](https://github.com/pavelhoral)!
-
-#### Version 0.8.8
-###### August 16, 2015
-
-* Tables with multi-row headers can now specify a significant row that will be used to append the checkbox to and set the text alignment for numeric columns. The default is to use the last row. See [Numeric Columns](#numeric-columns) and [Row Selection](#row-selection).
-
-#### Version 0.8.7
-###### August 14, 2015
-
-* I no longer replace the `th` element, instead I build the template and append it to the original `th` element. This should fix issues with `ng-repeat`.
 
 View the [archives](ARCHIVE.md) for a complete version history.
 

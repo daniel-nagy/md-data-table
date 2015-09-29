@@ -6,16 +6,16 @@
   <span>{{min()}} - {{max()}} {{paginationLabel.of}} {{total}}</span>
 </div>
 <div>
-  <md-button ng-click="first()" ng-disabled="!hasPrevious()" aria-label="First">
+  <md-button type="button" ng-click="first()" ng-disabled="!hasPrevious()" aria-label="First">
     <md-icon md-svg-icon="templates.navigate-first.html"></md-icon>
   </md-button>
-  <md-button ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">
+  <md-button type="button" ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">
     <md-icon md-svg-icon="templates.navigate-before.html"></md-icon>
   </md-button>
-  <md-button ng-click="next()" ng-disabled="!hasNext()" aria-label="Next">
+  <md-button type="button" ng-click="next()" ng-disabled="!hasNext()" aria-label="Next">
     <md-icon md-svg-icon="templates.navigate-next.html"></md-icon>
   </md-button>
-  <md-button ng-click="last()" ng-disabled="!hasNext()" aria-label="Last">
+  <md-button type="button" ng-click="last()" ng-disabled="!hasNext()" aria-label="Last">
     <md-icon md-svg-icon="templates.navigate-last.html"></md-icon>
   </md-button>
 </div>

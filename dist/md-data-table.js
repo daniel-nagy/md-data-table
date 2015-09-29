@@ -806,16 +806,16 @@ angular.module('templates.md-data-table-pagination.html', []).run(['$templateCac
     '  <span>{{min()}} - {{max()}} {{paginationLabel.of}} {{total}}</span>\n' +
     '</div>\n' +
     '<div>\n' +
-    '  <md-button ng-click="first()" ng-disabled="!hasPrevious()" aria-label="First">\n' +
+    '  <md-button type="button" ng-click="first()" ng-disabled="!hasPrevious()" aria-label="First">\n' +
     '    <md-icon md-svg-icon="templates.navigate-first.html"></md-icon>\n' +
     '  </md-button>\n' +
-    '  <md-button ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">\n' +
+    '  <md-button type="button" ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">\n' +
     '    <md-icon md-svg-icon="templates.navigate-before.html"></md-icon>\n' +
     '  </md-button>\n' +
-    '  <md-button ng-click="next()" ng-disabled="!hasNext()" aria-label="Next">\n' +
+    '  <md-button type="button" ng-click="next()" ng-disabled="!hasNext()" aria-label="Next">\n' +
     '    <md-icon md-svg-icon="templates.navigate-next.html"></md-icon>\n' +
     '  </md-button>\n' +
-    '  <md-button ng-click="last()" ng-disabled="!hasNext()" aria-label="Last">\n' +
+    '  <md-button type="button" ng-click="last()" ng-disabled="!hasNext()" aria-label="Last">\n' +
     '    <md-icon md-svg-icon="templates.navigate-last.html"></md-icon>\n' +
     '  </md-button>\n' +
     '</div>\n' +

@@ -210,7 +210,7 @@ View the [archives](ARCHIVE.md) for a complete version history.
 
 The `mdOrder` attribute will be update when the user clicks a `<th>` cell to the value defined by the `order-by` attribute. The `mdOrder` attribute can be used in to do server-side sorting or client-side sorting.
 
-If the function assigned to the `md-triger` attribute returns a promise, a loading indicator will be displayed.
+If the function assigned to the `md-trigger` attribute returns a promise, a loading indicator will be displayed.
 
 > This directive does not support sorting of in-place data, i.e. data included directly in the markup, nor do I plan on supporting this.
 

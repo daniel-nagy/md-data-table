@@ -313,7 +313,7 @@ The `md-label` attribute has the following properties.
 | text     | `String` | The pagination label. |
 | of       | `String` | The 'of' in 'x - y of z'. |
 
-If the function assigned to the `md-triger` attribute returns a promise, a loading indicator will be displayed.
+If the function assigned to the `md-trigger` attribute returns a promise, a loading indicator will be displayed.
 
 **Example: Client Side pagination using ngRepeat.**
 

@@ -1,6 +1,6 @@
 angular.module('md.data.table').directive('mdDataTable', mdDataTable);
 
-function mdDataTable() {
+function mdDataTable($mdTable) {
   'use strict';
   
   function compile(tElement, tAttrs) {
@@ -34,15 +34,17 @@ function mdDataTable() {
       }
     }
     
-    if(tAttrs.mdRowSelect && rows.attr('ng-repeat')) {
+    var ngRepeat = $mdTable.getAttr(rows, 'ngRepeat');
+    
+    if(tAttrs.mdRowSelect && ngRepeat) {
       rows.attr('md-select-row', '');
     }
     
-    if(tAttrs.mdRowSelect && !rows.attr('ng-repeat')) {
+    if(tAttrs.mdRowSelect && !ngRepeat) {
       console.warn('Please use ngRepeat to enable row selection.');
     }
     
-    if(head.attr('md-order') && !rows.attr('ng-repeat')) {
+    if(head.attr('md-order') && !ngRepeat) {
       console.warn('Column ordering without ngRepeat is not supported.');
     }
   }
@@ -140,3 +142,5 @@ function mdDataTable() {
     scope: {}
   };
 }
+
+mdDataTable.$inject = ['$mdTable'];

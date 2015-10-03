@@ -8,7 +8,7 @@ function mdTableHead($mdTable, $q) {
     
     // enable row selection
     if(tElement.parent().attr('md-row-select')) {
-      var ngRepeat = tElement.parent().find('tbody').find('tr').attr('ng-repeat');
+      var ngRepeat = $mdTable.getAttr(tElement.parent().find('tbody').find('tr'), 'ngRepeat');
       
       if(ngRepeat) {
         tElement.find('tr').prepend(angular.element('<th md-select-all="' + $mdTable.parse(ngRepeat).items + '"></th>'));

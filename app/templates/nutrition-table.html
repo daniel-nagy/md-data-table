@@ -23,7 +23,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr md-auto-select md-disable-select="dessert.calories.value > 300" ng-repeat="dessert in desserts.data | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+      <tr md-auto-select md-disable-select="dessert.calories.value > 300" data-ng-repeat="dessert in desserts.data | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
         <td>{{dessert.name}}</td>
         <td>
           <md-select ng-model="dessert.type" placeholder="Other">

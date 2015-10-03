@@ -9,6 +9,11 @@
 
 ### 0.8.x
 
+#### Version 0.8.14
+###### October 3, 2015
+
+* Support for various attribute syntaxes. For example, `data-ng-repeat`, `x-ng-repeat`, `x:ng:repeat`, etc.
+
 #### Version 0.8.13
 ###### September 29, 2015
 

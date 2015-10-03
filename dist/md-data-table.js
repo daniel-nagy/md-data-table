@@ -93,7 +93,7 @@ mdColumnHeader.$inject = ['$compile', '$interpolate', '$timeout'];
 
 angular.module('md.data.table').directive('mdDataTable', mdDataTable);
 
-function mdDataTable() {
+function mdDataTable($mdTable) {
   'use strict';
   
   function compile(tElement, tAttrs) {
@@ -127,15 +127,17 @@ function mdDataTable() {
       }
     }
     
-    if(tAttrs.mdRowSelect && rows.attr('ng-repeat')) {
+    var ngRepeat = $mdTable.getAttr(rows, 'ngRepeat');
+    
+    if(tAttrs.mdRowSelect && ngRepeat) {
       rows.attr('md-select-row', '');
     }
     
-    if(tAttrs.mdRowSelect && !rows.attr('ng-repeat')) {
+    if(tAttrs.mdRowSelect && !ngRepeat) {
       console.warn('Please use ngRepeat to enable row selection.');
     }
     
-    if(head.attr('md-order') && !rows.attr('ng-repeat')) {
+    if(head.attr('md-order') && !ngRepeat) {
       console.warn('Column ordering without ngRepeat is not supported.');
     }
   }
@@ -234,6 +236,8 @@ function mdDataTable() {
   };
 }
 
+mdDataTable.$inject = ['$mdTable'];
+
 
 angular.module('md.data.table').directive('mdTableCell', mdTableCell);
 
@@ -301,7 +305,7 @@ function mdTableHead($mdTable, $q) {
     
     // enable row selection
     if(tElement.parent().attr('md-row-select')) {
-      var ngRepeat = tElement.parent().find('tbody').find('tr').attr('ng-repeat');
+      var ngRepeat = $mdTable.getAttr(tElement.parent().find('tbody').find('tr'), 'ngRepeat');
       
       if(ngRepeat) {
         tElement.find('tr').prepend(angular.element('<th md-select-all="' + $mdTable.parse(ngRepeat).items + '"></th>'));
@@ -598,7 +602,7 @@ function mdTableService() {
   var cache = {};
   
   function Repeat(ngRepeat) {
-    this._tokens = ngRepeat.split(' ');
+    this._tokens = ngRepeat.split(/\s+/);
     this._iterator = 0;
     
     this.item = this.current();
@@ -628,6 +632,42 @@ function mdTableService() {
     return this._iterator < this._tokens.length - 1;
   };
   
+  /**
+   * Get the value of an atribute given its normalized name.
+   *
+   * @param {jqLite} element - A jqLite element.
+   * @param {string} attr - The normalized name of the attribute.
+   * @returns {string} - The value of the attribute.
+   */
+  function getAttr(element, attr) {
+    var attrs = element.prop('attributes');
+    
+    for(var i = 0; i < attrs.length; i++) {
+      if(normalize(attrs.item(i).name) === attr) {
+        return attrs.item(i).value;
+      }
+    }
+    
+    return '';
+  }
+  
+  /**
+   * Normalizes an attribute's name.
+   *
+   * @param {string} attr - The original name of the attribute.
+   * @returns {string} - The normalized name of the attribute.
+   */
+  function normalize(attr) {
+    var tokens = attr.replace(/^((?:x|data)[\:\-_])/i, '').split(/[\:\-_]/);
+    var normal = tokens.shift();
+    
+    tokens.forEach(function (token) {
+      normal += token.charAt(0).toUpperCase() + token.slice(1);
+    });
+    
+    return normal;
+  }
+  
   function parse(ngRepeat) {
     if(!cache.hasOwnProperty(ngRepeat)) {
       return (cache[ngRepeat] = new Repeat(ngRepeat));
@@ -637,6 +677,8 @@ function mdTableService() {
   }
   
   return {
+    getAttr: getAttr,
+    normalize: normalize,
     parse: parse
   };
   

@@ -22,30 +22,37 @@ function mdColumnHeader($compile, $interpolate, $timeout) {
     
     if(attrs.orderBy) {
       var sortIcon = angular.element('<md-icon></md-icon>');
+	  var firstRun = true;
       
       var isActive = function () {
         return headCtrl.order === scope.order || headCtrl.order === '-' + scope.order;
       };
       
       var setOrder = function () {
-        
-        if(isActive()) {
-          scope.$apply(headCtrl.order = headCtrl.order === scope.order ? '-' + scope.order : scope.order);
-        } else {
-          scope.$apply(headCtrl.order = angular.isDefined(attrs.descendFirst) ? '-' + scope.order : scope.order);
-        }
+		firstRun = false;
+		if(isActive()) {
+			scope.$apply(headCtrl.order = headCtrl.order === scope.order ? '-' + scope.order : scope.order);
+		}
+		else{
+			scope.$apply(headCtrl.order = angular.isDefined(attrs.descendFirst) ? '-' + scope.order : scope.order);
+		}
         
         if(headCtrl.pullTrigger) {
           $timeout(headCtrl.pullTrigger);
-        }
+        }		
       };
       
       scope.getDirection = function () {
         if(isActive()) {
-          return headCtrl.order[0] === '-' ? 'down' : 'up';
+            if(angular.isDefined(attrs.descendFirst) && firstRun){
+				if(headCtrl.order[0] !== '-'){
+				    headCtrl.order = '-' + headCtrl.order;
+				}
+                return 'down'
+            }
+            return headCtrl.order[0] === '-' ? 'down' : 'up';
         }
-        return angular.isDefined(attrs.descendFirst) ? 'down' : 'up';
-      };
+     };
       
       sortIcon.attr('md-svg-icon', 'templates.arrow.html');
       sortIcon.attr('ng-class', 'getDirection()');

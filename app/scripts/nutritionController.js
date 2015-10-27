@@ -6,12 +6,13 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
   $scope.query = {
     order: 'name',
     limit: 5,
-    page: 1
+    page: 1	
   };
   
-  $scope.columns = [{
+  $scope.columns = [{	
+    descendFirst: true,
     name: 'Dessert',
-    orderBy: 'name',
+    orderBy: 'name',	
     unit: '100g serving'
   }, {
     descendFirst: true,

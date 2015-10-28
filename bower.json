@@ -29,6 +29,6 @@
   ],
   "dependencies": {
     "angular": "^1.4.0",
-    "angular-material": "0.x"
+    "angular-material": "1.x"
   }
 }

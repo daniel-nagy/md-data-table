@@ -128,17 +128,24 @@ function mdDataTable($mdTable) {
     }
     
     var ngRepeat = $mdTable.getAttr(rows, 'ngRepeat');
-    
+    if(!ngRepeat) {
+      ngRepeat = $mdTable.getAttr(rows, 'ngRepeatStart');
+    }
+
     if(tAttrs.mdRowSelect && ngRepeat) {
-      rows.attr('md-select-row', '');
+      angular.forEach(rows, function(row){
+        if(!row.hasAttribute('md-row-detail')) {
+          row.setAttribute('md-select-row', '');
+        }
+      });
     }
     
     if(tAttrs.mdRowSelect && !ngRepeat) {
-      console.warn('Please use ngRepeat to enable row selection.');
+      console.warn('Please use ngRepeat or ngRepeatStart to enable row selection.');
     }
     
     if(head.attr('md-order') && !ngRepeat) {
-      console.warn('Column ordering without ngRepeat is not supported.');
+      console.warn('Column ordering without ngRepeat or ngRepeatStart is not supported.');
     }
   }
   
@@ -306,7 +313,9 @@ function mdTableHead($mdTable, $q) {
     // enable row selection
     if(tElement.parent().attr('md-row-select')) {
       var ngRepeat = $mdTable.getAttr(tElement.parent().find('tbody').find('tr'), 'ngRepeat');
-      
+      if(!ngRepeat) {
+        ngRepeat = $mdTable.getAttr(tElement.parent().find('tbody').find('tr'), 'ngRepeatStart');
+      }
       if(ngRepeat) {
         tElement.find('tr').prepend(angular.element('<th md-select-all="' + $mdTable.parse(ngRepeat).items + '"></th>'));
       }
@@ -362,6 +371,7 @@ function mdTableHead($mdTable, $q) {
 }
 
 mdTableHead.$inject = ['$mdTable', '$q'];
+
 
 angular.module('md.data.table').directive('mdDataTablePagination', mdDataTablePagination);
 
@@ -752,7 +762,11 @@ function mdSelectRow($mdTable) {
   'use strict';
   
   function template(tElement, tAttrs) {
-    var ngRepeat = $mdTable.parse(tAttrs.ngRepeat);
+    var repeat = tAttrs.ngRepeat;
+    if(!repeat) {
+      repeat = tAttrs.ngRepeatStart;
+    }
+    var ngRepeat = $mdTable.parse(repeat);
     var checkbox = angular.element('<md-checkbox></md-checkbox>');
     
     checkbox.attr('aria-label', 'Select Row');

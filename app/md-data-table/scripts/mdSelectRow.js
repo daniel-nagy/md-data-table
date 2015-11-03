@@ -4,7 +4,11 @@ function mdSelectRow($mdTable) {
   'use strict';
   
   function template(tElement, tAttrs) {
-    var ngRepeat = $mdTable.parse(tAttrs.ngRepeat);
+    var repeat = tAttrs.ngRepeat;
+    if(!repeat) {
+      repeat = tAttrs.ngRepeatStart;
+    }
+    var ngRepeat = $mdTable.parse(repeat);
     var checkbox = angular.element('<md-checkbox></md-checkbox>');
     
     checkbox.attr('aria-label', 'Select Row');

@@ -35,17 +35,24 @@ function mdDataTable($mdTable) {
     }
     
     var ngRepeat = $mdTable.getAttr(rows, 'ngRepeat');
-    
+    if(!ngRepeat) {
+      ngRepeat = $mdTable.getAttr(rows, 'ngRepeatStart');
+    }
+
     if(tAttrs.mdRowSelect && ngRepeat) {
-      rows.attr('md-select-row', '');
+      angular.forEach(rows, function(row){
+        if(!row.hasAttribute('md-row-detail')) {
+          row.setAttribute('md-select-row', '');
+        }
+      });
     }
     
     if(tAttrs.mdRowSelect && !ngRepeat) {
-      console.warn('Please use ngRepeat to enable row selection.');
+      console.warn('Please use ngRepeat or ngRepeatStart to enable row selection.');
     }
     
     if(head.attr('md-order') && !ngRepeat) {
-      console.warn('Column ordering without ngRepeat is not supported.');
+      console.warn('Column ordering without ngRepeat or ngRepeatStart is not supported.');
     }
   }
   

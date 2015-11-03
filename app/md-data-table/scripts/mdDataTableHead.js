@@ -9,7 +9,9 @@ function mdTableHead($mdTable, $q) {
     // enable row selection
     if(tElement.parent().attr('md-row-select')) {
       var ngRepeat = $mdTable.getAttr(tElement.parent().find('tbody').find('tr'), 'ngRepeat');
-      
+      if(!ngRepeat) {
+        ngRepeat = $mdTable.getAttr(tElement.parent().find('tbody').find('tr'), 'ngRepeatStart');
+      }
       if(ngRepeat) {
         tElement.find('tr').prepend(angular.element('<th md-select-all="' + $mdTable.parse(ngRepeat).items + '"></th>'));
       }

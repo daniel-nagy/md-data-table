@@ -523,6 +523,7 @@ function mdTableProgress() {
     link: postLink,
     require: '^mdDataTable',
     replace: true,
+    scope: true,
     templateUrl: 'templates.md-data-table-progress.html'
   };
 }

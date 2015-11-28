@@ -16,7 +16,7 @@ function mdTableRow($mdTable, $timeout) {
         return tableCtrl.selectedItems.indexOf(item) !== -1;
       };
       
-      scope.toggleRow = function (item, event) {
+      scope.toggleRow = function (item, onSelectClick, event) {
         event.stopPropagation();
         
         if(scope.isDisabled()) {
@@ -27,6 +27,7 @@ function mdTableRow($mdTable, $timeout) {
           tableCtrl.selectedItems.splice(tableCtrl.selectedItems.indexOf(item), 1);
         } else {
           tableCtrl.selectedItems.push(item);
+          scope.$eval(onSelectClick);
         }
       };
     }

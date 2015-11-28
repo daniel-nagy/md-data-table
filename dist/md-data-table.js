@@ -546,7 +546,7 @@ function mdTableRow($mdTable, $timeout) {
         return tableCtrl.selectedItems.indexOf(item) !== -1;
       };
       
-      scope.toggleRow = function (item, event) {
+      scope.toggleRow = function (item, onSelectClick, event) {
         event.stopPropagation();
         
         if(scope.isDisabled()) {
@@ -557,6 +557,7 @@ function mdTableRow($mdTable, $timeout) {
           tableCtrl.selectedItems.splice(tableCtrl.selectedItems.indexOf(item), 1);
         } else {
           tableCtrl.selectedItems.push(item);
+          scope.$eval(onSelectClick);
         }
       };
     }
@@ -754,9 +755,11 @@ function mdSelectRow($mdTable) {
   function template(tElement, tAttrs) {
     var ngRepeat = $mdTable.parse(tAttrs.ngRepeat);
     var checkbox = angular.element('<md-checkbox></md-checkbox>');
-    
+    var onSelectClick = tAttrs.onSelectClick;
+
     checkbox.attr('aria-label', 'Select Row');
-    checkbox.attr('ng-click', 'toggleRow(' + ngRepeat.item + ', $event)');
+    checkbox.attr('ng-click', 'toggleRow(' + ngRepeat.item + ', "' + onSelectClick + '", $event )');
+
     checkbox.attr('ng-class', 'mdClasses');
     checkbox.attr('ng-checked', 'isSelected(' + ngRepeat.item + ')');
     
@@ -767,7 +770,7 @@ function mdSelectRow($mdTable) {
     tElement.prepend(angular.element('<td></td>').append(checkbox));
     
     if(angular.isDefined(tAttrs.mdAutoSelect)) {
-      tAttrs.$set('ngClick', 'toggleRow(' + ngRepeat.item + ', $event)');
+      tAttrs.$set('ngClick', 'toggleRow(' + ngRepeat.item + ', "' + onSelectClick + '", $event )');
     }
     
     tAttrs.$set('ngClass', '{\'md-selected\': isSelected(' + ngRepeat.item + ')}');

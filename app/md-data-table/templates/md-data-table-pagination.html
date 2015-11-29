@@ -3,7 +3,8 @@
   <md-select ng-model="limit" md-container-class="md-pagination-select" ng-change="onSelect()" aria-label="Row Count" placeholder="{{rowSelect ? rowSelect[0] : 5}}">
     <md-option ng-repeat="rows in rowSelect ? rowSelect : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>
   </md-select>
-  <span>{{min()}} - {{max()}} {{paginationLabel.of}} {{total}}</span>
+  <span ng-if="total">{{min()}} - {{max()}} {{paginationLabel.of}} {{total}}</span>
+  <span ng-if="!total">0 of 0</span>
 </div>
 <div>
   <md-button type="button" ng-click="first()" ng-disabled="!hasPrevious()" aria-label="First">

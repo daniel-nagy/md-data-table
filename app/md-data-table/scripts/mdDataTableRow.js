@@ -28,6 +28,8 @@ function mdTableRow($mdTable, $timeout) {
         } else {
           tableCtrl.selectedItems.push(item);
         }
+
+        scope.$emit('md-data-table:row-toggled', item);
       };
     }
     

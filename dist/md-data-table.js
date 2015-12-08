@@ -558,6 +558,8 @@ function mdTableRow($mdTable, $timeout) {
         } else {
           tableCtrl.selectedItems.push(item);
         }
+
+        scope.$emit('md-data-table:row-toggled', item);
       };
     }
     
@@ -731,6 +733,8 @@ function mdSelectAll() {
         } else {
           tableCtrl.selectedItems = selectableItems;
         }
+
+        scope.$emit('md-data-table:toggle-all', tableCtrl.selectedItems.length === 0 ? 'toggle-off' : 'toggle-on');
       };
     });
   }

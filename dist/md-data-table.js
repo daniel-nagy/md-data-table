@@ -558,6 +558,8 @@ function mdTableRow($mdTable, $timeout) {
         } else {
           tableCtrl.selectedItems.push(item);
         }
+
+        scope.$emit('md-data-table:row-toggled', item);
       };
     }
     
@@ -731,6 +733,8 @@ function mdSelectAll() {
         } else {
           tableCtrl.selectedItems = selectableItems;
         }
+
+        scope.$emit('md-data-table:toggle-all', tableCtrl.selectedItems.length === 0 ? 'toggle-off' : 'toggle-on');
       };
     });
   }
@@ -770,7 +774,16 @@ function mdSelectRow($mdTable) {
       tAttrs.$set('ngClick', 'toggleRow(' + ngRepeat.item + ', $event)');
     }
     
-    tAttrs.$set('ngClass', '{\'md-selected\': isSelected(' + ngRepeat.item + ')}');
+    var originalNgClass = tAttrs.ngClass;
+    if (originalNgClass) {
+      var openingBracket = originalNgClass.indexOf('{');
+      var newNgClass = originalNgClass.substring(0,openingBracket+1) +
+        '\'md-selected\': isSelected(' + ngRepeat.item + '), ' +
+        originalNgClass.substring(openingBracket+1);
+      tAttrs.$set('ngClass', newNgClass);
+    } else {
+      tAttrs.$set('ngClass', '{\'md-selected\': isSelected(' + ngRepeat.item + ')}');
+    }
   }
   
   function postLink(scope, element, attrs, tableCtrl) {

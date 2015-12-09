@@ -45,6 +45,8 @@ function mdSelectAll() {
         } else {
           tableCtrl.selectedItems = selectableItems;
         }
+
+        scope.$emit('md-data-table:toggle-all', tableCtrl.selectedItems.length === 0 ? 'toggle-off' : 'toggle-on');
       };
     });
   }

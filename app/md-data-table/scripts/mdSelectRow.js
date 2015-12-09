@@ -22,7 +22,16 @@ function mdSelectRow($mdTable) {
       tAttrs.$set('ngClick', 'toggleRow(' + ngRepeat.item + ', $event)');
     }
     
-    tAttrs.$set('ngClass', '{\'md-selected\': isSelected(' + ngRepeat.item + ')}');
+    var originalNgClass = tAttrs.ngClass;
+    if (originalNgClass) {
+      var openingBracket = originalNgClass.indexOf('{');
+      var newNgClass = originalNgClass.substring(0,openingBracket+1) +
+        '\'md-selected\': isSelected(' + ngRepeat.item + '), ' +
+        originalNgClass.substring(openingBracket+1);
+      tAttrs.$set('ngClass', newNgClass);
+    } else {
+      tAttrs.$set('ngClass', '{\'md-selected\': isSelected(' + ngRepeat.item + ')}');
+    }
   }
   
   function postLink(scope, element, attrs, tableCtrl) {

@@ -1,4 +1,4 @@
-angular.module('nutritionApp').controller('nutritionController', ['$http', '$q', '$timeout', '$scope', function ($http, $q, $timeout, $scope) {
+angular.module('nutritionApp').controller('nutritionController', ['$http', '$q', '$timeout', '$scope', '$log', function ($http, $q, $timeout, $scope, $log) {
   'use strict';
   
   $scope.selected = [];
@@ -99,5 +99,16 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
     
     return deferred.promise;
   };
-  
+
+  $scope.$on('md-data-table:row-toggled', function($event, item) {
+    $log.log('Item clicked!');
+    $log.log(item);
+    $event.stopPropagation();
+  });
+
+  $scope.$on('md-data-table:toggle-all', function($event, kind) {
+    $log.log('Toggle all clicked!');
+    $log.log(kind);
+    $event.stopPropagation();
+  });
 }]);

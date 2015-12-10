@@ -23,7 +23,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr md-auto-select md-disable-select="dessert.calories.value > 300" data-ng-repeat="dessert in desserts.data | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+      <tr md-auto-select md-disable-select="dessert.calories.value > 300" data-ng-repeat-start="dessert in desserts.data | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
         <td>{{dessert.name}}</td>
         <td>
           <md-select ng-model="dessert.type" placeholder="Other">
@@ -37,6 +37,9 @@
         <td>{{dessert.sodium.value}}</td>
         <td show-unit>{{dessert.calcium.value}}</td>
         <td show-unit hide-sm>{{dessert.iron.value}}</td>
+      </tr>
+      <tr md-row-detail data-ng-repeat-end>
+        <td colspan="{{columns.length}}">{{dessert.name + ' has ' + dessert.calories.value + ' calories '}}</td>
       </tr>
     </tbody>
   </table>

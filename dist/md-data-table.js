@@ -640,14 +640,16 @@ function mdTableService() {
    * @returns {string} - The value of the attribute.
    */
   function getAttr(element, attr) {
-    var attrs = element.prop('attributes');
-    
-    for(var i = 0; i < attrs.length; i++) {
-      if(normalize(attrs.item(i).name) === attr) {
-        return attrs.item(i).value;
+    if(element.length){
+      var attrs = element.prop('attributes');
+
+      for(var i = 0, ln = attrs.length; i < ln; i++) {
+        if(normalize(attrs.item(i).name) === attr) {
+          return attrs.item(i).value;
+        }
       }
     }
-    
+
     return '';
   }
   

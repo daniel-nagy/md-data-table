@@ -22,6 +22,10 @@ function mdSelect($compile) {
       }
       
       tableCtrl.selected.push(selectCtrl.model);
+      
+      if(angular.isFunction(selectCtrl.onSelect)) {
+        selectCtrl.onSelect(selectCtrl.model, tableCtrl.selected);
+      }
     };
     
     selectCtrl.deselect = function () {
@@ -107,6 +111,7 @@ function mdSelect($compile) {
     scope: {
       model: '=mdSelect',
       disabled: '=ngDisabled',
+      onSelect: '=?mdOnSelect',
       autoSelect: '=mdAutoSelect'
     }
   };

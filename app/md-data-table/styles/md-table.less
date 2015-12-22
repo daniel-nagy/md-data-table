@@ -148,14 +148,6 @@ md-table {
     
     > md-row {
       height: 48px;
-      
-      &:hover {
-        background-color: @md-dark-row-hover !important;
-      }
-      
-      &.md-selected {
-        background-color: @md-dark-row-select;
-      }
     }
     
     md-cell {
@@ -167,10 +159,21 @@ md-table {
   
   md-row {
     display: table-row;
-    transition: background-color 0.2s;
     
     &[ng-repeat].ng-leave {
       display: none;
+    }
+  }
+  
+  &.md-row-select md-body > md-row {
+    transition: background-color 0.2s;
+    
+    &:not([disabled]):hover {
+      background-color: @md-dark-row-hover !important;
+    }
+    
+    &.md-selected {
+      background-color: @md-dark-row-select;
     }
   }
   

@@ -1,0 +1,26 @@
+<!-- <span class="label shrink" ng-if="pageSelect">{{paginationLabel.page}}</span>
+
+<md-select ng-if="pageSelect" ng-model="page" md-container-class="md-pagination-select" ng-change="onPageChange()" aria-label="Page Number">
+  <md-option ng-repeat="num in pages track by $index" ng-value="$index + 1">{{$index + 1}}</md-option>
+</md-select> -->
+
+<span class="label">{{label[0]}}</span>
+
+<md-select ng-model="limit" md-container-class="md-pagination-select" ng-change="onLimitChange()" aria-label="Rows" placeholder="{{options ? options[0] : 5}}">
+  <md-option ng-repeat="rows in options ? options : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>
+</md-select>
+
+<span class="label">{{min() + 1}} - {{max()}} {{label[1]}} {{total}}</span>
+
+<!-- <md-button class="md-icon-button" type="button" ng-if="boundaryLinks" ng-click="first()" ng-disabled="!hasPrevious()" aria-label="First">
+  <md-icon>&#xE045;</md-icon>
+</md-button> -->
+<md-button class="md-icon-button" type="button" ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">
+  <md-icon>&#xE408;</md-icon>
+</md-button>
+<md-button class="md-icon-button" type="button" ng-click="next()" ng-disabled="!hasNext()" aria-label="Next">
+  <md-icon>&#xE409;</md-icon>
+</md-button>
+<!-- <md-button class="md-icon-button" type="button" ng-if="boundaryLinks" ng-click="last()" ng-disabled="!hasNext()" aria-label="Last">
+  <md-icon>&#xE044;</md-icon>
+</md-button> -->

@@ -1,49 +1,68 @@
-<md-data-table-toolbar ng-show="!selected.length">
-  <h2 class="md-title">Nutrition</h2>
-</md-data-table-toolbar>
+<md-toolbar class="md-table-toolbar" ng-show="!selected.length">
+  <div class="md-toolbar-tools">
+    <span>Nutrition</span>
+    <span flex></span>
+    <md-button ng-click="hideCheckboxes = !hideCheckboxes">{{hideCheckboxes ? 'Enable Selection' : 'Disable Selection'}}</md-button>
+    <md-button class="md-icon-button">
+      <md-icon>filter_list</md-icon>
+    </md-button>
+    <md-button class="md-icon-button">
+      <md-icon>more_vert</md-icon>
+    </md-button>
+  </div>
+</md-toolbar>
 
-<md-data-table-toolbar class="alternate" ng-show="selected.length">
-  <div>{{selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</div>
-</md-data-table-toolbar>
+<md-toolbar class="md-table-toolbar alternate" ng-show="selected.length">
+  <div class="md-toolbar-tools">
+    <span>{{selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</span>
+    <span flex></span>
+    <md-button class="md-icon-button">
+      <md-icon>delete</md-icon>
+    </md-button>
+    <md-button class="md-icon-button">
+      <md-icon>more_vert</md-icon>
+    </md-button>
+  </div>
+</md-toolbar>
 
-<md-data-table-container>
-  <table md-data-table md-row-select="selected" md-progress="deferred">
-    <thead md-order="query.order" md-trigger="onorderchange">
-      <tr>
-        <th ng-repeat="column in columns" ng-attr-order-by="{{column.orderBy}}" ng-attr-numeric="{{column.numeric}}" ng-attr-unit="{{column.unit}}" name="{{column.name}}" ng-attr-descend-first="{{column.descendFirst}}" ng-attr-trim="{{column.trim}}"></th>
-        <!-- <th class="custom" order-by="name" unit="100g serving" name="Dessert"></th>
-        <th order-by="type" name="Type" descend-first></th>
-        <th numeric order-by="calories.value" name="Calories"></th>
-        <th numeric unit="g" order-by="fat.value" name="Fat"></th>
-        <th numeric unit="g" order-by="carbs.value" name="Carbs"></th>
-        <th numeric unit="g" order-by="protein.value" name="Protein" trim></th>
-        <th numeric unit="mg" order-by="sodium.value" name="Sodium"></th>
-        <th numeric unit="%" order-by="calcium.value" name="Calcium"></th>
-        <th numeric unit="%" order-by="iron.value" name="Iron" hide-sm></th> -->
-      </tr>
-    </thead>
-    <tbody>
-      <tr md-auto-select md-disable-select="dessert.calories.value > 300" data-ng-repeat="dessert in desserts.data | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
-        <td>{{dessert.name}}</td>
-        <td>
+<md-table-container>
+  <md-table md-row-select="!hideCheckboxes" ng-model="selected">
+    <md-head md-order="query.order">
+      <md-row>
+        <md-column md-order-by="name"><span>Dessert (100g serving)</span></md-column>
+        <md-column md-order-by="type"><span>Type</span></md-column>
+        <md-column md-numeric md-order-by="calories.value" md-desc><span>Calories</span></md-column>
+        <md-column md-numeric md-order-by="fat.value"><span>Fat (g)</span></md-column>
+        <!-- <md-column md-numeric md-order-by="carbs.value"><span>Carbs (g)</span></md-column> -->
+        <md-column md-numeric md-order-by="protein.value"><span>Protein (g)</span></md-column>
+        <!-- <md-column md-numeric md-order-by="sodium.value"><span>Sodium (mg)</span></md-column> -->
+        <!-- <md-column md-numeric md-order-by="calcium.value"><span>Calcium (%)</span></md-column> -->
+        <md-column md-numeric md-order-by="iron.value"><span>Iron (%)</span></md-column>
+        <md-column hide-sm>
+          <md-icon>comments</md-icon>
+          <span>Comments</span>
+        </md-column>
+      </md-row>
+    </md-head>
+    <md-body>
+      <md-row md-select="dessert" md-auto-select ng-disabled="dessert.calories.value > 400" ng-repeat="dessert in desserts.data | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+        <md-cell>{{dessert.name}}</md-cell>
+        <md-cell class="">
           <md-select ng-model="dessert.type" placeholder="Other">
             <md-option ng-value="type" ng-repeat="type in getTypes()">{{type}}</md-option>
           </md-select>
-        </td>
-        <td>{{dessert.calories.value}}</td>
-        <td>{{dessert.fat.value | number: 2}}</td>
-        <td>{{dessert.carbs.value}}</td>
-        <td>{{dessert.protein.value | number: 2}}</td>
-        <td>{{dessert.sodium.value}}</td>
-        <td show-unit>{{dessert.calcium.value}}</td>
-        <td show-unit hide-sm>{{dessert.iron.value}}</td>
-      </tr>
-    </tbody>
-  </table>
-</md-data-table-container>
+        </md-cell>
+        <md-cell>{{dessert.calories.value}}</md-cell>
+        <md-cell>{{dessert.fat.value | number: 2}}</md-cell>
+        <!-- <md-cell>{{dessert.carbs.value}}</md-cell> -->
+        <md-cell>{{dessert.protein.value | number: 2}}</md-cell>
+        <!-- <md-cell>{{dessert.sodium.value}}</md-cell> -->
+        <!-- <md-cell>{{dessert.calcium.value}}%</md-cell> -->
+        <md-cell>{{dessert.iron.value}}%</md-cell>
+        <md-cell hide-sm></md-cell>
+      </md-row>
+    </md-body>
+  </md-table>
+</md-table-container>
 
-<md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}" md-trigger="onpagechange"></md-data-table-pagination>
-
-<md-data-table-toolbar >
-  <md-button ng-click="loadStuff()">Trigger Outside Event</md-button>
-</md-data-table-toolbar>
+<md-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}"></md-table-pagination>

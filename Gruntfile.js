@@ -108,7 +108,7 @@ module.exports = function (grunt) {
       },
       build: {
         files: {
-          'dist/md-data-table.css': 'app/md-data-table/styles/md-data-table.less'
+          'dist/md-data-table.css': 'app/md-data-table/styles/md-table.less'
         }
       }
     },

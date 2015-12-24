@@ -124,12 +124,6 @@ md-table md-body {
 md-table md-body > md-row {
   height: 48px;
 }
-md-table md-body > md-row:hover {
-  background-color: #eeeeee !important;
-}
-md-table md-body > md-row.md-selected {
-  background-color: #f5f5f5;
-}
 md-table md-body md-cell {
   color: rgba(0, 0, 0, 0.87);
   font-size: 13px;
@@ -137,10 +131,18 @@ md-table md-body md-cell {
 }
 md-table md-row {
   display: table-row;
-  transition: background-color 0.2s;
 }
 md-table md-row[ng-repeat].ng-leave {
   display: none;
+}
+md-table.md-row-select md-body > md-row {
+  transition: background-color 0.2s;
+}
+md-table.md-row-select md-body > md-row:not([disabled]):hover {
+  background-color: #eeeeee !important;
+}
+md-table.md-row-select md-body > md-row.md-selected {
+  background-color: #f5f5f5;
 }
 md-table.md-row-select md-cell:first-child,
 md-table.md-row-select md-column:first-child {
@@ -187,8 +189,14 @@ md-table md-column md-checkbox {
 md-table md-cell.clickable {
   cursor: pointer;
 }
+md-table md-cell.clickable:focus {
+  outline: none;
+}
 md-table md-cell.numeric md-select {
   text-align: left;
+}
+md-table md-cell.placeholder {
+  color: rgba(0, 0, 0, 0.26);
 }
 md-table md-cell md-select {
   -webkit-flex: 1 0 auto;
@@ -225,6 +233,57 @@ md-table md-cell md-select > .md-select-value > .md-select-icon {
 md-table md-cell md-select > .md-select-value > .md-select-icon:after {
   -webkit-transform: scaleY(0.4) scaleX(0.8);
           transform: scaleY(0.4) scaleX(0.8);
+}
+md-backdrop.md-edit-dialog-backdrop {
+  z-index: 80;
+}
+md-edit-dialog {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  position: fixed;
+  z-index: 81;
+  background-color: #f9f9f9;
+  border-radius: 2px;
+  cursor: default;
+}
+md-edit-dialog > .content {
+  padding: 16px 24px 0;
+}
+md-edit-dialog > .content .md-title {
+  color: rgba(0, 0, 0, 0.87);
+  margin-bottom: 8px;
+}
+md-edit-dialog > .content md-input-container {
+  margin: 0;
+  font-size: 13px;
+}
+md-edit-dialog > .content md-input-container input {
+  float: none;
+}
+md-edit-dialog > .content md-input-container .md-errors-spacer {
+  min-height: auto;
+  min-width: auto;
+  color: rgba(0, 0, 0, 0.54);
+}
+md-edit-dialog > .content md-input-container .md-errors-spacer .md-char-counter {
+  padding: 5px 2px 5px 0;
+}
+md-edit-dialog > .content md-input-container [ng-message] {
+  padding: 5px 0 5px 2px;
+}
+md-edit-dialog > .actions {
+  margin: 0 16px 8px;
+}
+md-edit-dialog > .actions .md-button {
+  margin: 0;
+  min-width: initial;
+}
+md-edit-dialog > .actions .md-button + .md-button {
+  margin-left: 8px;
 }
 md-table-pagination {
   display: -webkit-flex;

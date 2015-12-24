@@ -17,6 +17,10 @@ function mdTable() {
       return self.rowSelect;
     };
     
+    self.getElement = function () {
+      return $element;
+    };
+    
     // self.column = function (index, callback) {
     //   var rows = $element.find('md-row');
     //

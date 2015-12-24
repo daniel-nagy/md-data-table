@@ -10,7 +10,8 @@
       "protein": { "value": 4.0 },
       "sodium": { "value": 87.0 },
       "calcium": { "value": 14.0 },
-      "iron": { "value": 1.0 }
+      "iron": { "value": 1.0 },
+      "comment": "Not as good as the real thing."
     }, {
       "name": "Ice cream sandwich",
       "type": "Ice cream",

@@ -1,4 +1,4 @@
-angular.module('nutritionApp').controller('nutritionController', ['$http', '$q', '$timeout', '$scope', function ($http, $q, $timeout, $scope) {
+angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdEditDialog', '$q', '$timeout', '$scope', function ($http, $mdEditDialog, $q, $timeout, $scope) {
   'use strict';
   
   $scope.selected = [];
@@ -58,6 +58,25 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
     $scope.desserts = desserts.data;
   });
   
+  $scope.editComment = function (event, dessert) {
+    $mdEditDialog.large({
+      modelValue: dessert.comment,
+      placeholder: 'Add a comment',
+      save: function (comment) {
+        if(comment === 'test') {
+          return $q.reject();
+        }
+        
+        dessert.comment = comment;
+      },
+      targetEvent: event,
+      title: 'Add a comment',
+      validators: {
+        'md-maxlength': 30
+      }
+    });
+  };
+  
   $scope.getTypes = function () {
     return ['Candy', 'Ice cream', 'Other', 'Pastry'];
   };
@@ -74,6 +93,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
     }, 2000);
     
     return deferred.promise;
+  };
+  
+  $scope.log = function (item) {
+    console.log(item.name, 'was selected');
   };
   
   $scope.loadStuff = function () {

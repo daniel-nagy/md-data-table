@@ -10,20 +10,26 @@ function mdCell() {
     return postLink;
   }
   
-  function postLink(scope, element, attrs, tableCtrl) {
-    var select = element.find('md-select');
+  function Controller() {
     
-    if(select.length) {
-      
-      select.on('click', function (event) {
-        event.stopPropagation();
-      });
-      
+  }
+  
+  function postLink(scope, element, attrs, ctrls) {
+    var select = element.find('md-select');
+    var cellCtrl = ctrls.shift();
+    var tableCtrl = ctrls.shift();
+    
+    if(select.length || attrs.ngClick) {
       element.addClass('clickable').on('click', function (event) {
         event.stopPropagation();
-        select[0].click();
+        
+        if(select.length) {
+          select[0].click();
+        }
       });
     }
+    
+    cellCtrl.getTable = tableCtrl.getElement;
     
     function getColumn() {
       return tableCtrl.columns[getIndex()];
@@ -47,8 +53,9 @@ function mdCell() {
   }
   
   return {
+    controller: Controller,
     compile: compile,
-    require: '^^mdTable',
+    require: ['mdCell', '^^mdTable'],
     restrict: 'E'
   };
 }

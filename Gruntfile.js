@@ -77,7 +77,7 @@ module.exports = function (grunt) {
           module: 'md.table.templates',
           quoteChar: '\'',
           rename: function(moduleName) {
-            return 'templates.' + moduleName.split('/').pop();
+            return moduleName.split('/').pop();
           },
           useStrict: true
         },

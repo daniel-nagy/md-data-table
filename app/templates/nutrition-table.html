@@ -37,15 +37,15 @@
         <md-column md-numeric md-order-by="protein.value"><span>Protein (g)</span></md-column>
         <!-- <md-column md-numeric md-order-by="sodium.value"><span>Sodium (mg)</span></md-column> -->
         <!-- <md-column md-numeric md-order-by="calcium.value"><span>Calcium (%)</span></md-column> -->
-        <md-column md-numeric md-order-by="iron.value"><span>Iron (%)</span></md-column>
-        <md-column hide-sm>
+        <md-column md-numeric md-order-by="iron.value" hide-sm><span>Iron (%)</span></md-column>
+        <md-column md-order-by="comment">
           <md-icon>comments</md-icon>
           <span>Comments</span>
         </md-column>
       </md-row>
     </md-head>
     <md-body>
-      <md-row md-select="dessert" md-auto-select ng-disabled="dessert.calories.value > 400" ng-repeat="dessert in desserts.data | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+      <md-row md-select="dessert" md-on-select="log" md-auto-select ng-disabled="dessert.calories.value > 400" ng-repeat="dessert in desserts.data | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
         <md-cell>{{dessert.name}}</md-cell>
         <md-cell class="">
           <md-select ng-model="dessert.type" placeholder="Other">
@@ -58,8 +58,10 @@
         <md-cell>{{dessert.protein.value | number: 2}}</md-cell>
         <!-- <md-cell>{{dessert.sodium.value}}</md-cell> -->
         <!-- <md-cell>{{dessert.calcium.value}}%</md-cell> -->
-        <md-cell>{{dessert.iron.value}}%</md-cell>
-        <md-cell hide-sm></md-cell>
+        <md-cell hide-sm>{{dessert.iron.value}}%</md-cell>
+        <md-cell ng-click="editComment($event, dessert)" ng-class="{placeholder: !dessert.comment}">
+          {{dessert.comment || 'Add a comment'}}
+        </md-cell>
       </md-row>
     </md-body>
   </md-table>

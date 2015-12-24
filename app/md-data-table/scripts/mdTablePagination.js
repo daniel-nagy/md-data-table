@@ -4,7 +4,7 @@ angular.module('md.data.table').directive('mdTablePagination', mdTablePagination
 
 function mdTablePagination() {
   
-  function postLink(scope, element, attrs) {
+  function postLink(scope) {
     if(!scope.label) {
       scope.label = {
         0: 'Rows per page:',
@@ -14,11 +14,11 @@ function mdTablePagination() {
     
     scope.hasNext = function () {
       return scope.page * scope.limit < scope.total;
-    }
+    };
     
     scope.hasPrevious = function () {
       return scope.page > 1;
-    }
+    };
     
     scope.max = function () {
       return scope.hasNext() ? scope.page * scope.limit : scope.total;
@@ -53,8 +53,8 @@ function mdTablePagination() {
       page: '=mdPage',
       // pageSelect: '=?mdPageSelect',
       options: '=mdOptions',
-      total: '@mdTotal',
+      total: '@mdTotal'
     },
-    templateUrl: 'templates.md-table-pagination.html'
+    templateUrl: 'md-table-pagination.html'
   };
 }

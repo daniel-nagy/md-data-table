@@ -220,6 +220,8 @@ controllerDecorator.$inject = ['$delegate'];
 function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope, $templateCache, $templateRequest, $window) {
   /* jshint validthis: true */
   
+  var ESCAPE = 27;
+  
   var busy = false;
   var body = angular.element($document.prop('body'));
   
@@ -246,7 +248,6 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     var element = $compile(template)(scope);
     var backdrop = $mdUtil.createBackdrop(scope, 'md-edit-dialog-backdrop');
     var controller;
-    var restoreScroll;
     
     if(options.controller) {
       controller = getController(options, scope, {$element: element, $scope: scope});
@@ -255,7 +256,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     }
     
     if(options.disableScroll) {
-      restoreScroll = $mdUtil.disableScrollAround(element, body);
+      disableScroll(element);
     }
     
     body.prepend(backdrop).append(element.addClass('md-whiteframe-1dp'));
@@ -270,20 +271,30 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
       }
     }
     
+    if(options.clickOutsideToClose) {
+      backdrop.on('click', function () {
+        element.remove();
+      });
+    }
+    
+    if(options.escToClose) {
+      escToClose(element);
+    }
+    
     element.on('$destroy', function () {
       busy = false;
       backdrop.remove();
-      
-      if(angular.isFunction(restoreScroll)) {
-        restoreScroll();
-      }
-    });
-    
-    backdrop.on('click', function () {
-      element.remove();
     });
     
     return controller;
+  }
+  
+  function disableScroll(element) {
+    var restoreScroll = $mdUtil.disableScrollAround(element, body);
+    
+    element.on('$destroy', function () {
+      restoreScroll();
+    });
   }
   
   function getController(options, scope, inject) {
@@ -355,6 +366,20 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
   function logError(error) {
     busy = false;
     console.error(error);
+  }
+  
+  function escToClose(element) {
+    var keyup = function (event) {
+      if(event.keyCode === ESCAPE) {
+        element.remove();
+      }
+    }
+    
+    body.on('keyup', keyup);
+    
+    element.on('$destroy', function () {
+      body.off('keyup', keyup);
+    });
   }
   
   function positionDialog(element, target) {
@@ -523,9 +548,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     
     promise = $q.all(promises);
     
-    promise['catch'](function (error) {
-      logError(error);
-    });
+    promise['catch'](logError);
     
     return promise.then(function (results) {
       var template = results.shift();

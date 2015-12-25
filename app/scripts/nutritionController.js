@@ -59,21 +59,28 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
   });
   
   $scope.editComment = function (event, dessert) {
-    $mdEditDialog.large({
+    var promise = $mdEditDialog.large({
+      // messages: {
+      //   test: 'I don\'t like tests!'
+      // },
       modelValue: dessert.comment,
       placeholder: 'Add a comment',
-      save: function (comment) {
-        if(comment === 'test') {
-          return $q.reject();
-        }
-        
-        dessert.comment = comment;
+      save: function (input) {
+        dessert.comment = input.$modelValue;
       },
       targetEvent: event,
       title: 'Add a comment',
       validators: {
         'md-maxlength': 30
       }
+    });
+    
+    promise.then(function (ctrl) {
+      var input = ctrl.getInput();
+      
+      input.$viewChangeListeners.push(function () {
+        input.$setValidity('test', input.$modelValue !== 'test');
+      });
     });
   };
   

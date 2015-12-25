@@ -218,7 +218,9 @@ function controllerDecorator($delegate) {
 controllerDecorator.$inject = ['$delegate'];
   
 function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope, $templateCache, $templateRequest, $window) {
-  var self = this;
+  /* jshint validthis: true */
+  
+  var busy = false;
   var body = angular.element($document.prop('body'));
   
   /*
@@ -243,32 +245,14 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     var scope = $rootScope.$new();
     var element = $compile(template)(scope);
     var backdrop = $mdUtil.createBackdrop(scope, 'md-edit-dialog-backdrop');
+    var controller;
+    var restoreScroll;
     
     if(options.controller) {
-      var inject = angular.extend(options.locals, {$element: element, $scope: scope});
-      
-      if(options.controllerAs) {
-        scope[options.controllerAs] = {};
-        
-        if(options.bindToController) {
-          angular.extend(scope[options.controllerAs], options.scope);
-        } else {
-          angular.extend(scope, options.scope);
-        }
-      } else {
-        angular.extend(scope, options.scope);
-      }
-      
-      if(options.bindToController) {
-        $controller(options.controller, inject, scope[options.controllerAs]);
-      } else {
-        $controller(options.controller, inject);
-      }
+      controller = getController(options, scope, {$element: element, $scope: scope});
     } else {
       angular.extend(scope, options.scope);
     }
-    
-    var restoreScroll;
     
     if(options.disableScroll) {
       restoreScroll = $mdUtil.disableScrollAround(element, body);
@@ -287,6 +271,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     }
     
     element.on('$destroy', function () {
+      busy = false;
       backdrop.remove();
       
       if(angular.isFunction(restoreScroll)) {
@@ -297,33 +282,41 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     backdrop.on('click', function () {
       element.remove();
     });
+    
+    return controller;
   }
   
-  function Controller($element, $q, save, $scope) {
-    function update(model) {
-      if($scope.editDialog.$invalid) {
-        return $q.reject();
-      }
-      
-      if(angular.isFunction(save)) {
-        return $q.when(save(model));
-      }
-      
-      return $q.resolve(model);
+  function getController(options, scope, inject) {
+    if(!options.controller) {
+      return;
     }
     
-    $scope.dismiss = function () {
-      $element.remove();
-    };
+    if(options.resolve) {
+      angular.extend(inject, options.resolve);
+    }
     
-    $scope.submit = function (model) {
-      update(model).then(function () {
-        $scope.dismiss();
-      });
-    };
+    if(options.locals) {
+      angular.extend(inject, options.locals);
+    }
+    
+    if(options.controllerAs) {
+      scope[options.controllerAs] = {};
+      
+      if(options.bindToController) {
+        angular.extend(scope[options.controllerAs], options.scope);
+      } else {
+        angular.extend(scope, options.scope);
+      }
+    } else {
+      angular.extend(scope, options.scope);
+    }
+    
+    if(options.bindToController) {
+      return $controller(options.controller, inject, scope[options.controllerAs]);
+    } else {
+      return $controller(options.controller, inject);
+    }
   }
-  
-  Controller.$inject = ['$element', '$q', 'save', '$scope'];
   
   function getTemplate(options) {
     return $q(function (resolve, reject) {
@@ -357,6 +350,11 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
       
       reject('Template not provided.');
     });
+  }
+  
+  function logError(error) {
+    busy = false;
+    console.error(error);
   }
   
   function positionDialog(element, target) {
@@ -433,7 +431,35 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     }
     
     return {
-      controller: Controller,
+      controller: ['$element', '$q', 'save', '$scope', function ($element, $q, save, $scope) {
+        function update() {
+          if($scope.editDialog.$invalid) {
+            return $q.reject();
+          }
+          
+          if(angular.isFunction(save)) {
+            return $q.when(save($scope.editDialog.input));
+          }
+          
+          return $q.resolve();
+        }
+        
+        this.dismiss = function () {
+          $element.remove();
+        };
+        
+        this.getInput = function () {
+          return $scope.editDialog.input;
+        };
+        
+        $scope.dismiss = this.dismiss;
+        
+        $scope.submit = function (model) {
+          update().then(function () {
+            $scope.dismiss();
+          });
+        };
+      }],
       locals: {
         save: options.save
       },
@@ -467,41 +493,60 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     };
   }
   
-  self.show = function (options) {
+  this.show = function (options) {
+    if(busy) {
+      return $q.reject();
+    }
+    
+    busy = true;
     options = angular.extend({}, defaultOptions, options);
     
     if(!options.targetEvent) {
-      return console.error('options.targetEvent is required to align the dialog with the table cell.');
+      return logError('options.targetEvent is required to align the dialog with the table cell.');
     }
     
     if(options.targetEvent.target.tagName !== 'MD-CELL') {
-      return console.error('The event target must be a table cell.');
+      return logError('The event target must be a table cell.');
     }
     
     if(options.bindToController && !options.controllerAs) {
-      return console.error('You must define options.controllerAs when options.bindToController is true.');
+      return logError('You must define options.controllerAs when options.bindToController is true.');
     }
     
     var promise = getTemplate(options);
+    var promises = [promise];
     
-    promise.then(function (template) {
-      build(template, options);
-    });
+    for(var prop in options.resolve) {
+      promise = options.resolve[prop];
+      promises.push($q.when(angular.isFunction(promise) ? promise() : promise));
+    }
+    
+    promise = $q.all(promises);
     
     promise['catch'](function (error) {
-      console.error(error);
+      logError(error);
+    });
+    
+    return promise.then(function (results) {
+      var template = results.shift();
+      
+      for(var prop in options.resolve) {
+        options.resolve[prop] = results.shift();
+      }
+      
+      return build(template, options);
     });
   };
   
-  self.small = function (options) {
-    self.show(angular.extend({}, options, preset('small', options)));
-  };
+  this.small = function (options) {
+    return this.show(angular.extend({}, options, preset('small', options)));
+  }.bind(this);
   
-  self.large = function (options) {
-    self.show(angular.extend({}, options, preset('large', options)));
-  };
+  this.large = function (options) {
+    return this.show(angular.extend({}, options, preset('large', options)));
+  }.bind(this);
   
-  return self;
+  return this;
 }
 
 mdEditDialog.$inject = ['$compile', '$controller', '$document', '$mdUtil', '$q', '$rootScope', '$templateCache', '$templateRequest', '$window'];

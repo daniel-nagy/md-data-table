@@ -194,17 +194,41 @@ mdColumn.$inject = ['$compile'];
 
 'use strict';
 
-angular.module('md.data.table').factory('$mdEditDialog', $mdEditDialog);
+angular.module('md.data.table')
+  .decorator('$controller', controllerDecorator)
+  .factory('$mdEditDialog', mdEditDialog);
+
+/*
+ * A decorator for ng.$controller to optionally bind properties to the
+ * controller before invoking the constructor. Stolen from the ngMock.
+ *
+ * https://docs.angularjs.org/api/ngMock/service/$controller
+ */
+function controllerDecorator($delegate) {
+  return function(expression, locals, later, ident) {
+    if (later && typeof later === 'object') {
+      var create = $delegate(expression, locals, true, ident);
+      angular.extend(create.instance, later);
+      return create();
+    }
+    return $delegate(expression, locals, later, ident);
+  };
+}
+
+controllerDecorator.$inject = ['$delegate'];
   
-function $mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope, $templateCache, $templateRequest, $window) {
+function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope, $templateCache, $templateRequest, $window) {
   var self = this;
   var body = angular.element($document.prop('body'));
   
   /*
-   * event
+   * bindToController
+   * controller
+   * controllerAs
    * locals
-   * resolves
+   * resolve
    * scope
+   * targetEvent
    * template
    * templateUrl
    */
@@ -216,13 +240,32 @@ function $mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope
   };
   
   function build(template, options) {
-    var scope = options.scope || $rootScope.$new();
+    var scope = $rootScope.$new();
     var element = $compile(template)(scope);
     var backdrop = $mdUtil.createBackdrop(scope, 'md-edit-dialog-backdrop');
     
     if(options.controller) {
-      var inject = angular.extend({$element: element, $scope: scope}, options.locals);
-      var controller = $controller(options.controller, inject);
+      var inject = angular.extend(options.locals, {$element: element, $scope: scope});
+      
+      if(options.controllerAs) {
+        scope[options.controllerAs] = {};
+        
+        if(options.bindToController) {
+          angular.extend(scope[options.controllerAs], options.scope);
+        } else {
+          angular.extend(scope, options.scope);
+        }
+      } else {
+        angular.extend(scope, options.scope);
+      }
+      
+      if(options.bindToController) {
+        $controller(options.controller, inject, scope[options.controllerAs]);
+      } else {
+        $controller(options.controller, inject);
+      }
+    } else {
+      angular.extend(scope, options.scope);
     }
     
     var restoreScroll;
@@ -257,7 +300,6 @@ function $mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope
   }
   
   function Controller($element, $q, save, $scope) {
-    
     function update(model) {
       if($scope.editDialog.$invalid) {
         return $q.reject();
@@ -281,12 +323,14 @@ function $mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope
     };
   }
   
+  Controller.$inject = ['$element', '$q', 'save', '$scope'];
+  
   function getTemplate(options) {
     return $q(function (resolve, reject) {
       var template = options.template;
       
       function illegalType(type) {
-        reject('Unexpected template value. Epected a string; recieved a ' + type + '.');
+        reject('Unexpected template value. Expected a string; received a ' + type + '.');
       }
       
       if(template) {
@@ -324,13 +368,9 @@ function $mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope
     
     var getSize = function () {
       return {
-        width: element.prop('clientWidth'),
-        height: element.prop('clientHeight')
+        width: getWidth(),
+        height: getHeight()
       };
-    };
-    
-    var getWidth = function () {
-      return element.prop('clientWidth');
     };
     
     var getTableBounds = function () {
@@ -341,7 +381,11 @@ function $mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope
       } else {
         return table[0].getBoundingClientRect();
       }
-    }
+    };
+    
+    var getWidth = function () {
+      return element.prop('clientWidth');
+    };
     
     var reposition = function () {
       var size = getSize();
@@ -391,10 +435,9 @@ function $mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope
     return {
       controller: Controller,
       locals: {
-        $q: $q,
         save: options.save
       },
-      scope: angular.extend($rootScope.$new(), {
+      scope: {
         cancel: options.cancel || 'Cancel',
         messages: options.messages,
         model: options.modelValue,
@@ -402,7 +445,7 @@ function $mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope
         placeholder: options.placeholder,
         title: options.title,
         size: size
-      }),
+      },
       template:
         '<md-edit-dialog>' +
           '<div layout="column" class="content">' +
@@ -435,6 +478,10 @@ function $mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope
       return console.error('The event target must be a table cell.');
     }
     
+    if(options.bindToController && !options.controllerAs) {
+      return console.error('You must define options.controllerAs when options.bindToController is true.');
+    }
+    
     var promise = getTemplate(options);
     
     promise.then(function (template) {
@@ -457,7 +504,7 @@ function $mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope
   return self;
 }
 
-$mdEditDialog.$inject = ['$compile', '$controller', '$document', '$mdUtil', '$q', '$rootScope', '$templateCache', '$templateRequest', '$window'];
+mdEditDialog.$inject = ['$compile', '$controller', '$document', '$mdUtil', '$q', '$rootScope', '$templateCache', '$templateRequest', '$window'];
 
 'use strict';
 

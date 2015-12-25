@@ -4,7 +4,6 @@ This module is an effort to implement Material Design data tables in [Angular Ma
 
 Specification for Material Design data tables can be found [here](http://www.google.com/design/spec/components/data-tables.html).
 
-* [Voting](#voting)
 * [Demo](#demo)
 * [License](#license)
 * [Installation](#installation)
@@ -13,19 +12,11 @@ Specification for Material Design data tables can be found [here](http://www.goo
 * [API Documentation](#api-documentation)
 * [Contributing] (#contributing)
 
-## Voting
-
-Voting is my attempt to receive more organized feedback from the community on how new features should work or how existing features should be changed. This was inspired by the different request for how row selection should work. This may be the only time I do this but it may be useful again in the future.
-
-I ask that you visit any issues below and follow the instructions for voting for or against it.
-
-[Row Selection Logic, #98](https://github.com/daniel-nagy/md-data-table/issues/98)
-
 ## Demo
 
 http://danielnagy.me/md-data-table
 
-Here is a fork-able [Codepen](http://codepen.io/anon/pen/zGXWWp?editors=101) of the demo application. Please use this to reproduce any issues you may be experiencing.
+Here is a fork-able [Codepen](http://codepen.io/anon/pen/RrGVYB?editors=101) of the demo application. Please use this to reproduce any issues you may be experiencing.
 
 ## License
 
@@ -53,7 +44,7 @@ In your `index.html` file, include the data table module and style sheet.
 Include the `md.data.table` module as a dependency in your application.
 
 ```javascript
-angular.module('myApp', ['md.data.table', 'ngMaterial']);
+angular.module('myApp', ['ngMaterial', 'md.data.table']);
 ```
 
 #### Using npm and Browserify

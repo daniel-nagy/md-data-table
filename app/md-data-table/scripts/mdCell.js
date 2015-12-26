@@ -19,13 +19,18 @@ function mdCell() {
     var cellCtrl = ctrls.shift();
     var tableCtrl = ctrls.shift();
     
-    if(select.length || attrs.ngClick) {
+    if(attrs.ngClick) {
+      element.addClass('clickable');
+    }
+    
+    if(select.length) {
+      select.addClass('md-table-select').on('click', function (event) {
+        event.stopPropagation();
+      });
+      
       element.addClass('clickable').on('click', function (event) {
         event.stopPropagation();
-        
-        if(select.length) {
-          select[0].click();
-        }
+        select[0].click();
       });
     }
     

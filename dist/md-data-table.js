@@ -21,13 +21,18 @@ function mdCell() {
     var cellCtrl = ctrls.shift();
     var tableCtrl = ctrls.shift();
     
-    if(select.length || attrs.ngClick) {
+    if(attrs.ngClick) {
+      element.addClass('clickable');
+    }
+    
+    if(select.length) {
+      select.addClass('md-table-select').on('click', function (event) {
+        event.stopPropagation();
+      });
+      
       element.addClass('clickable').on('click', function (event) {
         event.stopPropagation();
-        
-        if(select.length) {
-          select[0].click();
-        }
+        select[0].click();
       });
     }
     
@@ -73,7 +78,7 @@ function mdColumn($compile) {
     var headCtrl = ctrls.shift();
     
     function attachSortIcon() {
-      var sortIcon = angular.element('<md-icon class="sort-icon">&#xE5D8;</md-icon>');
+      var sortIcon = angular.element('<md-icon class="sort-icon" md-svg-icon="arrow-up.svg">');
       
       $compile(sortIcon.attr('ng-class', 'getDirection()'))(scope);
       
@@ -98,12 +103,12 @@ function mdColumn($compile) {
     
     function disableSorting() {
       detachSortIcon();
-      element.off('click', setOrder);
+      element.removeClass('sort').off('click', setOrder);
     }
     
     function enableSorting() {
       attachSortIcon();
-      element.on('click', setOrder);
+      element.addClass('sort').on('click', setOrder);
     }
     
     function getIndex() {
@@ -373,7 +378,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
       if(event.keyCode === ESCAPE) {
         element.remove();
       }
-    }
+    };
     
     body.on('keyup', keyup);
     
@@ -479,7 +484,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
         
         $scope.dismiss = this.dismiss;
         
-        $scope.submit = function (model) {
+        $scope.submit = function () {
           update().then(function () {
             $scope.dismiss();
           });
@@ -512,7 +517,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
           '</div>' +
           '<div ng-if="size === \'large\'" layout="row" layout-align="end" class="actions">' +
             '<md-button class="md-primary" ng-click="dismiss()">{{cancel}}</md-button>' +
-            '<md-button class="md-primary" ng-click="submit(model)">{{ok}}</md-button>' +
+            '<md-button class="md-primary" ng-click="submit()">{{ok}}</md-button>' +
           '</div>' +
         '</md-edit-dialog>'
     };
@@ -860,7 +865,7 @@ angular.module('md.data.table').directive('mdTablePagination', mdTablePagination
 
 function mdTablePagination() {
   
-  function postLink(scope) {
+  function postLink(scope, element, attrs) {
     if(!scope.label) {
       scope.label = {
         0: 'Rows per page:',
@@ -868,12 +873,20 @@ function mdTablePagination() {
       };
     }
     
+    scope.first = function () {
+      scope.page = 1;
+    };
+    
     scope.hasNext = function () {
       return scope.page * scope.limit < scope.total;
     };
     
     scope.hasPrevious = function () {
       return scope.page > 1;
+    };
+    
+    scope.last = function () {
+      scope.page = scope.pages();
     };
     
     scope.max = function () {
@@ -888,8 +901,32 @@ function mdTablePagination() {
       scope.page++;
     };
     
+    scope.pages = function () {
+      return Math.ceil(scope.total / scope.limit);
+    };
+    
     scope.previous = function () {
       scope.page--;
+    };
+    
+    scope.range = function (total) {
+      return new Array(total);
+    };
+    
+    scope.showBoundaryLinks = function () {
+      if(attrs.hasOwnProperty('mdBoundaryLinks') && attrs.mdBoundaryLinks === '') {
+        return true;
+      }
+      
+      return scope.boundaryLinks;
+    };
+    
+    scope.showPageSelect = function () {
+      if(attrs.hasOwnProperty('mdPageSelect') && attrs.mdPageSelect === '') {
+        return true;
+      }
+      
+      return scope.pageSelect;
     };
     
     scope.$watch('limit', function () {
@@ -903,11 +940,11 @@ function mdTablePagination() {
     link: postLink,
     restrict: 'E',
     scope: {
-      // boundaryLinks: '=?mdBoundaryLinks',
+      boundaryLinks: '=?mdBoundaryLinks',
       label: '=?mdLabel',
       limit: '=mdLimit',
       page: '=mdPage',
-      // pageSelect: '=?mdPageSelect',
+      pageSelect: '=?mdPageSelect',
       options: '=mdOptions',
       total: '@mdTotal'
     },
@@ -915,35 +952,67 @@ function mdTablePagination() {
   };
 }
 
-angular.module('md.table.templates', ['md-table-pagination.html']);
+angular.module('md.table.templates', ['md-table-pagination.html', 'arrow-up.svg', 'navigate-before.svg', 'navigate-first.svg', 'navigate-last.svg', 'navigate-next.svg']);
 
 angular.module('md-table-pagination.html', []).run(['$templateCache', function($templateCache) {
   'use strict';
   $templateCache.put('md-table-pagination.html',
-    '<!-- <span class="label shrink" ng-if="pageSelect">{{paginationLabel.page}}</span>\n' +
+    '<span class="label shrink" ng-if="pageSelect">{{paginationLabel.page}}</span>\n' +
     '\n' +
-    '<md-select ng-if="pageSelect" ng-model="page" md-container-class="md-pagination-select" ng-change="onPageChange()" aria-label="Page Number">\n' +
-    '  <md-option ng-repeat="num in pages track by $index" ng-value="$index + 1">{{$index + 1}}</md-option>\n' +
-    '</md-select> -->\n' +
+    '<span class="label">{{\'Page\'}}</span>\n' +
+    '\n' +
+    '<md-select class="md-table-select" ng-show="showPageSelect()" ng-model="page" md-container-class="md-pagination-select" ng-change="onPageChange()" aria-label="Page">\n' +
+    '  <md-option ng-repeat="num in range(pages()) track by $index" ng-value="$index + 1">{{$index + 1}}</md-option>\n' +
+    '</md-select>\n' +
     '\n' +
     '<span class="label">{{label[0]}}</span>\n' +
     '\n' +
-    '<md-select ng-model="limit" md-container-class="md-pagination-select" ng-change="onLimitChange()" aria-label="Rows" placeholder="{{options ? options[0] : 5}}">\n' +
+    '<md-select class="md-table-select" ng-model="limit" md-container-class="md-pagination-select" ng-change="onLimitChange()" aria-label="Rows" placeholder="{{options ? options[0] : 5}}">\n' +
     '  <md-option ng-repeat="rows in options ? options : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>\n' +
     '</md-select>\n' +
     '\n' +
     '<span class="label">{{min() + 1}} - {{max()}} {{label[1]}} {{total}}</span>\n' +
     '\n' +
-    '<!-- <md-button class="md-icon-button" type="button" ng-if="boundaryLinks" ng-click="first()" ng-disabled="!hasPrevious()" aria-label="First">\n' +
-    '  <md-icon>&#xE045;</md-icon>\n' +
-    '</md-button> -->\n' +
+    '<md-button class="md-icon-button" type="button" ng-if="showBoundaryLinks()" ng-click="first()" ng-disabled="!hasPrevious()" aria-label="First">\n' +
+    '  <md-icon md-svg-icon="navigate-first.svg"></md-icon>\n' +
+    '</md-button>\n' +
     '<md-button class="md-icon-button" type="button" ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">\n' +
-    '  <md-icon>&#xE408;</md-icon>\n' +
+    '  <md-icon md-svg-icon="navigate-before.svg"></md-icon>\n' +
     '</md-button>\n' +
     '<md-button class="md-icon-button" type="button" ng-click="next()" ng-disabled="!hasNext()" aria-label="Next">\n' +
-    '  <md-icon>&#xE409;</md-icon>\n' +
+    '  <md-icon md-svg-icon="navigate-next.svg"></md-icon>\n' +
     '</md-button>\n' +
-    '<!-- <md-button class="md-icon-button" type="button" ng-if="boundaryLinks" ng-click="last()" ng-disabled="!hasNext()" aria-label="Last">\n' +
-    '  <md-icon>&#xE044;</md-icon>\n' +
-    '</md-button> -->');
+    '<md-button class="md-icon-button" type="button" ng-if="showBoundaryLinks()" ng-click="last()" ng-disabled="!hasNext()" aria-label="Last">\n' +
+    '  <md-icon md-svg-icon="navigate-last.svg"></md-icon>\n' +
+    '</md-button>');
+}]);
+
+angular.module('arrow-up.svg', []).run(['$templateCache', function($templateCache) {
+  'use strict';
+  $templateCache.put('arrow-up.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></svg>');
+}]);
+
+angular.module('navigate-before.svg', []).run(['$templateCache', function($templateCache) {
+  'use strict';
+  $templateCache.put('navigate-before.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>');
+}]);
+
+angular.module('navigate-first.svg', []).run(['$templateCache', function($templateCache) {
+  'use strict';
+  $templateCache.put('navigate-first.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M7 6 v12 h2 v-12 h-2z M17.41 7.41L16 6l-6 6 6 6 1.41-1.41L12.83 12z"/></svg>');
+}]);
+
+angular.module('navigate-last.svg', []).run(['$templateCache', function($templateCache) {
+  'use strict';
+  $templateCache.put('navigate-last.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15 6 v12 h2 v-12 h-2z M8 6L6.59 7.41 11.17 12l-4.58 4.59L8 18l6-6z"/></svg>');
+}]);
+
+angular.module('navigate-next.svg', []).run(['$templateCache', function($templateCache) {
+  'use strict';
+  $templateCache.put('navigate-next.svg',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>');
 }]);

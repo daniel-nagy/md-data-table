@@ -82,7 +82,7 @@ module.exports = function (grunt) {
           useStrict: true
         },
         files: {
-          '.temp/templates.js': 'app/md-data-table/**/*.html'
+          '.temp/templates.js': ['app/md-data-table/templates/*.html', 'app/md-data-table/icons/*.svg']
         }
       }
     },

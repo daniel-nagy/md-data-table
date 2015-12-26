@@ -9,7 +9,7 @@ function mdColumn($compile) {
     var headCtrl = ctrls.shift();
     
     function attachSortIcon() {
-      var sortIcon = angular.element('<md-icon class="sort-icon">&#xE5D8;</md-icon>');
+      var sortIcon = angular.element('<md-icon class="sort-icon" md-svg-icon="arrow-up.svg">');
       
       $compile(sortIcon.attr('ng-class', 'getDirection()'))(scope);
       
@@ -34,12 +34,12 @@ function mdColumn($compile) {
     
     function disableSorting() {
       detachSortIcon();
-      element.off('click', setOrder);
+      element.removeClass('sort').off('click', setOrder);
     }
     
     function enableSorting() {
       attachSortIcon();
-      element.on('click', setOrder);
+      element.addClass('sort').on('click', setOrder);
     }
     
     function getIndex() {

@@ -81,7 +81,7 @@ md-table md-column {
   font-weight: bold;
   white-space: nowrap;
 }
-md-table md-column[md-order-by]:not([md-order-by=""]) {
+md-table md-column.sort {
   cursor: pointer;
 }
 md-table md-column md-icon {
@@ -132,7 +132,10 @@ md-table md-body md-cell {
 md-table md-row {
   display: table-row;
 }
-md-table md-row[ng-repeat].ng-leave {
+md-table md-row[ng\:repeat].ng-leave,
+md-table md-row[ng-repeat].ng-leave,
+md-table md-row[x-ng-repeat].ng-leave,
+md-table md-row[data-ng-repeat].ng-leave {
   display: none;
 }
 md-table.md-row-select md-body > md-row {
@@ -177,6 +180,14 @@ md-table md-cell:last-child,
 md-table md-column:last-child {
   padding: 0 24px 0 0;
 }
+md-table md-cell.clickable,
+md-table md-column.clickable {
+  cursor: pointer;
+}
+md-table md-cell.clickable:focus,
+md-table md-column.clickable:focus {
+  outline: none;
+}
 md-table md-cell.numeric,
 md-table md-column.numeric {
   text-align: right;
@@ -186,53 +197,53 @@ md-table md-column md-checkbox {
   margin: 0;
   width: 18px;
 }
-md-table md-cell.clickable {
-  cursor: pointer;
-}
-md-table md-cell.clickable:focus {
-  outline: none;
-}
 md-table md-cell.numeric md-select {
-  text-align: left;
+  -webkit-justify-content: flex-end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+md-table md-cell.numeric md-select .md-select-value {
+  -webkit-flex-grow: initial;
+      -ms-flex-positive: initial;
+          flex-grow: initial;
 }
 md-table md-cell.placeholder {
   color: rgba(0, 0, 0, 0.26);
 }
-md-table md-cell md-select {
-  -webkit-flex: 1 0 auto;
-      -ms-flex: 1 0 auto;
-          flex: 1 0 auto;
-  padding: 0;
+md-table md-cell md-select > .md-select-value > span.md-select-icon {
+  -webkit-justify-content: flex-end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  color: rgba(0, 0, 0, 0.54);
+  width: 18px;
+  text-align: right;
+}
+md-table md-cell md-select > .md-select-value > span.md-select-icon:after {
+  -webkit-transform: scaleY(0.4) scaleX(0.8);
+          transform: scaleY(0.4) scaleX(0.8);
+}
+md-select.md-table-select {
   margin: 0;
 }
-md-table md-cell md-select > .md-select-value {
+md-select.md-table-select > .md-select-value {
   padding: 0;
-  min-width: 0;
-  min-height: 0;
+  min-width: initial;
+  min-height: 24px;
   border-bottom: 0 !important;
 }
-md-table md-cell md-select > .md-select-value > span:first-child {
-  -webkit-flex: 1 1 auto;
-      -ms-flex: 1 1 auto;
-          flex: 1 1 auto;
-  max-width: none;
-  -webkit-transform: none;
-          transform: none;
+md-select.md-table-select > .md-select-value > span {
+  -webkit-transform: none !important;
+          transform: none !important;
 }
-md-table md-cell md-select > .md-select-value > .md-select-icon {
+md-select.md-table-select > .md-select-value > span.md-select-icon {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
+  height: 24px;
   margin: 0;
-  width: auto;
-  color: rgba(0, 0, 0, 0.54) !important;
-  text-align: center;
-  -webkit-transform: none;
-          transform: none;
-}
-md-table md-cell md-select > .md-select-value > .md-select-icon:after {
-  -webkit-transform: scaleY(0.4) scaleX(0.8);
-          transform: scaleY(0.4) scaleX(0.8);
 }
 md-backdrop.md-edit-dialog-backdrop {
   z-index: 80;
@@ -306,28 +317,16 @@ md-table-pagination md-select {
       -ms-flex-pack: end;
           justify-content: flex-end;
   min-width: 64px;
-  margin: 0;
+}
+md-table-pagination md-select:not([disabled]):focus .md-select-value {
+  color: rgba(0, 0, 0, 0.54);
 }
 md-table-pagination md-select .md-select-value {
   -webkit-flex-grow: initial;
       -ms-flex-positive: initial;
           flex-grow: initial;
-  min-height: 24px;
-  min-width: initial;
-  padding: 0;
-  border-bottom: 0 !important;
-}
-md-table-pagination md-select .md-select-value span {
-  -webkit-transform: none !important;
-          transform: none !important;
 }
 md-table-pagination md-select .md-select-value span.md-select-icon {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
   -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;

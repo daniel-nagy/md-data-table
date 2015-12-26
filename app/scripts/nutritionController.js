@@ -26,18 +26,18 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
     numeric: true,
     orderBy: 'fat.value',
     unit: 'g'
-  }, {
+  }, /* {
     name: 'Carbs',
     numeric: true,
     orderBy: 'carbs.value',
     unit: 'g'
-  }, {
+  }, */ {
     name: 'Protein',
     numeric: true,
     orderBy: 'protein.value',
     trim: true,
     unit: 'g'
-  }, {
+  }, /* {
     name: 'Sodium',
     numeric: true,
     orderBy: 'sodium.value',
@@ -47,11 +47,14 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
     numeric: true,
     orderBy: 'calcium.value',
     unit: '%'
-  }, {
+  }, */ {
     name: 'Iron',
     numeric: true,
     orderBy: 'iron.value',
     unit: '%'
+  }, {
+    name: 'Comments',
+    orderBy: 'comment',
   }];
   
   $http.get('desserts.js').then(function (desserts) {
@@ -59,6 +62,8 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
   });
   
   $scope.editComment = function (event, dessert) {
+    event.stopPropagation();
+    
     var promise = $mdEditDialog.large({
       // messages: {
       //   test: 'I don\'t like tests!'

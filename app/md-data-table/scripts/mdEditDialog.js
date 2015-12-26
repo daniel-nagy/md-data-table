@@ -179,7 +179,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
       if(event.keyCode === ESCAPE) {
         element.remove();
       }
-    }
+    };
     
     body.on('keyup', keyup);
     
@@ -285,7 +285,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
         
         $scope.dismiss = this.dismiss;
         
-        $scope.submit = function (model) {
+        $scope.submit = function () {
           update().then(function () {
             $scope.dismiss();
           });
@@ -318,7 +318,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
           '</div>' +
           '<div ng-if="size === \'large\'" layout="row" layout-align="end" class="actions">' +
             '<md-button class="md-primary" ng-click="dismiss()">{{cancel}}</md-button>' +
-            '<md-button class="md-primary" ng-click="submit(model)">{{ok}}</md-button>' +
+            '<md-button class="md-primary" ng-click="submit()">{{ok}}</md-button>' +
           '</div>' +
         '</md-edit-dialog>'
     };

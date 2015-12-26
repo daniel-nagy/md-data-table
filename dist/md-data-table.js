@@ -960,7 +960,7 @@ angular.module('md-table-pagination.html', []).run(['$templateCache', function($
   $templateCache.put('md-table-pagination.html',
     '<span class="label shrink" ng-if="pageSelect">{{paginationLabel.page}}</span>\n' +
     '\n' +
-    '<span class="label">{{label[\'page\']}}</span>\n' +
+    '<span class="label" ng-show="showPageSelect()">{{label[\'page\']}}</span>\n' +
     '\n' +
     '<md-select class="md-table-select" ng-show="showPageSelect()" ng-model="page" md-container-class="md-pagination-select" ng-change="onPageChange()" aria-label="Page">\n' +
     '  <md-option ng-repeat="num in range(pages()) track by $index" ng-value="$index + 1">{{$index + 1}}</md-option>\n' +

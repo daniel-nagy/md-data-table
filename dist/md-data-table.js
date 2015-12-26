@@ -868,8 +868,9 @@ function mdTablePagination() {
   function postLink(scope, element, attrs) {
     if(!scope.label) {
       scope.label = {
-        0: 'Rows per page:',
-        1: 'of'
+        page: 'Page',
+        rowsPerPage: 'Rows per page:',
+        of: 'of'
       };
     }
     
@@ -959,19 +960,19 @@ angular.module('md-table-pagination.html', []).run(['$templateCache', function($
   $templateCache.put('md-table-pagination.html',
     '<span class="label shrink" ng-if="pageSelect">{{paginationLabel.page}}</span>\n' +
     '\n' +
-    '<span class="label">{{\'Page\'}}</span>\n' +
+    '<span class="label">{{label[\'page\']}}</span>\n' +
     '\n' +
     '<md-select class="md-table-select" ng-show="showPageSelect()" ng-model="page" md-container-class="md-pagination-select" ng-change="onPageChange()" aria-label="Page">\n' +
     '  <md-option ng-repeat="num in range(pages()) track by $index" ng-value="$index + 1">{{$index + 1}}</md-option>\n' +
     '</md-select>\n' +
     '\n' +
-    '<span class="label">{{label[0]}}</span>\n' +
+    '<span class="label">{{label[\'rowsPerPage\']}}</span>\n' +
     '\n' +
     '<md-select class="md-table-select" ng-model="limit" md-container-class="md-pagination-select" ng-change="onLimitChange()" aria-label="Rows" placeholder="{{options ? options[0] : 5}}">\n' +
     '  <md-option ng-repeat="rows in options ? options : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>\n' +
     '</md-select>\n' +
     '\n' +
-    '<span class="label">{{min() + 1}} - {{max()}} {{label[1]}} {{total}}</span>\n' +
+    '<span class="label">{{min() + 1}} - {{max()}} {{label[\'of\']}} {{total}}</span>\n' +
     '\n' +
     '<md-button class="md-icon-button" type="button" ng-if="showBoundaryLinks()" ng-click="first()" ng-disabled="!hasPrevious()" aria-label="First">\n' +
     '  <md-icon md-svg-icon="navigate-first.svg"></md-icon>\n' +

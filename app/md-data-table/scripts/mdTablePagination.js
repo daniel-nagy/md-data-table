@@ -7,8 +7,9 @@ function mdTablePagination() {
   function postLink(scope, element, attrs) {
     if(!scope.label) {
       scope.label = {
-        0: 'Rows per page:',
-        1: 'of'
+        page: 'Page',
+        rowsPerPage: 'Rows per page:',
+        of: 'of'
       };
     }
     

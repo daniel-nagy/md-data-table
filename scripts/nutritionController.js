@@ -18,16 +18,12 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
     page: 1
   };
   
-  function success(desserts) {
-    $scope.desserts = desserts;
+  function getDesserts(query) {
+    $scope.promise = $nutrition.desserts.get(query || $scope.query, success).$promise;
   }
   
-  $scope.onChange = function () {
-    return $nutrition.desserts.get($scope.query, success).$promise;
-  };
-  
-  function getDesserts() {
-    $scope.deferred = $scope.onChange();
+  function success(desserts) {
+    $scope.desserts = desserts;
   }
   
   $scope.addItem = function (event) {
@@ -51,6 +47,14 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
       locals: { desserts: $scope.selected },
       templateUrl: 'templates/delete-dialog.html',
     }).then(getDesserts);
+  };
+  
+  $scope.onPaginate = function (page, limit) {
+    getDesserts(angular.extend({}, $scope.query, {page: page, limit: limit}));
+  };
+  
+  $scope.onReorder = function (order) {
+    getDesserts(angular.extend({}, $scope.query, {order: order}));
   };
   
   $scope.removeFilter = function () {

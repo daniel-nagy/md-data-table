@@ -1,9 +1,6 @@
 html,
 body,
 md-content {
-  -webkit-flex: 1 1 auto;
-  -ms-flex: 1 1 auto;
-  flex: 1 1 auto;
   background-color: #f5f5f5 !important;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -30,6 +27,11 @@ input:-ms-input-placeholder {
 input::input-placeholder {
   color: rgba(0, 0, 0, 0.26);
   font-weight: 300;
+}
+.material-icons {
+  position: static;
+  margin: 0;
+  /* justify-content: flex-start; */
 }
 md-toolbar,
 footer-content {
@@ -62,38 +64,28 @@ md-card {
   flex: 0 0 auto;
   position: relative;
 }
-.md-button.md-icon-button {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-}
-.md-button.md-icon-button > i {
-  margin: auto;
-}
-md-data-table-toolbar.ng-hide {
+md-toolbar.md-table-toolbar.ng-hide {
   display: none;
 }
-md-data-table-toolbar.alternate {
+md-toolbar.md-table-toolbar.alternate .md-toolbar-tools {
   color: #1e88e5;
+  font-size: 16px;
   background-color: #e3f2fd;
 }
-md-data-table-toolbar > .md-button.md-icon-button:last-child {
-  margin-right: -12px;
-}
-md-data-table-toolbar > form {
+md-toolbar.md-table-toolbar form {
   margin-left: 16px;
 }
-md-data-table-toolbar > form > input {
+md-toolbar.md-table-toolbar form > input {
   width: 100%;
   margin: 0;
   border: none;
   color: rgba(0, 0, 0, 0.87);
 }
-md-data-table-toolbar > form > input:focus {
+md-toolbar.md-table-toolbar form > input:focus {
   outline: none;
+}
+md-dialog > md-dialog-content.md-dialog-content {
+  padding-bottom: 0;
 }
 md-dialog > md-dialog-content > p {
   margin: 16px 0;

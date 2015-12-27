@@ -1,13 +1,13 @@
 <md-dialog delete-dialog>
-  <md-dialog-content>
+  <md-dialog-content class="md-dialog-content">
     <h2 class="md-title">Delete Items</h2>
     <p>Sorry, I don't want to repopulate the database every time someone deletes everything.</p>
     <p class="md-warn" ng-if="error" layout="row" layout-align="start center">
-      <i class="material-icons">error_outline</i>
+      <md-icon>error_outline</md-icon>
       <span>&nbsp; {{error}}</span>
     </p>
     <form name="authorize.form" ng-submit="ctrl.authorizeUser()">
-      <md-input-container>
+      <md-input-container layout="row">
         <label>Secret</label>
         <input name="secret" type="password" ng-model="authorize.secret">
       </md-input-container>

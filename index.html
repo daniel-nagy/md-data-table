@@ -24,17 +24,17 @@
       </div>
     </md-toolbar>
     
-    <md-content layout="column">
+    <md-content layout="column" flex>
       
       <md-card ng-include="'templates/nutrition-table.html'" ng-controller="nutritionController"></md-card>
       
       <footer layout="column" layout-align="end">
         <footer-content layout="row" layout-align="start center" layout-wrap>
           <div layout="row" layout-align="start center">
-            <span>Made with&nbsp;</span><i class="material-icons md-18" md-primary>favorite</i><span>&nbsp;by Daniel Nagy</span>
+            <span>Made with&nbsp;</span><md-icon class="material-icons md-18">favorite</md-icon><span>&nbsp;by Daniel Nagy</span>
           </div>
           <div layout="row" layout-align="start center">
-            <div>Version 0.8.10</div>
+            <div>Version 0.9.0 <i style="font-size: 12px;">available soon</i></div>
             <a href="https://github.com/daniel-nagy/md-data-table" target="_blank">GitHub</a>
           </div>
         </footer-content>
@@ -46,6 +46,7 @@
     <script type="text/javascript" src="dependencies/angular-animate.min.js"></script>
     <script type="text/javascript" src="dependencies/angular-aria.min.js"></script>
     <script type="text/javascript" src="dependencies/angular-material.min.js"></script>
+    <script type="text/javascript" src="dependencies/angular-messages.min.js"></script>
     <script type="text/javascript" src="dependencies/angular-resource.min.js"></script>
     <script type="text/javascript" src="dependencies/md-data-table.min.js"></script>
     

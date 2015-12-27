@@ -8,6 +8,8 @@
   font-family: 'Material Icons';
   font-weight: normal;
   font-style: normal;
+  height: 24px;
+  width: 24px;
   font-size: 24px;
   color: inherit;
   display: inline-block;
@@ -20,12 +22,18 @@
           font-feature-settings: 'liga';
 }
 .material-icons.md-18 {
+  height: 18px;
+  width: 18px;
   font-size: 18px;
 }
 .material-icons.md-36 {
+  height: 36px;
+  width: 36px;
   font-size: 36px;
 }
 .material-icons.md-48 {
+  height: 48px;
+  width: 48px;
   font-size: 48px;
 }
 .material-icons.md-dark {

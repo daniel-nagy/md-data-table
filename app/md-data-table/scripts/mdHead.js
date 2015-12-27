@@ -4,6 +4,11 @@ angular.module('md.data.table').directive('mdHead', mdHead);
 
 function mdHead($compile) {
 
+  function compile(tElement) {
+    tElement.addClass('md-head');
+    return postLink;
+  }
+  
   function Controller() {
     
   }
@@ -15,24 +20,24 @@ function mdHead($compile) {
       
       // append an empty cell to preceding rows
       for(var i = 0; i < children.length - 1; i++) {
-        children.eq(i).prepend('<md-column></md-column>');
+        children.eq(i).prepend('<th class="md-column">');
       }
       
       children.eq(children.length - 1).prepend(createCheckBox());
     }
     
     function createCheckBox() {
-      var checkbox = angular.element('<md-checkbox></md-checkbox>');
+      var checkbox = angular.element('<md-checkbox>');
       
       checkbox.attr('aria-label', 'Select All');
       checkbox.attr('ng-click', 'toggleAll()');
       checkbox.attr('ng-checked', 'allSelected()');
       
-      return angular.element('<md-column>').append($compile(checkbox)(scope));
+      return angular.element('<th class="md-column">').append($compile(checkbox)(scope));
     }
     
     function every(callback) {
-      for(var i = 0, rows = element.next().children(); i < rows.length; i++) {
+      for(var i = 0, rows = tableCtrl.getBody().children(); i < rows.length; i++) {
         var row = rows.eq(i);
         
         if(!row.hasClass('ng-leave') && !callback(row, row.controller('mdSelect'))) {
@@ -44,7 +49,7 @@ function mdHead($compile) {
     }
     
     function forEach(callback) {
-      for(var i = 0, rows = element.next().children(); i < rows.length; i++) {
+      for(var i = 0, rows = tableCtrl.getBody().children(); i < rows.length; i++) {
         var row = rows.eq(i);
         
         if(!row.hasClass('ng-leave')) {
@@ -94,13 +99,14 @@ function mdHead($compile) {
   
   return {
     bindToController: true,
+    compile: compile,
     controller: Controller,
     controllerAs: '$mdHead',
-    link: postLink,
     require: '^^mdTable',
-    restrict: 'E',
+    restrict: 'A',
     scope: {
-      order: '=?mdOrder'
+      order: '=?mdOrder',
+      onReorder: '=?mdOnReorder'
     }
   };
 }

@@ -1,3 +1,7 @@
+@import 'md-edit-dialog';
+@import 'md-table-pagination';
+@import 'md-table-select';
+@import 'md-table-toolbar';
 @import 'md-variables';
 
 md-card {
@@ -14,40 +18,6 @@ md-card {
   }
 }
 
-md-toolbar.md-table-toolbar {
-  box-shadow: none;
-  
-  &.md-default-theme:not(.md-menu-toolbar),
-  &:not(.md-menu-toolbar) {
-    background-color: @md-light;
-    color: @md-dark;
-    
-    .md-button {
-      color: @md-dark;
-    }
-  }
-  
-  .md-toolbar-tools {
-    padding: 0 24px;
-    
-    md-icon {
-      color: @md-dark-icon;
-    }
-    
-    > .md-button.md-icon-button {
-      margin: 0;
-    }
-    
-    > .md-button.md-icon-button:first-child {
-      margin-left: -16px;
-    }
-    
-    > .md-button.md-icon-button:last-child {
-      margin-right: -16px;
-    }
-  }
-}
-
 md-table-container {
   display: block;
   max-width: 100%;
@@ -55,45 +25,47 @@ md-table-container {
   -webkit-overflow-scrolling: touch;
 }
 
-.md-select-menu-container.md-table-select,
-.md-select-menu-container.md-pagination-select {
-  margin-top: -2px;
-  margin-left: -2px;
-  border-radius: 2px;
-  
-  md-select-menu,
-  md-content {
-    border-radius: inherit;
-  }
-
-  md-content {
-    padding: 0;
-  }
-}
-
-.md-select-menu-container.md-table-select .md-text {
-  font-size: 13px;
-}
-
-.md-select-menu-container.md-pagination-select .md-text {
-  font-size: 12px;
-}
-
-md-table {
-  display: table;
+table.md-table {
   width: 100%;
   border-spacing: 0;
   overflow: hidden;
   
-  md-head {
-    display: table-header-group;
+  thead.md-head > tr.md-row {
+    height: 56px;
+  }
+  
+  tbody.md-body > tr.md-row {
+    height: 48px;
+  }
+  
+  thead.md-head + .md-table-progress md-progress-linear {
+    top: -3px;
+  }
+  
+  .md-table-progress th {
+    padding: 0;
     
-    > md-row {
-      height: 56px;
+    md-progress-linear {
+      height: 0;
+      transition: opacity 1s;
+      
+      &.ng-hide {
+        opacity: 0;
+      }
+      
+      > .md-container {
+        height: 3px;
+        top: 0;
+        transition: none;
+        
+        > .md-bar {
+          height: 3px;
+        }
+      }
     }
   }
   
-  md-column {
+  th.md-column {
     color: @md-dark-secondary;
     font-size: 12px;
     font-weight: bold;
@@ -143,23 +115,7 @@ md-table {
     }
   }
   
-  md-body {
-    display: table-row-group;
-    
-    > md-row {
-      height: 48px;
-    }
-    
-    md-cell {
-      color: @md-dark;
-      font-size: 13px;
-      border-top: 1px @md-dark-divider solid;
-    }
-  }
-  
-  md-row {
-    display: table-row;
-    
+  tr.md-row {
     &[ng\:repeat].ng-leave,
     &[ng-repeat].ng-leave,
     &[x-ng-repeat].ng-leave,
@@ -168,7 +124,7 @@ md-table {
     }
   }
   
-  &.md-row-select md-body > md-row {
+  &.md-row-select tbody.md-body > tr.md-row {
     transition: background-color 0.2s;
     
     &:not([disabled]):hover {
@@ -180,8 +136,8 @@ md-table {
     }
   }
   
-  &.md-row-select md-cell,
-  &.md-row-select md-column {
+  &.md-row-select td.md-cell,
+  &.md-row-select th.md-column {
     &:first-child {
       padding: 0 0 0 24px;
     }
@@ -195,8 +151,8 @@ md-table {
     }
   }
   
-  &:not(.md-row-select) md-cell,
-  &:not(.md-row-select) md-column {
+  &:not(.md-row-select) td.md-cell,
+  &:not(.md-row-select) th.md-column {
     &:first-child {
       padding: 0 24px;
     }
@@ -206,10 +162,10 @@ md-table {
     }
   }
   
-  md-cell,
-  md-column {
-    display: table-cell;
+  td.md-cell,
+  th.md-column {
     vertical-align: middle;
+    text-align: left;
     
     > * {
       vertical-align: middle;
@@ -237,7 +193,10 @@ md-table {
     }
   }
   
-  md-cell {
+  td.md-cell {
+    color: @md-dark;
+    font-size: 13px;
+    border-top: 1px @md-dark-divider solid;
     
     &.numeric md-select {
       justify-content: flex-end;
@@ -261,141 +220,5 @@ md-table {
         transform: scaleY(0.4) scaleX(0.8);
       }
     }
-  }
-}
-
-md-select.md-table-select {
-  margin: 0;
-  
-  > .md-select-value {
-    padding: 0;
-    min-width: initial;
-    min-height: 24px;
-    border-bottom: 0 !important;
-    
-    > span {
-      transform: none !important;
-      
-      &.md-select-icon {
-        display: flex;
-        align-items: center;
-        height: 24px;
-        margin: 0;
-      }
-    }
-  }
-}
-
-md-backdrop.md-edit-dialog-backdrop {
-  z-index: @md-backdrop-index;
-}
-
-md-edit-dialog {
-  display: flex;
-  flex-direction: column;
-  
-  position: fixed;
-  z-index: @md-backdrop-index + 1;
-  background-color: @md-table-dialog-color;
-  border-radius: 2px;
-  cursor: default;
-  
-  > .content {
-    padding: 16px 24px 0;
-    
-    .md-title {
-      color: @md-dark;
-      margin-bottom: 8px;
-    }
-    
-    md-input-container {
-      margin: 0;
-      font-size: 13px;
-      
-      input {
-        float: none;
-      }
-      
-      .md-errors-spacer {
-        min-height: auto;
-        min-width: auto;
-        color: @md-dark-secondary;
-        
-        .md-char-counter {
-          padding: 5px 2px 5px 0;
-        }
-      }
-      
-      [ng-message] {
-        padding: 5px 0 5px 2px;
-      }
-    }
-  }
-  
-  > .actions {
-    margin: 0 16px 8px;
-    
-    .md-button {
-      margin: 0;
-      min-width: initial;
-      
-      & + .md-button {
-        margin-left: 8px;
-      }
-    }
-  }
-}
-
-md-table-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  
-  height: 56px;
-  padding: 0 24px;
-  font-size: 12px;
-  color: @md-dark-secondary;
-  border-top: 1px @md-dark-divider solid;
-  
-  md-select {
-    justify-content: flex-end;
-    min-width: 64px;
-    
-    &:not([disabled]):focus .md-select-value {
-      color: @md-dark-secondary;
-    }
-    
-    .md-select-value {
-      flex-grow: initial;
-      
-      span.md-select-icon {
-        justify-content: center;
-        
-        height: 24px;
-        margin: 0;
-        text-align: center;
-        
-        &:after {
-          top: initial;
-          transform: scaleY(0.5) scaleX(1);
-        }
-      }
-    }
-  }
-  
-  > md-select + span {
-    margin-left: 32px;
-  }
-  
-  > .md-button.md-icon-button {
-    margin: 0;
-  }
-  
-  > span + .md-button.md-icon-button {
-    margin-left: 20px;
-  }
-  
-  > .md-button.md-icon-button:last-child {
-    margin-right: -16px;
   }
 }

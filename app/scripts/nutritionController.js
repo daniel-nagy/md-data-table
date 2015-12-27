@@ -54,7 +54,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
     unit: '%'
   }, {
     name: 'Comments',
-    orderBy: 'comment',
+    orderBy: 'comment'
   }];
   
   $http.get('desserts.js').then(function (desserts) {
@@ -93,18 +93,14 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
     return ['Candy', 'Ice cream', 'Other', 'Pastry'];
   };
   
-  $scope.onpagechange = function(page, limit) {
+  $scope.onPaginate = function(page, limit) {
     
     console.log('Scope Page: ' + $scope.query.page + ' Scope Limit: ' + $scope.query.limit);
     console.log('Page: ' + page + ' Limit: ' + limit);
     
-    var deferred = $q.defer();
-    
-    $timeout(function () {
-      deferred.resolve();
+    $scope.promise = $timeout(function () {
+      
     }, 2000);
-    
-    return deferred.promise;
   };
   
   $scope.log = function (item) {
@@ -112,27 +108,19 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
   };
   
   $scope.loadStuff = function () {
-    var deferred = $q.defer();
-    
-    $timeout(function () {
-      deferred.reject();
+    $scope.promise = $timeout(function () {
+      
     }, 2000);
-    
-    $scope.deferred = deferred.promise;
   };
   
-  $scope.onorderchange = function(order) {
+  $scope.onReorder = function(order) {
     
     console.log('Scope Order: ' + $scope.query.order);
     console.log('Order: ' + order);
     
-    var deferred = $q.defer();
-    
-    $timeout(function () {
-      deferred.resolve();
+    $scope.promise = $timeout(function () {
+      
     }, 2000);
-    
-    return deferred.promise;
   };
   
 }]);

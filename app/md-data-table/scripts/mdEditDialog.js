@@ -336,7 +336,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
       return logError('options.targetEvent is required to align the dialog with the table cell.');
     }
     
-    if(options.targetEvent.target.tagName !== 'MD-CELL') {
+    if(!options.targetEvent.target.classList.contains('md-cell')) {
       return logError('The event target must be a table cell.');
     }
     

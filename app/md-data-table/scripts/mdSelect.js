@@ -72,14 +72,14 @@ function mdSelect($compile) {
     }
     
     function createCheckbox() {
-      var checkbox = angular.element('<md-checkbox></md-checkbox>');
+      var checkbox = angular.element('<md-checkbox>');
       
       checkbox.attr('aria-label', 'Select Row');
       checkbox.attr('ng-click', '$mdSelect.toggle($event)');
       checkbox.attr('ng-checked', '$mdSelect.isSelected()');
       checkbox.attr('ng-disabled', '$mdSelect.disabled');
       
-      return angular.element('<md-cell>').append($compile(checkbox)(scope));
+      return angular.element('<td class="md-cell">').append($compile(checkbox)(scope));
     }
     
     function removeCheckbox() {

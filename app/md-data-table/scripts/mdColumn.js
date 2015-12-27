@@ -3,10 +3,15 @@
 angular.module('md.data.table').directive('mdColumn', mdColumn);
 
 function mdColumn($compile) {
+  
+  function compile(tElement) {
+    tElement.addClass('md-column');
+    return postLink;
+  }
 
   function postLink(scope, element, attrs, ctrls) {
-    var tableCtrl = ctrls.shift();
     var headCtrl = ctrls.shift();
+    var tableCtrl = ctrls.shift();
     
     function attachSortIcon() {
       var sortIcon = angular.element('<md-icon class="sort-icon" md-svg-icon="arrow-up.svg">');
@@ -69,6 +74,10 @@ function mdColumn($compile) {
         } else {
           headCtrl.order = scope.getDirection() === 'asc' ? '-' + scope.orderBy : scope.orderBy;
         }
+        
+        if(angular.isFunction(headCtrl.onReorder)) {
+          headCtrl.onReorder(headCtrl.order);
+        }
       });
     }
     
@@ -116,9 +125,9 @@ function mdColumn($compile) {
   }
 
   return {
-    link: postLink,
-    require: ['^^mdTable', '^^mdHead'],
-    restrict: 'E',
+    compile: compile,
+    require: ['^^mdHead', '^^mdTable'],
+    restrict: 'A',
     scope: {
       numeric: '=?mdNumeric',
       orderBy: '@?mdOrderBy'

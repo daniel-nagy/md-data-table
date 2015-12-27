@@ -5,7 +5,13 @@ angular.module('md.data.table').directive('mdCell', mdCell);
 function mdCell() {
   
   function compile(tElement) {
-    tElement.find('md-select').attr('md-container-class', 'md-table-select');
+    var select = tElement.find('md-select');
+    
+    if(select.length) {
+      select.addClass('md-table-select').attr('md-container-class', 'md-table-select');
+    }
+    
+    tElement.addClass('md-cell');
     
     return postLink;
   }
@@ -24,7 +30,7 @@ function mdCell() {
     }
     
     if(select.length) {
-      select.addClass('md-table-select').on('click', function (event) {
+      select.on('click', function (event) {
         event.stopPropagation();
       });
       
@@ -61,6 +67,6 @@ function mdCell() {
     controller: Controller,
     compile: compile,
     require: ['mdCell', '^^mdTable'],
-    restrict: 'E'
+    restrict: 'A'
   };
 }

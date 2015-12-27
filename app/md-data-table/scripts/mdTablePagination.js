@@ -4,6 +4,11 @@ angular.module('md.data.table').directive('mdTablePagination', mdTablePagination
 
 function mdTablePagination() {
   
+  function compile(tElement) {
+    tElement.addClass('md-table-pagination');
+    return postLink;
+  }
+  
   function postLink(scope, element, attrs) {
     if(!scope.label) {
       scope.label = {
@@ -11,6 +16,12 @@ function mdTablePagination() {
         rowsPerPage: 'Rows per page:',
         of: 'of'
       };
+    }
+    
+    function onPaginationChange() {
+      if(angular.isFunction(scope.onPaginate)) {
+        scope.onPaginate(scope.page, scope.limit);
+      }
     }
     
     scope.first = function () {
@@ -39,6 +50,7 @@ function mdTablePagination() {
     
     scope.next = function () {
       scope.page++;
+      onPaginationChange();
     };
     
     scope.pages = function () {
@@ -47,6 +59,7 @@ function mdTablePagination() {
     
     scope.previous = function () {
       scope.page--;
+      onPaginationChange();
     };
     
     scope.range = function (total) {
@@ -69,15 +82,21 @@ function mdTablePagination() {
       return scope.pageSelect;
     };
     
-    scope.$watch('limit', function () {
-      if(scope.limit * scope.page > scope.max() && scope.hasPrevious()) {
-        scope.previous();
+    scope.$watch('limit', function (newValue, oldValue) {
+      if(newValue === oldValue) {
+        return;
       }
+      
+      while(scope.limit * scope.page > scope.max() && scope.hasPrevious()) {
+        scope.page--;
+      }
+      
+      onPaginationChange();
     });
   }
   
   return {
-    link: postLink,
+    compile: compile,
     restrict: 'E',
     scope: {
       boundaryLinks: '=?mdBoundaryLinks',
@@ -85,6 +104,7 @@ function mdTablePagination() {
       limit: '=mdLimit',
       page: '=mdPage',
       pageSelect: '=?mdPageSelect',
+      onPaginate: '=?mdOnPaginate',
       options: '=mdOptions',
       total: '@mdTotal'
     },

@@ -175,10 +175,10 @@ md-toolbar.md-table-toolbar .md-toolbar-tools > .md-button.md-icon-button {
   margin: 0;
 }
 md-toolbar.md-table-toolbar .md-toolbar-tools > .md-button.md-icon-button:first-child {
-  margin-left: -16px;
+  margin-left: -12px;
 }
 md-toolbar.md-table-toolbar .md-toolbar-tools > .md-button.md-icon-button:last-child {
-  margin-right: -16px;
+  margin-right: -12px;
 }
 md-card > md-toolbar.md-table-toolbar:first-child,
 md-card > md-table-container:first-child {

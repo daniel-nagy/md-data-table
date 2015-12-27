@@ -26,6 +26,7 @@ function mdTablePagination() {
     
     scope.first = function () {
       scope.page = 1;
+      onPaginationChange();
     };
     
     scope.hasNext = function () {
@@ -38,6 +39,7 @@ function mdTablePagination() {
     
     scope.last = function () {
       scope.page = scope.pages();
+      onPaginationChange();
     };
     
     scope.max = function () {
@@ -52,6 +54,16 @@ function mdTablePagination() {
       scope.page++;
       onPaginationChange();
     };
+    
+    scope.onLimitChange = function () {
+      while(scope.limit * scope.page > scope.max() && scope.hasPrevious()) {
+        scope.page--;
+      }
+      
+      onPaginationChange();
+    };
+    
+    scope.onPageChange = onPaginationChange;
     
     scope.pages = function () {
       return Math.ceil(scope.total / scope.limit);
@@ -81,18 +93,6 @@ function mdTablePagination() {
       
       return scope.pageSelect;
     };
-    
-    scope.$watch('limit', function (newValue, oldValue) {
-      if(newValue === oldValue) {
-        return;
-      }
-      
-      while(scope.limit * scope.page > scope.max() && scope.hasPrevious()) {
-        scope.page--;
-      }
-      
-      onPaginationChange();
-    });
   }
   
   return {

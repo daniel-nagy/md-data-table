@@ -96,8 +96,12 @@ function mdSelect($compile) {
       }
     });
     
-    scope.$watch(enableAutoSelect, function (enable) {
-      if(selectCtrl.isEnabled && enable) {
+    scope.$watch(enableAutoSelect, function (newValue, oldValue) {
+      if(newValue === oldValue) {
+        return;
+      }
+      
+      if(selectCtrl.isEnabled && newValue) {
         element.on('click', autoSelect);
       } else {
         element.off('click', autoSelect);

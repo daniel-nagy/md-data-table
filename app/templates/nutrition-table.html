@@ -4,6 +4,7 @@
     <span flex></span>
     <md-button ng-click="hideCheckboxes = !hideCheckboxes">{{hideCheckboxes ? 'Enable Selection' : 'Disable Selection'}}</md-button>
     <md-button ng-click="hideHead = !hideHead">{{hideHead ? 'Show Head' : 'Decapitate'}}</md-button>
+    <md-button ng-click="blah = !blah">{{blah ? 'turn on' : 'turn off'}}</md-button>
     <md-button ng-click="loadStuff()">Load</md-button>
     <md-button class="md-icon-button">
       <md-icon>filter_list</md-icon>
@@ -55,7 +56,7 @@
       </tr>
     </thead>
     <tbody md-body>
-      <tr md-row md:select="dessert" data-md-on-select="log" x-md-auto-select ng-disabled="dessert.calories.value > 400" data-ng-repeat="dessert in desserts.data | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+      <tr md-row md:select="dessert" data-md-on-select="log" x-md-auto-select="!blah" ng-disabled="dessert.calories.value > 400" data-ng-repeat="dessert in desserts.data | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
         <td md-cell>{{dessert.name}}</td>
         <td md-cell>
           <md-select ng-model="dessert.type" placeholder="Other">

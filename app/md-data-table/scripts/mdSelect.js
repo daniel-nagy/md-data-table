@@ -96,6 +96,14 @@ function mdSelect($compile) {
       }
     });
     
+    scope.$watch(enableAutoSelect, function (enable) {
+      if(selectCtrl.isEnabled && enable) {
+        element.on('click', autoSelect);
+      } else {
+        element.off('click', autoSelect);
+      }
+    });
+    
     scope.$watch(selectCtrl.isSelected, function (selected) {
       return selected ? element.addClass('md-selected') : element.removeClass('md-selected');
     });

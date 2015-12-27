@@ -20,6 +20,7 @@ function mdTable() {
   function Controller($attrs, $element, $q, $scope) {
     var self = this;
     
+    self.keys = {};
     self.queue = [];
     self.columns = {};
     
@@ -45,16 +46,6 @@ function mdTable() {
       return enable;
     }
     
-    function queuePromise(promise) {
-      if(!promise) {
-        return;
-      }
-      
-      if(self.queue.push(angular.isArray(promise) ? $q.all(promise) : $q.when(promise)) === 1) {
-        resolvePromises();
-      }
-    }
-    
     function resolvePromises() {
       if(!self.queue.length) {
         return;
@@ -76,12 +67,39 @@ function mdTable() {
       }, 0);
     };
     
-    self.getElement = function () {
-      return $element;
+    self.deselectAll = function () {
+      this.keys = {};
+      this.selected = [];
+    };
+    
+    self.deselect = function (item, key) {
+      self.selected.splice(self.getIndex(), 1);
+      
+      if(key && self.keys.hasOwnProperty(key)) {
+        delete this.keys[key];
+      }
     };
     
     self.getBody = function () {
       return $element.find('tbody');
+    };
+    
+    self.getElement = function () {
+      return $element;
+    };
+    
+    self.getIndex = function (item, key) {
+      return self.selected.indexOf(key && self.keys.hasOwnProperty(key) ? self.keys[key] : item);
+    };
+    
+    self.queuePromise = function (promise) {
+      if(!promise) {
+        return;
+      }
+      
+      if(self.queue.push(angular.isArray(promise) ? $q.all(promise) : $q.when(promise)) === 1) {
+        resolvePromises();
+      }
     };
     
     self.selectionEnabled = function () {
@@ -93,8 +111,16 @@ function mdTable() {
     });
     
     if($attrs.hasOwnProperty('mdProgress')) {
-      $scope.$watch('$mdTable.progress', queuePromise);
+      $scope.$watch('$mdTable.progress', self.queuePromise);
     }
+    
+    $scope.$on('md.table.deselect', function (event, item, key) {
+      if(!item && !key) {
+        return self.deselectAll();
+      }
+      
+      self.deselect(item, key);
+    });
   }
   
   Controller.$inject = ['$attrs', '$element', '$q', '$scope'];

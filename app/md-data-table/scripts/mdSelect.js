@@ -14,7 +14,15 @@ function mdSelect($compile) {
     var selectCtrl = ctrls.shift();
     
     selectCtrl.isSelected = function () {
-      return tableCtrl.selectionEnabled() && tableCtrl.selected.indexOf(selectCtrl.model) !== -1;
+      if(!tableCtrl.selectionEnabled()) {
+        return false;
+      }
+      
+      if(selectCtrl.id) {
+        return tableCtrl.keys.hasOwnProperty(selectCtrl.id);
+      }
+      
+      return tableCtrl.selected.indexOf(selectCtrl.model) !== -1;
     };
     
     selectCtrl.select = function () {
@@ -24,13 +32,21 @@ function mdSelect($compile) {
       
       tableCtrl.selected.push(selectCtrl.model);
       
+      if(selectCtrl.id) {
+        tableCtrl.keys[selectCtrl.id] = selectCtrl.id;
+      }
+      
       if(angular.isFunction(selectCtrl.onSelect)) {
-        selectCtrl.onSelect(selectCtrl.model, tableCtrl.selected);
+        selectCtrl.onSelect(selectCtrl.model, selectCtrl.id);
       }
     };
     
     selectCtrl.deselect = function () {
-      tableCtrl.selected.splice(tableCtrl.selected.indexOf(selectCtrl.model), 1);
+      tableCtrl.selected.splice(getIndex(selectCtrl.id), 1);
+      
+      if(selectCtrl.id) {
+        delete tableCtrl.keys[selectCtrl.id];
+      }
     };
     
     selectCtrl.toggle = function (event) {
@@ -83,6 +99,10 @@ function mdSelect($compile) {
       }
     }
     
+    function getIndex(id) {
+      return tableCtrl.selected.indexOf(id ? tableCtrl.keys[id] : selectCtrl.model);
+    }
+    
     function removeCheckbox() {
       element.find('md-checkbox').parent().remove();
     }
@@ -120,6 +140,7 @@ function mdSelect($compile) {
     require: ['^^mdTable', 'mdSelect'],
     restrict: 'A',
     scope: {
+      id: '@mdSelectId',
       model: '=mdSelect',
       disabled: '=ngDisabled',
       onSelect: '=?mdOnSelect',

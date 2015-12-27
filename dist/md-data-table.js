@@ -787,7 +787,15 @@ function mdSelect($compile) {
     var selectCtrl = ctrls.shift();
     
     selectCtrl.isSelected = function () {
-      return tableCtrl.selectionEnabled() && tableCtrl.selected.indexOf(selectCtrl.model) !== -1;
+      if(!tableCtrl.selectionEnabled()) {
+        return false;
+      }
+      
+      if(selectCtrl.id) {
+        return tableCtrl.keys.hasOwnProperty(selectCtrl.id);
+      }
+      
+      return tableCtrl.selected.indexOf(selectCtrl.model) !== -1;
     };
     
     selectCtrl.select = function () {
@@ -797,13 +805,21 @@ function mdSelect($compile) {
       
       tableCtrl.selected.push(selectCtrl.model);
       
+      if(selectCtrl.id) {
+        tableCtrl.keys[selectCtrl.id] = selectCtrl.id;
+      }
+      
       if(angular.isFunction(selectCtrl.onSelect)) {
-        selectCtrl.onSelect(selectCtrl.model, tableCtrl.selected);
+        selectCtrl.onSelect(selectCtrl.model, selectCtrl.id);
       }
     };
     
     selectCtrl.deselect = function () {
-      tableCtrl.selected.splice(tableCtrl.selected.indexOf(selectCtrl.model), 1);
+      tableCtrl.selected.splice(getIndex(selectCtrl.id), 1);
+      
+      if(selectCtrl.id) {
+        delete tableCtrl.keys[selectCtrl.id];
+      }
     };
     
     selectCtrl.toggle = function (event) {
@@ -856,6 +872,10 @@ function mdSelect($compile) {
       }
     }
     
+    function getIndex(id) {
+      return tableCtrl.selected.indexOf(id ? tableCtrl.keys[id] : selectCtrl.model);
+    }
+    
     function removeCheckbox() {
       element.find('md-checkbox').parent().remove();
     }
@@ -893,6 +913,7 @@ function mdSelect($compile) {
     require: ['^^mdTable', 'mdSelect'],
     restrict: 'A',
     scope: {
+      id: '@mdSelectId',
       model: '=mdSelect',
       disabled: '=ngDisabled',
       onSelect: '=?mdOnSelect',
@@ -925,6 +946,7 @@ function mdTable() {
   function Controller($attrs, $element, $q, $scope) {
     var self = this;
     
+    self.keys = {};
     self.queue = [];
     self.columns = {};
     
@@ -950,16 +972,6 @@ function mdTable() {
       return enable;
     }
     
-    function queuePromise(promise) {
-      if(!promise) {
-        return;
-      }
-      
-      if(self.queue.push(angular.isArray(promise) ? $q.all(promise) : $q.when(promise)) === 1) {
-        resolvePromises();
-      }
-    }
-    
     function resolvePromises() {
       if(!self.queue.length) {
         return;
@@ -981,12 +993,39 @@ function mdTable() {
       }, 0);
     };
     
-    self.getElement = function () {
-      return $element;
+    self.deselectAll = function () {
+      this.keys = {};
+      this.selected = [];
+    };
+    
+    self.deselect = function (item, key) {
+      self.selected.splice(self.getIndex(), 1);
+      
+      if(key && self.keys.hasOwnProperty(key)) {
+        delete this.keys[key];
+      }
     };
     
     self.getBody = function () {
       return $element.find('tbody');
+    };
+    
+    self.getElement = function () {
+      return $element;
+    };
+    
+    self.getIndex = function (item, key) {
+      return self.selected.indexOf(key && self.keys.hasOwnProperty(key) ? self.keys[key] : item);
+    };
+    
+    self.queuePromise = function (promise) {
+      if(!promise) {
+        return;
+      }
+      
+      if(self.queue.push(angular.isArray(promise) ? $q.all(promise) : $q.when(promise)) === 1) {
+        resolvePromises();
+      }
     };
     
     self.selectionEnabled = function () {
@@ -998,8 +1037,16 @@ function mdTable() {
     });
     
     if($attrs.hasOwnProperty('mdProgress')) {
-      $scope.$watch('$mdTable.progress', queuePromise);
+      $scope.$watch('$mdTable.progress', self.queuePromise);
     }
+    
+    $scope.$on('md.table.deselect', function (event, item, key) {
+      if(!item && !key) {
+        return self.deselectAll();
+      }
+      
+      self.deselect(item, key);
+    });
   }
   
   Controller.$inject = ['$attrs', '$element', '$q', '$scope'];

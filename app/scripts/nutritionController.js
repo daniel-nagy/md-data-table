@@ -94,6 +94,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
   };
   
   $scope.onPaginate = function(page, limit) {
+    // $scope.$broadcast('md.table.deselect');
     
     console.log('Scope Page: ' + $scope.query.page + ' Scope Limit: ' + $scope.query.limit);
     console.log('Page: ' + page + ' Limit: ' + limit);

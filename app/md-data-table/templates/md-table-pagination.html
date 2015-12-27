@@ -1,18 +1,16 @@
-<span class="label shrink" ng-if="pageSelect">{{paginationLabel.page}}</span>
-
-<span class="label" ng-show="showPageSelect()">{{label['page']}}</span>
+<span class="label" ng-show="showPageSelect()">{{$$label['page']}}</span>
 
 <md-select class="md-table-select" ng-show="showPageSelect()" ng-model="page" md-container-class="md-pagination-select" ng-change="onPageChange()" aria-label="Page">
   <md-option ng-repeat="num in range(pages()) track by $index" ng-value="$index + 1">{{$index + 1}}</md-option>
 </md-select>
 
-<span class="label">{{label['rowsPerPage']}}</span>
+<span class="label">{{$$label['rowsPerPage']}}</span>
 
 <md-select class="md-table-select" ng-model="limit" md-container-class="md-pagination-select" ng-change="onLimitChange()" aria-label="Rows" placeholder="{{options ? options[0] : 5}}">
   <md-option ng-repeat="rows in options ? options : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>
 </md-select>
 
-<span class="label">{{min() + 1}} - {{max()}} {{label['of']}} {{total}}</span>
+<span class="label">{{min() + 1}} - {{max()}} {{$$label['of']}} {{total}}</span>
 
 <md-button class="md-icon-button" type="button" ng-if="showBoundaryLinks()" ng-click="first()" ng-disabled="!hasPrevious()" aria-label="First">
   <md-icon md-svg-icon="navigate-first.svg"></md-icon>

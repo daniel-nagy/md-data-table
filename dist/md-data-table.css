@@ -14,39 +14,39 @@ md-edit-dialog {
   border-radius: 2px;
   cursor: default;
 }
-md-edit-dialog > .content {
+md-edit-dialog > .md-content {
   padding: 16px 24px 0;
 }
-md-edit-dialog > .content .md-title {
+md-edit-dialog > .md-content .md-title {
   color: rgba(0, 0, 0, 0.87);
   margin-bottom: 8px;
 }
-md-edit-dialog > .content md-input-container {
+md-edit-dialog > .md-content md-input-container {
   margin: 0;
   font-size: 13px;
 }
-md-edit-dialog > .content md-input-container input {
+md-edit-dialog > .md-content md-input-container input {
   float: none;
 }
-md-edit-dialog > .content md-input-container .md-errors-spacer {
+md-edit-dialog > .md-content md-input-container .md-errors-spacer {
   min-height: auto;
   min-width: auto;
   color: rgba(0, 0, 0, 0.54);
 }
-md-edit-dialog > .content md-input-container .md-errors-spacer .md-char-counter {
+md-edit-dialog > .md-content md-input-container .md-errors-spacer .md-char-counter {
   padding: 5px 2px 5px 0;
 }
-md-edit-dialog > .content md-input-container [ng-message] {
+md-edit-dialog > .md-content md-input-container [ng-message] {
   padding: 5px 0 5px 2px;
 }
-md-edit-dialog > .actions {
+md-edit-dialog > .md-actions {
   margin: 0 16px 8px;
 }
-md-edit-dialog > .actions .md-button {
+md-edit-dialog > .md-actions .md-button {
   margin: 0;
   min-width: initial;
 }
-md-edit-dialog > .actions .md-button + .md-button {
+md-edit-dialog > .md-actions .md-button + .md-button {
   margin-left: 8px;
 }
 .md-table-pagination {
@@ -59,6 +59,7 @@ md-edit-dialog > .actions .md-button + .md-button {
   -webkit-justify-content: flex-end;
       -ms-flex-pack: end;
           justify-content: flex-end;
+  box-sizing: border-box;
   height: 56px;
   padding: 0 24px;
   font-size: 12px;
@@ -204,7 +205,8 @@ table.md-table {
 table.md-table thead.md-head > tr.md-row {
   height: 56px;
 }
-table.md-table tbody.md-body > tr.md-row {
+table.md-table tbody.md-body > tr.md-row,
+table.md-table tfoot.md-foot > tr.md-row {
   height: 48px;
 }
 table.md-table thead.md-head + .md-table-progress md-progress-linear {
@@ -234,7 +236,7 @@ table.md-table th.md-column {
   font-weight: bold;
   white-space: nowrap;
 }
-table.md-table th.md-column.sort {
+table.md-table th.md-column.md-sort {
   cursor: pointer;
 }
 table.md-table th.md-column md-icon {
@@ -243,17 +245,17 @@ table.md-table th.md-column md-icon {
   font-size: 16px !important;
   line-height: 16px !important;
 }
-table.md-table th.md-column md-icon.sort-icon {
+table.md-table th.md-column md-icon.md-sort-icon {
   color: rgba(0, 0, 0, 0.26);
   opacity: 0;
   transition: -webkit-transform 0.25s, opacity 0.25s;
   transition: transform 0.25s, opacity 0.25s;
 }
-table.md-table th.md-column md-icon.sort-icon.asc {
+table.md-table th.md-column md-icon.md-sort-icon.md-asc {
   -webkit-transform: rotate(0deg);
           transform: rotate(0deg);
 }
-table.md-table th.md-column md-icon.sort-icon.desc {
+table.md-table th.md-column md-icon.md-sort-icon.md-desc {
   -webkit-transform: rotate(180deg);
           transform: rotate(180deg);
 }
@@ -263,12 +265,12 @@ table.md-table th.md-column md-icon:not(:first-child) {
 table.md-table th.md-column md-icon:not(:last-child) {
   margin-right: 8px;
 }
-table.md-table th.md-column.active,
-table.md-table th.md-column.active md-icon {
+table.md-table th.md-column.md-active,
+table.md-table th.md-column.md-active md-icon {
   color: rgba(0, 0, 0, 0.87);
 }
-table.md-table th.md-column:hover md-icon.sort-icon,
-table.md-table th.md-column.active md-icon.sort-icon {
+table.md-table th.md-column:hover md-icon.md-sort-icon,
+table.md-table th.md-column.md-active md-icon.md-sort-icon {
   opacity: 1;
 }
 table.md-table tr.md-row[ng\:repeat].ng-leave,
@@ -319,16 +321,16 @@ table.md-table td.md-cell:last-child,
 table.md-table th.md-column:last-child {
   padding: 0 24px 0 0;
 }
-table.md-table td.md-cell.clickable,
-table.md-table th.md-column.clickable {
+table.md-table td.md-cell.md-clickable,
+table.md-table th.md-column.md-clickable {
   cursor: pointer;
 }
-table.md-table td.md-cell.clickable:focus,
-table.md-table th.md-column.clickable:focus {
+table.md-table td.md-cell.md-clickable:focus,
+table.md-table th.md-column.md-clickable:focus {
   outline: none;
 }
-table.md-table td.md-cell.numeric,
-table.md-table th.md-column.numeric {
+table.md-table td.md-cell.md-numeric,
+table.md-table th.md-column.md-numeric {
   text-align: right;
 }
 table.md-table td.md-cell md-checkbox,
@@ -341,17 +343,17 @@ table.md-table td.md-cell {
   font-size: 13px;
   border-top: 1px rgba(0, 0, 0, 0.12) solid;
 }
-table.md-table td.md-cell.numeric md-select {
+table.md-table td.md-cell.md-numeric md-select {
   -webkit-justify-content: flex-end;
       -ms-flex-pack: end;
           justify-content: flex-end;
 }
-table.md-table td.md-cell.numeric md-select .md-select-value {
+table.md-table td.md-cell.md-numeric md-select .md-select-value {
   -webkit-flex-grow: initial;
       -ms-flex-positive: initial;
           flex-grow: initial;
 }
-table.md-table td.md-cell.placeholder {
+table.md-table td.md-cell.md-placeholder {
   color: rgba(0, 0, 0, 0.26);
 }
 table.md-table td.md-cell md-select > .md-select-value > span.md-select-icon {

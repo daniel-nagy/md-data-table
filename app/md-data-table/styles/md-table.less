@@ -34,7 +34,8 @@ table.md-table {
     height: 56px;
   }
   
-  tbody.md-body > tr.md-row {
+  tbody.md-body > tr.md-row,
+  tfoot.md-foot > tr.md-row {
     height: 48px;
   }
   
@@ -71,7 +72,7 @@ table.md-table {
     font-weight: bold;
     white-space: nowrap;
     
-    &.sort {
+    &.md-sort {
       cursor: pointer;
     }
     
@@ -81,16 +82,16 @@ table.md-table {
       font-size: 16px !important;
       line-height: 16px !important;
       
-      &.sort-icon {
+      &.md-sort-icon {
         color: @md-dark-disabled;
         opacity: 0;
         transition: transform 0.25s, opacity 0.25s;
         
-        &.asc {
+        &.md-asc {
           transform: rotate(0deg);
         }
         
-        &.desc {
+        &.md-desc {
           transform: rotate(180deg);
         }
       }
@@ -104,13 +105,13 @@ table.md-table {
       }
     }
     
-    &.active,
-    &.active md-icon {
+    &.md-active,
+    &.md-active md-icon {
       color: @md-dark;
     }
     
-    &:hover md-icon.sort-icon,
-    &.active md-icon.sort-icon {
+    &:hover md-icon.md-sort-icon,
+    &.md-active md-icon.md-sort-icon {
       opacity: 1;
     }
   }
@@ -175,7 +176,7 @@ table.md-table {
       padding: 0 24px 0 0;
     }
     
-    &.clickable {
+    &.md-clickable {
       cursor: pointer;
       
       &:focus {
@@ -183,7 +184,7 @@ table.md-table {
       }
     }
     
-    &.numeric {
+    &.md-numeric {
       text-align: right;
     }
     
@@ -198,7 +199,7 @@ table.md-table {
     font-size: 13px;
     border-top: 1px @md-dark-divider solid;
     
-    &.numeric md-select {
+    &.md-numeric md-select {
       justify-content: flex-end;
       
       .md-select-value {
@@ -206,7 +207,7 @@ table.md-table {
       }
     }
     
-    &.placeholder {
+    &.md-placeholder {
       color: @md-dark-disabled;
     }
     

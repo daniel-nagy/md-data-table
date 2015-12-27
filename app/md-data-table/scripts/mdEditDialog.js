@@ -305,7 +305,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
       },
       template:
         '<md-edit-dialog>' +
-          '<div layout="column" class="content">' +
+          '<div layout="column" class="md-content">' +
             '<div ng-if="size === \'large\'" class="md-title">{{title || \'Edit\'}}</div>' +
             '<form name="editDialog" layout="column" ng-submit="submit(model)">' +
               '<md-input-container md-no-float>' +
@@ -316,7 +316,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
               '</md-input-container>' +
             '</form>' +
           '</div>' +
-          '<div ng-if="size === \'large\'" layout="row" layout-align="end" class="actions">' +
+          '<div ng-if="size === \'large\'" layout="row" layout-align="end" class="md-actions">' +
             '<md-button class="md-primary" ng-click="dismiss()">{{cancel}}</md-button>' +
             '<md-button class="md-primary" ng-click="submit()">{{ok}}</md-button>' +
           '</div>' +

@@ -14,11 +14,11 @@ function mdColumn($compile) {
     var tableCtrl = ctrls.shift();
     
     function attachSortIcon() {
-      var sortIcon = angular.element('<md-icon class="sort-icon" md-svg-icon="arrow-up.svg">');
+      var sortIcon = angular.element('<md-icon md-svg-icon="arrow-up.svg">');
       
-      $compile(sortIcon.attr('ng-class', 'getDirection()'))(scope);
+      $compile(sortIcon.addClass('md-sort-icon').attr('ng-class', 'getDirection()'))(scope);
       
-      if(element.hasClass('numeric')) {
+      if(element.hasClass('md-numeric')) {
         element.prepend(sortIcon);
       } else {
         element.append(sortIcon);
@@ -31,7 +31,7 @@ function mdColumn($compile) {
       for(var i = 0; i < icons.length; i++) {
         var icon = icons.eq(i);
         
-        if(icon.hasClass('sort-icon')) {
+        if(icon.hasClass('md-sort-icon')) {
           return icon.remove();
         }
       }
@@ -39,12 +39,12 @@ function mdColumn($compile) {
     
     function disableSorting() {
       detachSortIcon();
-      element.removeClass('sort').off('click', setOrder);
+      element.removeClass('md-sort').off('click', setOrder);
     }
     
     function enableSorting() {
       attachSortIcon();
-      element.addClass('sort').on('click', setOrder);
+      element.addClass('md-sort').on('click', setOrder);
     }
     
     function getIndex() {
@@ -70,9 +70,9 @@ function mdColumn($compile) {
     function setOrder() {
       scope.$applyAsync(function () {
         if(!isActive()) {
-          headCtrl.order = scope.getDirection() === 'asc' ? scope.orderBy : '-' + scope.orderBy;
+          headCtrl.order = scope.getDirection() === 'md-asc' ? scope.orderBy : '-' + scope.orderBy;
         } else {
-          headCtrl.order = scope.getDirection() === 'asc' ? '-' + scope.orderBy : scope.orderBy;
+          headCtrl.order = scope.getDirection() === 'md-asc' ? '-' + scope.orderBy : scope.orderBy;
         }
         
         if(angular.isFunction(headCtrl.onReorder)) {
@@ -85,25 +85,25 @@ function mdColumn($compile) {
       tableCtrl.columns[index] = column;
       
       if(column.numeric) {
-        element.addClass('numeric');
+        element.addClass('md-numeric');
       } else {
-        element.removeClass('numeric');
+        element.removeClass('md-numeric');
       }
     }
     
     scope.getDirection = function () {
       if(!isActive()) {
-        return attrs.hasOwnProperty('mdDesc') ? 'desc' : 'asc';
+        return attrs.hasOwnProperty('mdDesc') ? 'md-desc' : 'md-asc';
       }
       
-      return headCtrl.order === '-' + scope.orderBy ? 'desc' : 'asc';
+      return headCtrl.order === '-' + scope.orderBy ? 'md-desc' : 'md-asc';
     };
     
     scope.$watch(isActive, function (active) {
       if(active) {
-        element.addClass('active');
+        element.addClass('md-active');
       } else {
-        element.removeClass('active');
+        element.removeClass('md-active');
       }
     });
     

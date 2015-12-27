@@ -10,13 +10,11 @@ function mdTablePagination() {
   }
   
   function postLink(scope, element, attrs) {
-    if(!scope.label) {
-      scope.label = {
-        page: 'Page',
-        rowsPerPage: 'Rows per page:',
-        of: 'of'
-      };
-    }
+    scope.$$label = angular.extend({
+      page: 'Page:',
+      rowsPerPage: 'Rows per page:',
+      of: 'of'
+    }, scope.$eval(scope.label) || {});
     
     function onPaginationChange() {
       if(angular.isFunction(scope.onPaginate)) {
@@ -100,7 +98,7 @@ function mdTablePagination() {
     restrict: 'E',
     scope: {
       boundaryLinks: '=?mdBoundaryLinks',
-      label: '=?mdLabel',
+      label: '@?mdLabel',
       limit: '=mdLimit',
       page: '=mdPage',
       pageSelect: '=?mdPageSelect',

@@ -23,6 +23,38 @@ function mdTable() {
     self.queue = [];
     self.columns = {};
     
+    function enableSelection() {
+      var enable;
+      
+      if($attrs.hasOwnProperty('mdRowSelect') && $attrs.mdRowSelect === '') {
+        enable = true;
+      } else {
+        enable = self.rowSelect;
+      }
+      
+      if(enable && !self.selected) {
+        enable = false;
+        console.error('Missing model for row selection');
+      } else if(enable && !angular.isArray(self.selected)) {
+        enable = false;
+        console.error('Model for row selection is not an array');
+      }
+      
+      self.enableSelection = enable;
+      
+      return enable;
+    }
+    
+    function queuePromise(promise) {
+      if(!promise) {
+        return;
+      }
+      
+      if(self.queue.push(angular.isArray(promise) ? $q.all(promise) : $q.when(promise)) === 1) {
+        resolvePromises();
+      }
+    }
+    
     function resolvePromises() {
       if(!self.queue.length) {
         return;
@@ -35,15 +67,13 @@ function mdTable() {
     }
     
     self.columnCount = function () {
-      return $element.find('tbody').eq(0).find('tr').eq(0).find('td').length;
-    };
-    
-    self.enableSelection = function () {
-      if($attrs.hasOwnProperty('mdRowSelect') && $attrs.mdRowSelect === '') {
-        return true;
-      }
-      
-      return self.rowSelect;
+      return Array.prototype.reduce.call($element.prop('rows'), function (columns, row) {
+        if(!row.classList.contains('md-row') || row.classList.contains('ng-leave')) {
+          return columns;
+        }
+        
+        return row.cells.length > columns ? row.cells.length : columns;
+      }, 0);
     };
     
     self.getElement = function () {
@@ -54,16 +84,16 @@ function mdTable() {
       return $element.find('tbody');
     };
     
-    $scope.$watch(self.enableSelection, function (enable) {
+    self.selectionEnabled = function () {
+      return self.enableSelection;
+    };
+    
+    $scope.$watch(enableSelection, function (enable) {
       return enable ? $element.addClass('md-row-select') : $element.removeClass('md-row-select');
     });
     
     if($attrs.hasOwnProperty('mdProgress')) {
-      $scope.$watch('$mdTable.progress', function (promise) {
-        if(promise && self.queue.push($q.when(promise)) === 1) {
-          resolvePromises();
-        }
-      });
+      $scope.$watch('$mdTable.progress', queuePromise);
     }
   }
   

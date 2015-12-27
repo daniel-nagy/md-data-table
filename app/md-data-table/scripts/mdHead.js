@@ -9,6 +9,7 @@ function mdHead($compile) {
     return postLink;
   }
   
+  // empty controller to be bind scope properties to
   function Controller() {
     
   }
@@ -63,14 +64,14 @@ function mdHead($compile) {
     }
     
     scope.allSelected = function () {
-      return every(function (row, ctrl) {
-        return ctrl.disabled || ctrl.isSelected();
+      return tableCtrl.getBody().children().length && every(function (row, ctrl) {
+        return ctrl && (ctrl.disabled || ctrl.isSelected());
       });
     };
     
     scope.selectAll = function () {
       forEach(function (row, ctrl) {
-        if(!ctrl.isSelected()) {
+        if(ctrl && !ctrl.isSelected()) {
           ctrl.select();
         }
       });
@@ -82,14 +83,14 @@ function mdHead($compile) {
     
     scope.unSelectAll = function () {
       forEach(function (row, ctrl) {
-        if(ctrl.isSelected()) {
+        if(ctrl && ctrl.isSelected()) {
           ctrl.deselect();
         }
       });
     };
     
-    scope.$watch(tableCtrl.enableSelection, function (enableSelection) {
-      if(enableSelection) {
+    scope.$watch(tableCtrl.selectionEnabled, function (enabled) {
+      if(enabled) {
         attachCheckbox();
       } else {
         removeCheckbox();

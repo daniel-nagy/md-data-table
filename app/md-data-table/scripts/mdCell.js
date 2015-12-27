@@ -16,6 +16,7 @@ function mdCell() {
     return postLink;
   }
   
+  // empty controller to be bind properties to in postLink function
   function Controller() {
     
   }
@@ -26,7 +27,7 @@ function mdCell() {
     var tableCtrl = ctrls.shift();
     
     if(attrs.ngClick) {
-      element.addClass('clickable');
+      element.addClass('md-clickable');
     }
     
     if(select.length) {
@@ -34,7 +35,7 @@ function mdCell() {
         event.stopPropagation();
       });
       
-      element.addClass('clickable').on('click', function (event) {
+      element.addClass('md-clickable').on('click', function (event) {
         event.stopPropagation();
         select[0].click();
       });
@@ -56,9 +57,9 @@ function mdCell() {
       }
       
       if(column.numeric) {
-        element.addClass('numeric');
+        element.addClass('md-numeric');
       } else {
-        element.removeClass('numeric');
+        element.removeClass('md-numeric');
       }
     });
   }

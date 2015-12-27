@@ -4,6 +4,7 @@ angular.module('md.data.table').directive('mdSelect', mdSelect);
 
 function mdSelect($compile) {
   
+  // empty controller to be bind scope properties to
   function Controller() {
     
   }
@@ -13,7 +14,7 @@ function mdSelect($compile) {
     var selectCtrl = ctrls.shift();
     
     selectCtrl.isSelected = function () {
-      return selectCtrl.isEnabled && tableCtrl.selected.indexOf(selectCtrl.model) !== -1;
+      return tableCtrl.selectionEnabled() && tableCtrl.selected.indexOf(selectCtrl.model) !== -1;
     };
     
     selectCtrl.select = function () {
@@ -50,27 +51,6 @@ function mdSelect($compile) {
       });
     }
     
-    function enableAutoSelect() {
-      if(attrs.hasOwnProperty('mdAutoSelect') && attrs.mdAutoSelect === '') {
-        return true;
-      }
-      
-      return selectCtrl.autoSelect;
-    }
-    
-    function disableSelection () {
-      removeCheckbox();
-      element.off('click', autoSelect);
-    }
-    
-    function enableSelection() {
-      attachCheckbox();
-      
-      if(enableAutoSelect()) {
-        element.on('click', autoSelect);
-      }
-    }
-    
     function createCheckbox() {
       var checkbox = angular.element('<md-checkbox>');
       
@@ -82,14 +62,33 @@ function mdSelect($compile) {
       return angular.element('<td class="md-cell">').append($compile(checkbox)(scope));
     }
     
+    function disableSelection() {
+      removeCheckbox();
+      element.off('click', autoSelect);
+    }
+    
+    function enableAutoSelect() {
+      if(attrs.hasOwnProperty('mdAutoSelect') && attrs.mdAutoSelect === '') {
+        return true;
+      }
+      
+      return selectCtrl.autoSelect;
+    }
+    
+    function enableSelection() {
+      attachCheckbox();
+      
+      if(enableAutoSelect()) {
+        element.on('click', autoSelect);
+      }
+    }
+    
     function removeCheckbox() {
       element.find('md-checkbox').parent().remove();
     }
     
-    scope.$watch(tableCtrl.enableSelection, function (enable) {
-      selectCtrl.isEnabled = enable;
-      
-      if(selectCtrl.isEnabled) {
+    scope.$watch(tableCtrl.selectionEnabled, function (enabled) {
+      if(enabled) {
         enableSelection();
       } else {
         disableSelection();
@@ -101,7 +100,7 @@ function mdSelect($compile) {
         return;
       }
       
-      if(selectCtrl.isEnabled && newValue) {
+      if(tableCtrl.selectionEnabled() && newValue) {
         element.on('click', autoSelect);
       } else {
         element.off('click', autoSelect);

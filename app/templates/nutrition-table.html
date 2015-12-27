@@ -70,7 +70,7 @@
         <!-- <td md-cell>{{dessert.sodium.value}}</td> -->
         <!-- <td md-cell>{{dessert.calcium.value}}%</td> -->
         <td md-cell hide-sm>{{dessert.iron.value}}%</td>
-        <td md-cell ng-click="editComment($event, dessert)" ng-class="{placeholder: !dessert.comment}">
+        <td md-cell ng-click="editComment($event, dessert)" ng-class="{'md-placeholder': !dessert.comment}">
           {{dessert.comment || 'Add a comment'}}
         </td>
       </tr>

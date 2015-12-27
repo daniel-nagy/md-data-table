@@ -9,6 +9,7 @@ function mdBody() {
   }
 
   return {
-    compile: compile
+    compile: compile,
+    restrict: 'A'
   };
 }

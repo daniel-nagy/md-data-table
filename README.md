@@ -194,6 +194,8 @@ A few reasons:
 2. You lose the ability to modify the element during the compile phase.
 3. Performance.
 
+> For documentation on versions prior to 0.9.0 please reference the [legacy](https://github.com/daniel-nagy/md-data-table/tree/legacy) branch.
+
 ## API Documentation
 
 * [Column Sorting](#column-sorting)

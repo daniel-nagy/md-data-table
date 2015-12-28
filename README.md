@@ -1,26 +1,26 @@
 # Material Design Data Table
 
-This module is an effort to implement Material Design data tables in [Angular Material](https://material.angularjs.org/latest/#/). I hope that this module will serve as a temporary solution to those who need this functionality and also serve as a playground, or lessons learned, when developing an official solution.
+This module is an effort to implement Material Design data tables in [Angular Material](https://material.angularjs.org/latest/#/). Data tables are used to present raw data sets and usually appear in desktop enterprise applications. Data tables are particularly useful for visualizing and manipulating large data sets.
 
 Specification for Material Design data tables can be found [here](http://www.google.com/design/spec/components/data-tables.html).
 
-* [Demo](#demo)
 * [License](#license)
+* [Demo](#demo)
 * [Installation](#installation)
 * [Usage](#usage)
 * [Change Log](#change-log)
 * [API Documentation](#api-documentation)
 * [Contributing] (#contributing)
 
-## Demo
-
-http://danielnagy.me/md-data-table
-
-Here is a fork-able [Codepen](http://codepen.io/anon/pen/YwGJVr?editors=101) of the demo application. Please use this to reproduce any issues you may be experiencing.
-
 ## License
 
 This software is provided free of change and without restriction under the [MIT License](LICENSE.md)
+
+## Demo
+
+A live [demo](http://danielnagy.me/md-data-table).
+
+A fork-able [Codepen](http://codepen.io/anon/pen/YwGJVr?editors=101). Please use this to reproduce any issues you may be experiencing.
 
 ## Installation
 
@@ -47,7 +47,7 @@ Include the `md.data.table` module as a dependency in your application.
 angular.module('myApp', ['ngMaterial', 'md.data.table']);
 ```
 
-#### Using npm and Browserify
+#### Using npm and Browserify (or JSPM)
 
 In addition, this package may be installed using npm.
 
@@ -61,302 +61,512 @@ You may use Browserify to inject this module into your application.
 angular.module('myApp', [require('angular-material-data-table')]);
 ```
 
-> Tested in IE 10 and on IOS 7.
-
 ## Usage
 
-**controller**
+**Example Controller**
 
 ```javascript
-angular.module('nutritionApp').controller('nutritionController', ['$nutrition', '$scope', function ($nutrition, $scope) {
+
+// Assume we have a $nutrition service that provides an API for communicating with the server
+
+angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope', function ($nutrition, $scope) {
   'use strict';
   
   $scope.selected = [];
   
   $scope.query = {
-    filter: '',
     order: 'name',
     limit: 5,
     page: 1
   };
   
+  function getDesserts(query) {
+    $scope.promise = $nutrition.desserts.get(query, success).$promise;
+  }
+  
   function success(desserts) {
     $scope.desserts = desserts;
   }
   
-  // in the future we may see a few built in alternate headers but in the mean time
-  // you can implement your own search header and do something like
-  $scope.search = function (predicate) {
-    $scope.filter = predicate;
-    $scope.deferred = $nutrition.desserts.get($scope.query, success).$promise;
+  $scope.onPaginate = function (page, limit) {
+    getDesserts(angular.extend({}, $scope.query, {page: page, limit: limit}));
   };
   
-  $scope.onOrderChange = function (order) {
-    return $nutrition.desserts.get($scope.query, success).$promise; 
-  };
-  
-  $scope.onPaginationChange = function (page, limit) {
-    return $nutrition.desserts.get($scope.query, success).$promise; 
+  $scope.onReorder = function (order) {
+    getDesserts(angular.extend({}, $scope.query, {order: order}));
   };
 
 }]);
 ```
 
-**markup**
+**Example Template**
 
 ```html
-<md-data-table-toolbar>
-  <h2 class="md-title">Nutrition</h2>
-</md-data-table-toolbar>
+<md-toolbar class="md-table-toolbar md-default">
+  <div class="md-toolbar-tools">
+    <span>Nutrition</span>
+  </div>
+</md-toolbar>
 
-<md-data-table-container>
-  <table md-data-table md-row-select="selected" md-progress="deferred">
-    <thead md-order="query.order" md-trigger="onOrderChange">
-      <tr>
-        <th name="Dessert" unit="100g serving" order-by="name"></th>
-        <th numeric name="Calories" order-by="calories.value"></th>
-        <th numeric name="Fat" unit="g" order-by="fat.value"></th>
-        <th numeric name="Carbs" unit="g" order-by="carbs.value"></th>
-        <th numeric name="Protein" unit="g" order-by="protein.value"></th>
-        <th numeric name="Sodium" unit="mg" order-by="sodium.value"></th>
-        <th numeric name="Calcium" unit="%" order-by="calcium.value"></th>
-        <th numeric name="Iron" unit="%" order-by="iron.value"></th>
+<!-- exact table from live demo -->
+<md-table-container>
+  <table md-table md-row-select ng-model="selected" md-progress="promise">
+    <thead md-head md-order="query.order" md-on-reorder="onReorder">
+      <tr md-row>
+        <th md-column md-order-by="nameToLower"><span>Dessert (100g serving)</span></th>
+        <th md-column md-numeric md-order-by="calories.value"><span>Calories</span></th>
+        <th md-column md-numeric>Fat (g)</th>
+        <th md-column md-numeric>Carbs (g)</th>
+        <th md-column md-numeric>Protein (g)</th>
+        <th md-column md-numeric>Sodium (mg)</th>
+        <th md-column md-numeric>Calcium (%)</th>
+        <th md-column md-numeric>Iron (%)</th>
       </tr>
     </thead>
-    <tbody>
-      <tr md-auto-select ng-repeat="dessert in desserts.data">
-        <td>{{dessert.name}}</td>
-        <td>{{dessert.calories.value}}</td>
-        <td>{{dessert.fat.value | number: 1}}</td>
-        <td>{{dessert.carbs.value}}</td>
-        <td>{{dessert.protein.value | number: 1}}</td>
-        <td>{{dessert.sodium.value}}</td>
-        <td show-unit>{{dessert.calcium.value}}</td>
-        <td show-unit>{{dessert.iron.value}}</td>
+    <tbody md-body>
+      <tr md-row md-select="dessert" md-select-id="{{dessert.name}}" md-auto-select ng-repeat="dessert in desserts.data">
+        <td md-cell>{{dessert.name}}</td>
+        <td md-cell>{{dessert.calories.value}}</td>
+        <td md-cell>{{dessert.fat.value | number: 1}}</td>
+        <td md-cell>{{dessert.carbs.value}}</td>
+        <td md-cell>{{dessert.protein.value | number: 1}}</td>
+        <td md-cell>{{dessert.sodium.value}}</td>
+        <td md-cell>{{dessert.calcium.value}}{{dessert.calcium.unit}}</td>
+        <td md-cell>{{dessert.iron.value}}{{dessert.iron.unit}}</td>
       </tr>
     </tbody>
   </table>
-</md-data-table-container>
+</md-table-container>
 
-<md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.total}}" md-trigger="onPaginationChange"></md-data-table-pagination>
+<md-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}" md-on-paginate="onPaginate" md-page-select></md-data-table-pagination>
 
 ```
 
 ## Change Log
 
-#### Version 0.8.13
-###### September 29, 2015
+#### Version 0.9.0
+###### December 27, 2015
 
-* As [@sbehun](https://github.com/sbehun) pointed out, the default type for `buttons` across browsers is unpredictable and it is safest to always define a type. This version will prevent tables that are wrapped in forms from submitting the form when the pagination buttons are clicked.
+Version 0.9.0 is a **HUGE** update. Most of the module has been rewritten to hopefully fix many issues people have been experiencing. In addition, there are a few new features in version 0.9.0 including edit dialogs!!
 
-#### Version 0.8.12
-###### September 25, 2015
+**Breaking Changes**
 
-* Changing Angular Material dependency version to allow versions greater than 0.10.x
+Although the module experienced an overhaul under the hood, most of the syntax has remained the same. A few things worth mentioning:
 
-#### Version 0.8.11
-###### September 6, 2015
+* Some of the attributes have been renamed.
+* At the very least each element requires a designated attribute, e.g. `md-table`, `md-head`, `md-body`, `md-row`, `md-column`, `md-cell`.
+* A table is no longer required to have a header, in fact many of the components are now isolate from one another and all components have their own isolated scope.
+* Row selection is now completely independent of `ng-repeat`.
+* Row selection can now be toggled on or off. In fact most features can be toggled on or off at anytime.
+* It is now possible to have selected items persist between page changes, even for items paginated on the server. See [Row Selection](#row-selection) for an explanation of row selection behavior.
+* Returning a promise from a callback will no longer show a progress indicator. All promises should be passed to the `md-progress` attribute. This is to isolate the `mdTablePagination` directive since it is not a descendent of the `mdTable` directive.
+* You are now free to put whatever you want in column headers, including icons! The cost, however, is the trim functionality is no longer available.
+* The `unit` and `show-unit` attributes are gone. They were mostly pointless.
+* Boundary links for pagination are now disabled by default but can be enable with an attribute.
 
-* Adding support for Browserify.
+**New Features**
 
-#### Version 0.8.10
-###### August 31, 2015
+* The biggest new feature is edit dialogs. Edit dialogs are available through a service and come with presets for small and large dialogs. Edit dialogs and the features they provide will be explored in detail in the API section.
+* Pagination now has a page selector that can be enable with an attribute, making it possible to jump directly to an arbitrary page.
+* There is now an 'on select' event callback.
+* An individual item, or all items, can be deselected by broadcasting an event.
 
-* Fix for issues [#117](https://github.com/daniel-nagy/md-data-table/issues/117) and [#119](https://github.com/daniel-nagy/md-data-table/issues/119)
+**Bug Fixes**
 
-#### Version 0.8.9
-###### August 23, 2015
+* I've removed the `.js` extension from `require('./dist/md-data-table.min');` in `index.js` and have confirmed that it still works with Browserify so it should work with JSPM now.
+* Various scoping issues should be fixed now because each directive has an isolated scope.
+* Issues with `ng-repeat` should be fixed now because the directive is independent of `ng-repeat`.
+* The directive no longer consumes the `ng-click` directive on table rows when auto select is enabled so you are free to use it.
 
-* Fix for issue [#84](https://github.com/daniel-nagy/md-data-table/issues/84)
-* Fix for issue [#93](https://github.com/daniel-nagy/md-data-table/issues/93)
+If this version has resolved your issue can you please close it.
 
-Thanks [@pavelhoral](https://github.com/pavelhoral)!
+**Why Not?**
 
-View the [archives](ARCHIVE.md) for a complete version history.
+> Why not use a custom attribute for each element if you already require a designated attribute for each element?
+
+CSS tables lack `colspan` functionality, this is reason alone to not use CSS tables.
+
+> Why not replace the custom element with the semantically correct element and transclude its contents?
+
+A few reasons:
+
+1. The replace feature is deprecated.
+2. You lose the ability to modify the element during the compile phase.
+3. Performance.
 
 ## API Documentation
 
-* [Column Ordering](#column-ordering)
+* [Column Sorting](#column-sorting)
+* [Edit Dialogs](#edit-dialogs)
 * [Inline Menus](#inline-menus)
-* [Long Header Titles](#long-header-titles)
 * [Numeric Columns](#numeric-columns)
 * [Pagination](#pagination)
 * [Row Selection](#row-selection)
 * [Table Progress] (#table-progress)
 * [Table Toolbars](#table-toolbars)
 
-### Column Ordering
+### Column Sorting
 
-| Attribute       | Target    | Type       | Description |
-| :-------------- | :-------- | :--------- | :---------- |
-| `md-order`      | `<thead>` | `String`   | Two-way data binding order property. |
-| `md-trigger`    | `<thead>` | `function` | Will execute when the order is changed, passing the order as a parameter. |
-| `order-by`      | `<th>`    | `String`   | The value to sort on when the user clicks the column name. |
-| `descend-first` | `<th>`    | `NULL`     | Tell the directive to first sort descending. |
+| Attribute       | Element       | Type       | Description |
+| :-------------- | :------------ | :--------- | :---------- |
+| `md-order`      | `<md-head>`   | `string`   | A variable to bind the sort order. |
+| `md-on-reorder` | `<md-head>`   | `function` | A callback function for when the order changes. The callback will receive the new order. |
+| `md-order-by`   | `<md-column>` | `string`   | The value to bind to the sort order. |
+| `md-desc`       | `<md-column>` | `null`     | If present, the column will sort descending first. The default is to sort ascending first. |
 
-The `mdOrder` attribute will be update when the user clicks a `<th>` cell to the value defined by the `order-by` attribute. The `mdOrder` attribute can be used in to do server-side sorting or client-side sorting.
+When the user clicks the `<md-column>` element, the value of the `md-order-by` attribute will be bound to the variable provided to the `md-order` attribute on the `<md-head>` element. If the columns are already sorted by that value, a minus sign `-` will be prepended to the value. For most query languages, this is the universal symbol to sort descending.
 
-If the function assigned to the `md-trigger` attribute returns a promise, a loading indicator will be displayed.
+The variable can then be used to send a query to the server or bound to the `orderBy` property of an `ng-repeat` expression.
 
-> This directive does not support sorting of in-place data, i.e. data included directly in the markup, nor do I plan on supporting this.
+> It is important to know that the call back expression will be executed before the next digest cycle, meaning your local scope variable will still have the old value.
 
-##### Server Side Ordering
-
-The provided usage example takes advantage of server-side sorting by submitting a query to the server.
-
-##### Client Side Ordering
-
-Just add an `orderBy:` property to the `ng-repeat` attribute that matches the `md-order` attribute.
+**Example Using ngRepeat**
 
 ```html
-<md-data-table-container>
-  <table md-data-table>
-    <thead md-order="order">
-      <!-- this cell will order by the name property -->
-      <th order-by="name" name="Dessert (100g serving)"></th>
-      <!-- this cell will not change the order when clicked -->
-      <th numeric name="Calories"></th>
+<md-table-container>
+  <table md-table>
+    <thead md-head md-order="myOrder">
+      <!-- when the user clicks this cell, the myOrder variable will get the value 'nameToLower' -->
+      <th md-column md-order-by="nameToLower">Dessert (100g serving)</th>
+      <!-- the variable myOrder will not be changed when this cell is clicked -->
+      <th md-column md-numeric>Calories</th>
     </thead>
-    <tbody>
-      <tr ng-repeat="dessert in desserts | orderBy: order"></tr>
+    <tbody md-body>
+      <!-- we can let ng-repeat sort the columns for us -->
+      <tr ng-repeat="dessert in desserts | orderBy: myOrder"></tr>
     </tbody>
   </table>
-</md-data-table-container>
+</md-table-container>
+```
+
+### Edit Dialogs
+
+Tables may require basic text editing. This module includes a service for displaying edit dialogs to modify text or anything else really. The service provides presets for both small and large edit dialogs designed for manipulating text. It also has full support for creating custom dialogs so you can be as creative as you want to be.
+
+Unlike Angular Material dialogs, the preset methods will open the dialog.
+
+**Restrictions**
+
+* The dialog will always receive a new isolated scope.
+* You must provide a `targetEvent` and the event target must be a table cell.
+
+**Example**
+
+```javascript
+$scope.editComment = function (event, dessert) {
+  // if auto selection is enabled you will want to stop the event
+  // from propagating and selecting the row
+  event.stopPropagation();
+  
+  /* 
+   * messages is commented out because there is a bug currently
+   * with ngRepeat and ngMessages were the messages are always
+   * displayed even if the error property on the ngModelController
+   * is not set, I've included it anyway so you get the idea
+   */
+   
+  var promise = $mdEditDialog.small({
+    // messages: {
+    //   test: 'I don\'t like tests!'
+    // },
+    modelValue: dessert.comment,
+    placeholder: 'Add a comment',
+    save: function (input) {
+      dessert.comment = input.$modelValue;
+    },
+    targetEvent: event,
+    validators: {
+      'md-maxlength': 30
+    }
+  });
+
+  promise.then(function (ctrl) {
+    var input = ctrl.getInput();
+
+    input.$viewChangeListeners.push(function () {
+      input.$setValidity('test', input.$modelValue !== 'test');
+    });
+  });
+});
+```
+
+#### Small Edit Dialogs
+
+```javascript
+$mdEditDialog.small(options);
+```
+
+| Parameter | Type   | Description |
+| :-------- | :----- | :---------- |
+| options   | object | Small preset options. |
+
+| Property              | Type       | Default | Description |
+| :-------------------- | :--------- | :------ | :---------- |
+| `clickOutsideToClose` | `bool`     | `true`  | The user can dismiss the dialog by clicking anywhere else on the page. |
+| `disableScroll`       | `bool`     | `true`  | Prevent user scroll while the dialog is open. |
+| `escToClose`          | `bool`     | `true`  | The user can dismiss the dialog by clicking the esc key. |
+| `focusOnOpen`         | `bool`     | `true`  | Will search the template for an `md-autofocus` element. |
+| `messages`            | `object`   | `null`  | Error messages to display corresponding to errors on the `ngModelController`. |
+| `modelValue`          | `string`   | `null`  | The initial value of the input element. |
+| `placeholder`         | `string`   | `null`  | Placeholder text for input element. |
+| `save`                | `function` | `null`  | A callback function for when the use clicks the save button. The callback will receive the [ngModelController](https://docs.angularjs.org/api/ng/type/ngModel.NgModelController). The dialog will close unless the callback returns a rejected promise. |
+| `targetEvent`         | `event`    | `null`  | The event object. This must be provided and it must be from a table cell. |
+| `type`                | `string`   | `text`  | The value of the `type` attribute on the `input` element. |
+| `validators`          | `object`   | `null`  | Optional attributes to be placed on the input element. |
+
+The `small` method will return a `promise` that will resolve with the controller instance. The controller has two public methods, `dismiss` which will close the dialog without saving and `getInput` which will return the `ngModelController`.
+
+#### Large Edit Dialogs
+
+Large edit dialogs are functionally identical to small edit dialogs but have a few additional options.
+
+```javascript
+$mdEditDialog.large(options);
+```
+| Parameter | Type   | Description |
+| :-------- | :----- | :---------- |
+| options   | object | Large preset options. |
+
+| Property              | Type       | Default  | Description |
+| :-------------------- | :--------- | :------- | :---------- |
+| `cancel`              | `string`   | `Cancel` | Text to dismiss the dialog without saving. |
+| `clickOutsideToClose` | `bool`     | `true`   | The user can dismiss the dialog by clicking anywhere else on the page. |
+| `disableScroll`       | `bool`     | `true`   | Prevent user scroll while the dialog is open. |
+| `escToClose`          | `bool`     | `true`   | The user can dismiss the dialog by clicking the esc key. |
+| `focusOnOpen`         | `bool`     | `true`   | Will search the template for an `md-autofocus` element. |
+| `messages`            | `object`   | `null`   | Error messages to display corresponding to errors on the `ngModelController`. |
+| `modelValue`          | `string`   | `null`   | The initial value of the input element. |
+| `ok`                  | `string`   | `Save`   | Text to submit and dismiss the dialog. |
+| `placeholder`         | `string`   | `null`   | Placeholder text for input element. |
+| `save`                | `function` | `null`   | A callback function for when the use clicks the save button. The callback will receive the `ngModelController`. The dialog will close unless the callback returns a rejected promise. |
+| `targetEvent`         | `event`    | `null`   | The event object. This must be provided and it must be from a table cell. |
+| `title`               | `string`   | `Edit`   | Dialog title text. |
+| `type`                | `string`   | `text`   | The value of the `type` attribute on the `input` element. |
+| `validators`          | `object`   | `null`   | Optional attributes to be placed on the input element. |
+
+The `small` method will return a `promise` that will resolve with the controller instance. The controller has two public methods, `dismiss` which will close the dialog without saving and `getInput` which will return the `ngModelController`.
+
+#### Roll Your Own
+
+```javascript
+$mdEditDialog.show(options);
+```
+
+| Parameter | Type   | Description |
+| :-------- | :----- | :---------- |
+| options   | object | Dialog options. |
+
+| Property              | Type                | Default | Description |
+| :-------------------- | :------------------ | :------ | :---------- |
+| `bindToController`    | `bool`              | `false` | If true, properties on the provided scope object will be bound to the controller |
+| `clickOutsideToClose` | `bool`              | `true`  | The user can dismiss the dialog by clicking anywhere else on the page. |
+| `controller`          | `function | string` | `null`  | Either a constructor function or a string register with the $controller service. The controller will be automatically injected with `$scope` and `$element`. Remember to annotate your controller if you will be minifying your code. |
+| `controllerAs`        | `string`            | `null`  | An alias to publish your controller on the scope. |
+| `disableScroll`       | `bool`              | `true`  | Prevent user scroll while the dialog is open. |
+| `escToClose`          | `bool`              | `true`  | The user can dismiss the dialog by clicking the esc key. |
+| `focusOnOpen`         | `bool`              | `true`  | Will search the template for an `md-autofocus` element. |
+| `locals`              | `object`            | `null`  | Optional dependancies to be injected into your controller. It is not necessary to inject registered services, the `$injector` will provide them for you. |
+| `resolve`             | `object`            | `null`  | Similar to locals but waits for promises to be resolved. Once the promises resolve, their return value will be injected into the controller and the dialog will open. |
+| `scope`               | `object`            | `null`  | Properties to bind to the new isolated scope. |
+| `targetEvent`         | `event`             | `null`  | The event object. This must be provided and it must be from a table cell. |
+| `template`            | `string`            | `null`  | The template for your dialog. |
+| `templateUrl`         | `string`            | `null`  | A URL for you template. |
+
+The `show` method will return a `promise` that will resolve to the controller instance.
+
+The module has an `md-placeholder` CSS class that you can use on table cells.
+
+**Example: Table Cell With Edit Dialog**
+
+```html
+<td md-cell ng-click="editComment($event, dessert)" ng-class="{'md-placeholder': !dessert.comment}">
+  {{dessert.comment || 'Add a comment'}}
+</td>
 ```
 
 ### Inline Menus
 
-Table cells support inline menus. To use an inline menu, place an `md-select` element inside a table cell.
+Table cells support inline menus. To use an inline menu, place an `md-select` element inside an `md-cell` element.
 
 **Example**
 
 ```html
-<td>
+<td md-cell>
   <md-select ng-model="dessert.type" placeholder="Other">
     <md-option ng-value="type" ng-repeat="type in getTypes()">{{type}}</md-option>
   </md-select>
 </td>
 ```
 
-Clicking anywhere in the cell will activate the menu. In addition, the row will not be selected when the cell is clicked if you have automatic row selection enabled.
-
-### Long Column Headers
-
-| Attribute | Target    | Type   | Description |
-| :-------- | :-------- | :----- | :---------- |
-| `trim`    | `<th>`    | `NULL` | trim long column names. |
-
-When `trim` is place on a column header, the width of the column will be determined by the column body. If the width of the column header exceeds the width of the column body, it will be truncated with ellipsis.
-
-I believe it is wise to restrict the minimum width of a column. By default column headers will enforce a minimum width of `60px`. This is a just a CSS property; however, you may overwrite it in your style sheet.
-
-```css
-table[md-data-table] > thead > tr > th > div[trim] {
-  min-width: 100px;
-}
-```
+Clicking anywhere in the cell will activate the menu. In addition, if you have automatic row selection enabled the row will not be selected when the cell is clicked.
 
 ### Numeric Columns
 
-Numeric columns align to the right of table cells. Column headers support the following attributes for numeric data.
+Numeric columns align to the right of table cells.
 
-##### Header Cells
-
-| Attribute    | Target    | Type      | Description |
-| :----------- | :-------- | :-------  | :---------- |
-| `sig-row`    | `<thead>` | `Integer` | The index of the row to use to determine the column type. The default is the last row |
-| `numeric`    | `<th>`    | `NULL`    | Informs the directive the column is numeric in nature. |
-| `unit`       | `<th>`    | `String`  | Specifies the unit. Providing a unit will automatically add the unit, wrapped in parenthesis, to the header cell. |
-
-##### Body Cells
-
-| Attribute   | Target  | Type     | Description |
-| :---------- | :------ | :------- | :---------- |
-| `show-unit` | `<td>`  | `NULL`   | Displays the unit in the body cell; `unit` must be specified on the header cell. |
+| Attribute    | Element     | Type                | Description |
+| :----------- | :---------- | :------------------ | :---------- |
+| `md-numeric` | `md-column` | `null | expression` | If the expression is `null` or evaluates to `true` then all cells in that column will be right aligned |
 
 You may use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) filter on a body cell to set the decimal precision.
 
 ```html
 <!-- 2 decimal places -->
-<td>{{dessert.protein.value | number: 2}}</td>
+<td md-cell>{{dessert.protein.value | number: 2}}</td>
 ```
+
+> If you are using `colspan` you may need to manual correct the alignment and padding of cells. You can override the cell's styles with a custom CSS class.
 
 ### Pagination
 
-| Attribute       | Type       | Description |
-| :---------------| :--------- | :---------- |
-| `md-label`      | `Object`   | Change the pagination label. The default is 'Rows per page:'.|
-| `md-limit`      | `Number`   | A row limit. |
-| `md-page`       | `Number`   | Page number. |
-| `md-total`      | `Number`   | Total number of items. |
-| `md-row-select` | `Array`    | Row limit options. The default is `[5, 10, 15]` |
-| `md-trigger`    | `function` | Will execute when the page or limit is changed, passing the page and limit as parameters. |
+| Attribute           | Type                | Description |
+| :------------------ | :------------------ | :---------- |
+| `md-boundary-links` | `null | expression` | Displays first and last page navigation links |
+| `md-label`          | `object`            | Change the pagination label. See more below. |
+| `md-limit`          | `integer`           | A row limit. |
+| `md-page`           | `integer`           | Page number. The page number starts at one not zero. |
+| `md-on-paginate`    | `function`          | A callback function for when the page or limit changes. The page is passed as the first argument and the limit is passed as the second argument. |
+| `md-options`        | `array`             | Row limit options. The default is `[5, 10, 15]` |
+| `md-total`          | `integer`            | Total number of items. |
 
 The `md-label` attribute has the following properties.
 
-| Property | Type     | Description |
-| :--------| :------- | :---------- |
-| text     | `String` | The pagination label. |
-| of       | `String` | The 'of' in 'x - y of z'. |
+| Property    | Type     | Default |
+| :---------- | :------- | :------ |
+| page        | `string` | Page:   |
+| rowsPerPage | `string` | Rows per page: |
+| of          | `string` | of e.g. (x - y of z) |
 
-If the function assigned to the `md-trigger` attribute returns a promise, a loading indicator will be displayed.
-
-**Example: Client Side pagination using ngRepeat.**
+**Example: Changing Pagination Label**
 
 ```html
-<tr ng-repeat="item in array | orderBy: myOrder | limitTo: myLimit: (myPage - 1) * myLimit">
+<!-- how to change the pagination label -->
+<md-table-pagination md-label="{page: 'Página:', rowsPerPage: 'Filas por página:', of: 'de'}"></md-table-pagination>
+
+<!-- or if your label is defined by a variable on the scope -->
+<md-table-pagination md-label="{{label}}"></md-table-pagination>
+```
+
+I used Google translate so if the translations are wrong please fix them and make a pull request.
+
+**Example: Client Side Pagination Using ngRepeat**
+
+```html
+<tr md-row ng-repeat="item in array | orderBy: myOrder | limitTo: myLimit: (myPage - 1) * myLimit">
 
 <!-- and your pagination element will look something like... -->
-<md-data-table-pagination md-limit="myLimit" md-page="myPage" md-total="{{array.length}}"></md-data-table-pagination>
+<md-table-pagination md-limit="myLimit" md-page="myPage" md-total="{{array.length}}"></md-table-pagination>
 ```
+
+> It is important to know that the call back expression will be executed before the next digest cycle, meaning your local scope variables will still have the old values.
 
 ### Row Selection
 
-> Requires `ng-repeat`.
+It has been largely debated how row selection should work. I decided the only option was to please everybody. The only thing you can't do is select the entire collection at once unless you display the entire collection at once.
 
-| Attribute           | Target    | Type    | Description |
-| :------------------ | :-------- | :------ | :---------- |
-| `md-row-select`     | `<table>` | `Array`   | Two-way data binding of selected items |
-| `sig-row`           | `<thead>` | `Integer` | The index of the row to append the master toggle to in the column header. The default is the last row |
-| `md-auto-select`    | `<tr>`    | `NULL`    | allow row selection by clicking anywhere inside the row. |
-| `md-disable-select` | `<tr>`    | `expression | function` | Conditionally disable row selection |
+By default, selected items will persist even on pagination change. For this to work with items being fetch from the server you will need to provide a unique identifier to the directive, probably the primary key of your data set.
 
-**Example: Disable all desserts with more than 400 calories.**
+I know that not everybody will like this so I also provided a way to clear selected items. The directive will be listening for the `md.table.deselect` event. You can broadcast this event at anytime to clear selected items.
+
+| Attribute           | Element    | Type                | Description |
+| :------------------ | :--------- | :------------------ | :---------- |
+| `md-row-select`     | `md-table` | `null | expression` | Enable row selection. |
+| `ng-model`          | `md-table` | `array`             | A variable to bind selected items to. |
+| `md-select`         | `md-row`   | `array`             | The item to be selected. |
+| `md-select-id`      | `md-row`   | `string`            | A unique identifier for the selected item. This is necessary to match items that may not be strictly equal. For example, if items are swapped from the server. |
+| `md-auto-select`    | `md-row`   | `null | expression` | Select a row by clicking anywhere in the row. |
+| `md-on-select`      | `md-row`   | `function`          | A callback function for when an item is selected. The callback will receive the item as the first argument and the key as the second argument. |
+| `ng-disabled`       | `md-row`   | `expression`        | Conditionally disable row selection. |
+
+**Example: Row Selection From the Live Demo.**
 
 ```html
-<tr md-disable-select="dessert.calories.value > 4000"></tr>
-<!-- or assuming isDisabled is defined in you controller -->
-<tr md-disable-select="isDisabled(dessert)"></tr>
+<tr md-row md-select="dessert" md-select-id="{{dessert.name}}" md-auto-select ng-repeat="dessert in desserts.data">
 ```
+By default the `md.table.deselect` event will clear all selected items. 
+
+**Example: Clearing Selected Items On Pagination**
+
+```javascript
+$scope.onPaginate = function () {
+  $scope.$broadcast('md.table.deselect');
+}
+```
+
+You can also deselect a specific item by providing it as an argument to the `md.table.deselect`. If you are using keys you will want to pass the key as well
+
+```javascript
+$scope.$broadcast('md.table.deselect', item, key);
+```
+
 
 ### Table Progress
 
-| Attribute         | Target    | Type      | Description |
-| :---------------- | :-------- | :-------- | :---------- |
-| `md-progress`     | `<table>` | `promise` | The table will display a loading indicator until notified. |
+| Attribute     | Target       | Type                   | Description |
+| :------------ | :----------- | :--------------------- | :---------- |
+| `md-progress` | `<md-table>` | `promise | [promises]` | The table will display a loading indicator until the promise is resolved or rejected. |
 
-A progress indicator can be displayed in a couple different ways. If the function you supply to the `md-trigger` attributes returns a promise, then a loading indicator will be automatically displayed whenever any events within the scope of the table are dispatched (i.e. reordering, pagination).
+The table module can display a loading indicator for you whenever asynchronous code is executing. It accepts a promise or an array of promises. If another promise is received before the previous promise is resolved or rejected it will be placed in a queue.
 
-It's not unlikely that some events outside the scope of the table will effect its contents. For example, a search field that filters the table by sending a query to the server. To provide flexibility for such events, the table directive has a `md-progress` attribute that accepts a `promise` and will display a progress indicator until notified.
+Because I spent almost an hour debugging this I thought I would share with you. I'm not sure why this is the case but if you put the deferred object on the scope and try to pass the promise to the directive from that, the queue mechanism will not work properly.
+
+**This Will Not Work**
+
+```javascript
+function () {
+  $scope.deferred = $q.defer();
+  // code
+  $scope.deferred.resolve();
+}
+```
+
+```html
+<table md-table md-progress="deferred.promise"></table>
+```
+
+**This Will Work**
+
+```javascript
+function () {
+  var deferred = $q.defer();
+  $scope.promise = deferred.promise;
+  // code
+  deferred.resolve();
+}
+```
+
+```html
+<table md-table md-progress="promise"></table>
+```
+
+In addition, if you are dealing with something that returns a promise directly and not a deferred object you don't need to worry about it.
+
+```javascript
+function () {
+  $scope.promise = $timeout(function () {
+    // code
+  }, 2000);
+}
 
 ### Table Toolbars
 
-Tables may be embedded within cards that offer navigation and data manipulation tools available at the top and bottom.
+Tables may be embedded within cards that offer navigation and data manipulation tools available at the top and bottom. You can use the `md-table-toolbar` and `md-default` class on a `md-toolbar` element for a plain white toolbar.
 
-In general, use an `md-data-table-toolbar` for table toolbars, however; if you need to display information relative to a particular column in the table you may use use a `<tfoot>` element. For example, say you had a `calories.total` property that summed the total number of calories and you wanted to display that information directly beneath the Calories column.
+If you need to display information relative to a particular column in the table you may use use a `<md-foot>` element. For example, say you had a `calories.total` property that summed the total number of calories and you wanted to display that information directly beneath the Calories column.
 
 ```html
-<tfoot>
-  <tr>
-    <td></td>
-    </td><strong>Total:</strong> {{calories.total}}</td>
+<tfoot md-foot>
+  <tr md-row>
+    <td md-cell></td>
+    <td md-cell><strong>Total: </strong>{{calories.total}}</td>
+    <td md-cell colspan="6"></td>
   </tr>
 </tfoot>
 ```
 
 Observe that Calories is the second column in the table. Therefore, we need to offset the first column with an empty cell. If you need to offset many columns you can use `<td colspan="${n}"></td>` where `n` is the number of columns to offset.
 
-> Note that the directive is smart enough to insert an empty cell for the row selection column and that empty cells are not required after the last cell.
+> You may need to manually correct the the text alignment and cell padding if you use `colspan`.
 
 ## Contributing
 

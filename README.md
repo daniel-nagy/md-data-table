@@ -218,9 +218,9 @@ A few reasons:
 
 When the user clicks the `md-column` element, the value of the `md-order-by` attribute will be bound to the variable provided to the `md-order` attribute on the `md-head` element. If the columns are already sorted by that value, a minus sign `-` will be prepended to the value. For most query languages, this is the universal symbol to sort descending.
 
-The variable can then be used to send a query to the server or bound to the `orderBy` property of an `ng-repeat` expression.
+The variable can then be used to send a query to the server, or bound to the `orderBy` property of an `ng-repeat` expression.
 
-> It is important to know that the call back expression will be executed before the next digest cycle, meaning your local scope variable will still have the old value.
+> It is important to know that the callback expression will be executed before the next digest cycle, meaning your local scope variable will still have the old value.
 
 **Example Using ngRepeat**
 
@@ -302,19 +302,19 @@ $mdEditDialog.small(options);
 | :-------- | :----- | :---------- |
 | options   | object | Small preset options. |
 
-| Property              | Type       | Default | Description |
-| :-------------------- | :--------- | :------ | :---------- |
-| `clickOutsideToClose` | `bool`     | `true`  | The user can dismiss the dialog by clicking anywhere else on the page. |
-| `disableScroll`       | `bool`     | `true`  | Prevent user scroll while the dialog is open. |
-| `escToClose`          | `bool`     | `true`  | The user can dismiss the dialog by clicking the esc key. |
-| `focusOnOpen`         | `bool`     | `true`  | Will search the template for an `md-autofocus` element. |
-| `messages`            | `object`   | `null`  | Error messages to display corresponding to errors on the `ngModelController`. |
-| `modelValue`          | `string`   | `null`  | The initial value of the input element. |
-| `placeholder`         | `string`   | `null`  | Placeholder text for input element. |
-| `save`                | `function` | `null`  | A callback function for when the use clicks the save button. The callback will receive the [ngModelController](https://docs.angularjs.org/api/ng/type/ngModel.NgModelController). The dialog will close unless the callback returns a rejected promise. |
-| `targetEvent`         | `event`    | `null`  | The event object. This must be provided and it must be from a table cell. |
-| `type`                | `string`   | `text`  | The value of the `type` attribute on the `input` element. |
-| `validators`          | `object`   | `null`  | Optional attributes to be placed on the input element. |
+| Property              | Type       | Default  | Description |
+| :-------------------- | :--------- | :------- | :---------- |
+| `clickOutsideToClose` | `bool`     | `true`   | The user can dismiss the dialog by clicking anywhere else on the page. |
+| `disableScroll`       | `bool`     | `true`   | Prevent user scroll while the dialog is open. |
+| `escToClose`          | `bool`     | `true`   | The user can dismiss the dialog by clicking the esc key. |
+| `focusOnOpen`         | `bool`     | `true`   | Will search the template for an `md-autofocus` element. |
+| `messages`            | `object`   | `null`   | Error messages to display corresponding to errors on the `ngModelController`. |
+| `modelValue`          | `string`   | `null`   | The initial value of the input element. |
+| `placeholder`         | `string`   | `null`   | Placeholder text for input element. |
+| `save`                | `function` | `null`   | A callback function for when the use clicks the save button. The callback will receive the [ngModelController](https://docs.angularjs.org/api/ng/type/ngModel.NgModelController). The dialog will close unless the callback returns a rejected promise. |
+| `targetEvent`         | `event`    | `null`   | The event object. This must be provided and it must be from a table cell. |
+| `type`                | `string`   | `"text"` | The value of the `type` attribute on the `input` element. |
+| `validators`          | `object`   | `null`   | Optional attributes to be placed on the input element. |
 
 The `small` method will return a `promise` that will resolve with the controller instance. The controller has two public methods, `dismiss` which will close the dialog without saving and `getInput` which will return the `ngModelController`.
 
@@ -329,24 +329,24 @@ $mdEditDialog.large(options);
 | :-------- | :----- | :---------- |
 | options   | object | Large preset options. |
 
-| Property              | Type       | Default  | Description |
-| :-------------------- | :--------- | :------- | :---------- |
-| `cancel`              | `string`   | `Cancel` | Text to dismiss the dialog without saving. |
-| `clickOutsideToClose` | `bool`     | `true`   | The user can dismiss the dialog by clicking anywhere else on the page. |
-| `disableScroll`       | `bool`     | `true`   | Prevent user scroll while the dialog is open. |
-| `escToClose`          | `bool`     | `true`   | The user can dismiss the dialog by clicking the esc key. |
-| `focusOnOpen`         | `bool`     | `true`   | Will search the template for an `md-autofocus` element. |
-| `messages`            | `object`   | `null`   | Error messages to display corresponding to errors on the `ngModelController`. |
-| `modelValue`          | `string`   | `null`   | The initial value of the input element. |
-| `ok`                  | `string`   | `Save`   | Text to submit and dismiss the dialog. |
-| `placeholder`         | `string`   | `null`   | Placeholder text for input element. |
-| `save`                | `function` | `null`   | A callback function for when the use clicks the save button. The callback will receive the `ngModelController`. The dialog will close unless the callback returns a rejected promise. |
-| `targetEvent`         | `event`    | `null`   | The event object. This must be provided and it must be from a table cell. |
-| `title`               | `string`   | `Edit`   | Dialog title text. |
-| `type`                | `string`   | `text`   | The value of the `type` attribute on the `input` element. |
-| `validators`          | `object`   | `null`   | Optional attributes to be placed on the input element. |
+| Property              | Type       | Default    | Description |
+| :-------------------- | :--------- | :--------- | :---------- |
+| `cancel`              | `string`   | `"Cancel"` | Text to dismiss the dialog without saving. |
+| `clickOutsideToClose` | `bool`     | `true`     | The user can dismiss the dialog by clicking anywhere else on the page. |
+| `disableScroll`       | `bool`     | `true`     | Prevent user scroll while the dialog is open. |
+| `escToClose`          | `bool`     | `true`     | The user can dismiss the dialog by clicking the esc key. |
+| `focusOnOpen`         | `bool`     | `true`     | Will search the template for an `md-autofocus` element. |
+| `messages`            | `object`   | `null`     | Error messages to display corresponding to errors on the `ngModelController`. |
+| `modelValue`          | `string`   | `null`     | The initial value of the input element. |
+| `ok`                  | `string`   | `Save`     | Text to submit and dismiss the dialog. |
+| `placeholder`         | `string`   | `null`     | Placeholder text for input element. |
+| `save`                | `function` | `null`     | A callback function for when the use clicks the save button. The callback will receive the `ngModelController`. The dialog will close unless the callback returns a rejected promise. |
+| `targetEvent`         | `event`    | `null`     | The event object. This must be provided and it must be from a table cell. |
+| `title`               | `string`   | `"Edit"`   | Dialog title text. |
+| `type`                | `string`   | `"text"`   | The value of the `type` attribute on the `input` element. |
+| `validators`          | `object`   | `null`     | Optional attributes to be placed on the input element. |
 
-The `small` method will return a `promise` that will resolve with the controller instance. The controller has two public methods, `dismiss` which will close the dialog without saving and `getInput` which will return the `ngModelController`.
+The `large` method will return a `promise` that will resolve with the controller instance. The controller has two public methods, `dismiss` which will close the dialog without saving and `getInput` which will return the `ngModelController`.
 
 #### Roll Your Own
 
@@ -372,13 +372,13 @@ $mdEditDialog.show(options);
 | `scope`               | `object`          | `null`  | Properties to bind to the new isolated scope. |
 | `targetEvent`         | `event`           | `null`  | The event object. This must be provided and it must be from a table cell. |
 | `template`            | `string`          | `null`  | The template for your dialog. |
-| `templateUrl`         | `string`          | `null`  | A URL for you template. |
+| `templateUrl`         | `string`          | `null`  | A URL to fetch your template from. |
 
 The `show` method will return a `promise` that will resolve to the controller instance.
 
-The module has an `md-placeholder` CSS class that you can use on table cells.
+Table cells have a `md-placeholder` CSS class that you can use for placeholder text.
 
-**Example: Table Cell With Edit Dialog**
+**Example: A Table Cell That Opens An Edit Dialog**
 
 ```html
 <td md-cell ng-click="editComment($event, dessert)" ng-class="{'md-placeholder': !dessert.comment}">
@@ -408,16 +408,16 @@ Numeric columns align to the right of table cells.
 
 | Attribute   | Element    | Type              | Description |
 | :---------  | :--------- | :---------------- | :---------- |
-| `mdNumeric` | `mdColumn` | `null|expression` | If the expression is `null` or evaluates to `true` then all cells in that column will be right aligned |
+| `mdNumeric` | `mdColumn` | `null|expression` | If the expression is `null` or evaluates to `true` then all the cells in that column will be right aligned |
 
-You may use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) filter on a body cell to set the decimal precision.
+You may use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) filter on a cell to set the decimal precision.
 
 ```html
 <!-- 2 decimal places -->
 <td md-cell>{{dessert.protein.value | number: 2}}</td>
 ```
 
-> If you are using `colspan` you may need to manual correct the alignment and padding of cells. You can override the cell's styles with a custom CSS class.
+> If you are using `colspan` you may need to manual correct the alignment and padding of cells. You can override the cell's style with a custom CSS class.
 
 ### Pagination
 
@@ -426,7 +426,7 @@ You may use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) 
 | `mdBoundaryLinks` | `null|expression` | Displays first and last page navigation links |
 | `mdLabel`         | `object`          | Change the pagination label. See more below. |
 | `mdLimit`         | `integer`         | A row limit. |
-| `mdPage`          | `integer`         | Page number. The page number starts at one not zero. |
+| `mdPage`          | `integer`         | Page number. The page number starts at one; not zero. |
 | `mdOnPaginate`    | `function`        | A callback function for when the page or limit changes. The page is passed as the first argument and the limit is passed as the second argument. |
 | `mdOptions`       | `array`           | Row limit options. The default is `[5, 10, 15]` |
 | `mdTotal`         | `integer`         | Total number of items. |
@@ -445,7 +445,7 @@ The `md-label` attribute has the following properties.
 <!-- how to change the pagination label -->
 <md-table-pagination md-label="{page: 'Página:', rowsPerPage: 'Filas por página:', of: 'de'}"></md-table-pagination>
 
-<!-- or if your label is defined by a variable on the scope -->
+<!-- or if the label is defined on the scope -->
 <md-table-pagination md-label="{{label}}"></md-table-pagination>
 ```
 
@@ -474,13 +474,13 @@ I know that not everybody will like this so I also provided a way to clear selec
 | :------------- | :-------- | :---------------- | :---------- |
 | `mdRowSelect`  | `mdTable` | `null|expression` | Enable row selection. |
 | `ngModel`      | `mdTable` | `array`           | A variable to bind selected items to. |
-| `mdSelect`     | `mdRow`   | `array`           | The item to be selected. |
+| `mdSelect`     | `mdRow`   | `any`             | The item to be selected. |
 | `mdSelectId`   | `mdRow`   | `string`          | A unique identifier for the selected item. This is necessary to match items that may not be strictly equal. For example, if items are swapped from the server. |
 | `mdAutoSelect` | `mdRow`   | `null|expression` | Select a row by clicking anywhere in the row. |
 | `mdOnSelect`   | `mdRow`   | `function`        | A callback function for when an item is selected. The callback will receive the item as the first argument and the key as the second argument. |
 | `ngDisabled`   | `mdRow`   | `expression`      | Conditionally disable row selection. |
 
-**Example: Row Selection From the Live Demo.**
+**Example: Row Selection From The Live Demo.**
 
 ```html
 <tr md-row md-select="dessert" md-select-id="{{dessert.name}}" md-auto-select ng-repeat="dessert in desserts.data">
@@ -495,7 +495,7 @@ $scope.onPaginate = function () {
 }
 ```
 
-You can also deselect a specific item by providing it as an argument to the `md.table.deselect`. If you are using keys you will want to pass the key as well
+You can also deselect a specific item by providing it as an argument to the `md.table.deselect` event. If you are using keys you will want to pass the key as well.
 
 ```javascript
 $scope.$broadcast('md.table.deselect', item, key);
@@ -549,6 +549,7 @@ function () {
     // code
   }, 2000);
 }
+```
 
 ### Table Toolbars
 
@@ -579,7 +580,7 @@ Observe that Calories is the second column in the table. Therefore, we need to o
 
 This repository contains a demo application for developing features. As you make changes the application will live reload itself.
 
-**update**
+**Update**
 
 I noticed the nutrition app was an inconvenience for people trying to run the app locally and contribute. I have updated the demo application to remove the dependency for the nutrition app. This is also a good example of how you can take advantage of `ngRepeat` to easily achieve client side sorting and pagination.
 

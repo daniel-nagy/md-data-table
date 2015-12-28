@@ -1,0 +1,50 @@
+.md-table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  height: 56px;
+  padding: 0 24px;
+  font-size: 12px;
+  color: @md-dark-secondary;
+  border-top: 1px @md-dark-divider solid;
+
+  md-select {
+    justify-content: flex-end;
+    min-width: 64px;
+
+    &:not([disabled]):focus .md-select-value {
+      color: @md-dark-secondary;
+    }
+
+    .md-select-value {
+      flex-grow: initial;
+
+      span.md-select-icon {
+        justify-content: center;
+        text-align: center;
+
+        &:after {
+          top: initial;
+          transform: scaleY(0.5) scaleX(1);
+        }
+      }
+    }
+  }
+
+  > md-select + span {
+    margin-left: 32px;
+  }
+
+  > .md-button.md-icon-button {
+    margin: 0;
+  }
+
+  > span + .md-button.md-icon-button {
+    margin-left: 20px;
+  }
+
+  > .md-button.md-icon-button:last-child {
+    margin-right: -16px;
+  }
+}

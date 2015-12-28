@@ -1,4 +1,4 @@
-angular.module('nutritionApp').controller('nutritionController', ['$http', '$q', '$timeout', '$scope', function ($http, $q, $timeout, $scope) {
+angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdEditDialog', '$q', '$timeout', '$scope', function ($http, $mdEditDialog, $q, $timeout, $scope) {
   'use strict';
   
   $scope.selected = [];
@@ -26,18 +26,18 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
     numeric: true,
     orderBy: 'fat.value',
     unit: 'g'
-  }, {
+  }, /* {
     name: 'Carbs',
     numeric: true,
     orderBy: 'carbs.value',
     unit: 'g'
-  }, {
+  }, */ {
     name: 'Protein',
     numeric: true,
     orderBy: 'protein.value',
     trim: true,
     unit: 'g'
-  }, {
+  }, /* {
     name: 'Sodium',
     numeric: true,
     orderBy: 'sodium.value',
@@ -47,57 +47,81 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$q',
     numeric: true,
     orderBy: 'calcium.value',
     unit: '%'
-  }, {
+  }, */ {
     name: 'Iron',
     numeric: true,
     orderBy: 'iron.value',
     unit: '%'
+  }, {
+    name: 'Comments',
+    orderBy: 'comment'
   }];
   
   $http.get('desserts.js').then(function (desserts) {
     $scope.desserts = desserts.data;
   });
   
+  $scope.editComment = function (event, dessert) {
+    event.stopPropagation();
+    
+    var promise = $mdEditDialog.large({
+      // messages: {
+      //   test: 'I don\'t like tests!'
+      // },
+      modelValue: dessert.comment,
+      placeholder: 'Add a comment',
+      save: function (input) {
+        dessert.comment = input.$modelValue;
+      },
+      targetEvent: event,
+      title: 'Add a comment',
+      validators: {
+        'md-maxlength': 30
+      }
+    });
+    
+    promise.then(function (ctrl) {
+      var input = ctrl.getInput();
+      
+      input.$viewChangeListeners.push(function () {
+        input.$setValidity('test', input.$modelValue !== 'test');
+      });
+    });
+  };
+  
   $scope.getTypes = function () {
     return ['Candy', 'Ice cream', 'Other', 'Pastry'];
   };
   
-  $scope.onpagechange = function(page, limit) {
+  $scope.onPaginate = function(page, limit) {
+    // $scope.$broadcast('md.table.deselect');
     
     console.log('Scope Page: ' + $scope.query.page + ' Scope Limit: ' + $scope.query.limit);
     console.log('Page: ' + page + ' Limit: ' + limit);
     
-    var deferred = $q.defer();
-    
-    $timeout(function () {
-      deferred.resolve();
+    $scope.promise = $timeout(function () {
+      
     }, 2000);
-    
-    return deferred.promise;
+  };
+  
+  $scope.log = function (item) {
+    console.log(item.name, 'was selected');
   };
   
   $scope.loadStuff = function () {
-    var deferred = $q.defer();
-    
-    $timeout(function () {
-      deferred.reject();
+    $scope.promise = $timeout(function () {
+      
     }, 2000);
-    
-    $scope.deferred = deferred.promise;
   };
   
-  $scope.onorderchange = function(order) {
+  $scope.onReorder = function(order) {
     
     console.log('Scope Order: ' + $scope.query.order);
     console.log('Order: ' + order);
     
-    var deferred = $q.defer();
-    
-    $timeout(function () {
-      deferred.resolve();
+    $scope.promise = $timeout(function () {
+      
     }, 2000);
-    
-    return deferred.promise;
   };
   
 }]);

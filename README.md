@@ -72,7 +72,10 @@ angular.module('myApp', [require('angular-material-data-table')]);
 angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope', function ($nutrition, $scope) {
   'use strict';
   
-  $scope.selected = [];
+  // In this example we are paginating items on the server, therefore we need to use the
+  // md-select-id attribute and an object as our model
+  $scope.selected = {};
+  $scope.selected.length = 0;
   
   $scope.query = {
     order: 'name',
@@ -94,6 +97,14 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
   
   $scope.onReorder = function (order) {
     getDesserts(angular.extend({}, $scope.query, {order: order}));
+  };
+  
+  $scope.onDeselect = function () {
+    $scope.selected.length--;
+  };
+  
+  $scope.onSelect = function () {
+    $scope.selected.length++;
   };
 
 }]);
@@ -124,7 +135,7 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
       </tr>
     </thead>
     <tbody md-body>
-      <tr md-row md-select="dessert" md-select-id="{{dessert.name}}" md-auto-select ng-repeat="dessert in desserts.data">
+      <tr md-row md-select="dessert" md-select-id="{{dessert.name}}" md-auto-select md-on-select="onSelect" md-on-deselect="onDeselect" ng-repeat="dessert in desserts.data">
         <td md-cell>{{dessert.name}}</td>
         <td md-cell>{{dessert.calories.value}}</td>
         <td md-cell>{{dessert.fat.value | number: 1}}</td>
@@ -143,6 +154,15 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 ```
 
 ## Change Log
+
+#### Version 0.9.1
+###### December 28, 2015
+
+The way the row ID feature was implemented made it difficult for the developer to manipulate the selected items from within their controller. In addition, the deselect event wasn't ideal because it would be impossible to communicate directly with one table if you had many tables that all shared a parent scope.
+
+* The `md.table.deselect` event has been removed.
+* If you specify a row ID using the `md-select-id` attribute then you must use an object model. When an item is selected, a new property will be defined on the model where the property name is the value of the `md-select-id` attribute and the value is the selected item.
+* I've added a deselect event to the `md-row` element.
 
 #### Version 0.9.0
 ###### December 27, 2015
@@ -340,7 +360,7 @@ $mdEditDialog.large(options);
 | `focusOnOpen`         | `bool`     | `true`     | Will search the template for an `md-autofocus` element. |
 | `messages`            | `object`   | `null`     | Error messages to display corresponding to errors on the `ngModelController`. |
 | `modelValue`          | `string`   | `null`     | The initial value of the input element. |
-| `ok`                  | `string`   | `Save`     | Text to submit and dismiss the dialog. |
+| `ok`                  | `string`   | `"Save"`   | Text to submit and dismiss the dialog. |
 | `placeholder`         | `string`   | `null`     | Placeholder text for input element. |
 | `save`                | `function` | `null`     | A callback function for when the use clicks the save button. The callback will receive the `ngModelController`. The dialog will close unless the callback returns a rejected promise. |
 | `targetEvent`         | `event`    | `null`     | The event object. This must be provided and it must be from a table cell. |
@@ -376,7 +396,7 @@ $mdEditDialog.show(options);
 | `template`            | `string`          | `null`  | The template for your dialog. |
 | `templateUrl`         | `string`          | `null`  | A URL to fetch your template from. |
 
-The `show` method will return a `promise` that will resolve to the controller instance.
+The `show` method will return a `promise` that will resolve with the controller instance.
 
 Table cells have a `md-placeholder` CSS class that you can use for placeholder text.
 
@@ -470,7 +490,11 @@ It has been largely debated how row selection should work. I decided the only op
 
 By default, selected items will persist even on pagination change. For this to work with items being fetch from the server you will need to provide a unique identifier to the directive, probably the primary key of your data set.
 
-I know that not everybody will like this so I also provided a way to clear selected items. The directive will be listening for the `md.table.deselect` event. You can broadcast this event at anytime to clear selected items.
+If you provide a unique identifier for a row using the `md-select-id` attribute then you must use an object model. When an item is selected, a new property will be defined on the model where the property name is the value of the `md-select-id` attribute and the value is the selected item.
+
+If you do not specify a unique identifier then you should use an array model. When an item is selected it will be pushed onto the array.
+
+If at anytime you want to add or remove items from the model in your controller you may do so.
 
 | Attribute      | Element   | Type              | Description |
 | :------------- | :-------- | :---------------- | :---------- |
@@ -480,6 +504,7 @@ I know that not everybody will like this so I also provided a way to clear selec
 | `mdSelectId`   | `mdRow`   | `string`          | A unique identifier for the selected item. This is necessary to match items that may not be strictly equal. For example, if items are swapped from the server. |
 | `mdAutoSelect` | `mdRow`   | `null|expression` | Select a row by clicking anywhere in the row. |
 | `mdOnSelect`   | `mdRow`   | `function`        | A callback function for when an item is selected. The callback will receive the item as the first argument and the key as the second argument. |
+| `mdOnDeselect` | `mdRow`   | `function`        | A callback function for when an item is deselected. The callback will receive the item as the first argument and the key as the second argument. |
 | `ngDisabled`   | `mdRow`   | `expression`      | Conditionally disable row selection. |
 
 **Example: Row Selection From The Live Demo.**
@@ -487,22 +512,16 @@ I know that not everybody will like this so I also provided a way to clear selec
 ```html
 <tr md-row md-select="dessert" md-select-id="{{dessert.name}}" md-auto-select ng-repeat="dessert in desserts.data">
 ```
-By default the `md.table.deselect` event will clear all selected items. 
 
 **Example: Clearing Selected Items On Pagination**
 
 ```javascript
 $scope.onPaginate = function () {
-  $scope.$broadcast('md.table.deselect');
+  $scope.selected = [];
+  // or if you have unique identifiers
+  // $scope.selected = {};
 }
 ```
-
-You can also deselect a specific item by providing it as an argument to the `md.table.deselect` event. If you are using keys you will want to pass the key as well.
-
-```javascript
-$scope.$broadcast('md.table.deselect', item, key);
-```
-
 
 ### Table Progress
 

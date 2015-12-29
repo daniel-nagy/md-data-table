@@ -10,8 +10,16 @@ function mdRow() {
   }
   
   function postLink(scope, element, attrs, tableCtrl) {
-    if(element.children().hasClass('md-cell')) {
-      scope.$watch(tableCtrl.selectionEnabled, function (enabled) {
+    function selectEnabled() {
+      return tableCtrl.selectEnabled;
+    }
+    
+    function isBodyRow() {
+      return tableCtrl.getBodyRows().indexOf(element[0]) !== -1;
+    }
+    
+    if(isBodyRow()) {
+      scope.$watch(selectEnabled, function (enabled) {
         if(enabled && !attrs.mdSelect) {
           console.error('Missing md-select attribute on table row');
         }

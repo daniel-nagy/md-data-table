@@ -155,6 +155,28 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 
 ## Change Log
 
+#### Version 0.9.2
+###### December 28, 2015
+
+* Wrap module in self executing function to prevent polluting the global namespace.
+* Pagination will now calculate the closest multiple when the limit changes.
+
+```javascript
+let page  = 5;
+let limit = 5;
+let min   = page * limit - limit; // 20
+```
+
+Now say the user changes the limit from `5` to `10`, then the new page will be `3` and the new min will `20`. Same as the old min. This is because `5` and `10` are both multiples of `20`.
+
+```javascript
+let oldMin   = 20;
+let newLimit = 10;
+let newPage  = Math.floor(oldMin + newLimit) / newLimit; // 3
+```
+
+Now suppose the user changes the limit from `10` to `15`. Observe that `15` is not a multiple of `20`. Therefore we will end up with the closest multiple. The new page will be `2` and the new min will be `15`.
+
 #### Version 0.9.1
 ###### December 28, 2015
 

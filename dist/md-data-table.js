@@ -943,7 +943,7 @@ function mdTable() {
     
     function resolvePromises() {
       if(!self.queue.length) {
-        return;
+        return $scope.$applyAsync();
       }
       
       self.queue[0].then(function () {
@@ -1120,14 +1120,6 @@ function mdTablePagination() {
       onPaginationChange();
     };
     
-    scope.onLimitChange = function () {
-      while(scope.limit * scope.page > scope.max() && scope.hasPrevious()) {
-        scope.page--;
-      }
-      
-      onPaginationChange();
-    };
-    
     scope.onPageChange = onPaginationChange;
     
     scope.pages = function () {
@@ -1158,6 +1150,17 @@ function mdTablePagination() {
       
       return scope.pageSelect;
     };
+    
+    scope.$watch('limit', function (newValue, oldValue) {
+      if(newValue === oldValue) {
+        return;
+      }
+      
+      // find closest page from previous min
+      scope.page = Math.floor(((scope.page * oldValue - oldValue) + newValue) / newValue);
+      
+      onPaginationChange();
+    });
   }
   
   return {
@@ -1210,7 +1213,7 @@ angular.module('md-table-pagination.html', []).run(['$templateCache', function($
     '\n' +
     '<span class="label">{{$$label[\'rowsPerPage\']}}</span>\n' +
     '\n' +
-    '<md-select class="md-table-select" ng-model="limit" md-container-class="md-pagination-select" ng-change="onLimitChange()" aria-label="Rows" placeholder="{{options ? options[0] : 5}}">\n' +
+    '<md-select class="md-table-select" ng-model="limit" md-container-class="md-pagination-select" aria-label="Rows" placeholder="{{options ? options[0] : 5}}">\n' +
     '  <md-option ng-repeat="rows in options ? options : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>\n' +
     '</md-select>\n' +
     '\n' +

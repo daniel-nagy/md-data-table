@@ -33,7 +33,7 @@ function mdTable() {
     
     function resolvePromises() {
       if(!self.queue.length) {
-        return;
+        return $scope.$applyAsync();
       }
       
       self.queue[0].then(function () {

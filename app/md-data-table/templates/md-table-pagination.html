@@ -6,7 +6,7 @@
 
 <span class="label">{{$$label['rowsPerPage']}}</span>
 
-<md-select class="md-table-select" ng-model="limit" md-container-class="md-pagination-select" ng-change="onLimitChange()" aria-label="Rows" placeholder="{{options ? options[0] : 5}}">
+<md-select class="md-table-select" ng-model="limit" md-container-class="md-pagination-select" aria-label="Rows" placeholder="{{options ? options[0] : 5}}">
   <md-option ng-repeat="rows in options ? options : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>
 </md-select>
 

@@ -53,14 +53,6 @@ function mdTablePagination() {
       onPaginationChange();
     };
     
-    scope.onLimitChange = function () {
-      while(scope.limit * scope.page > scope.max() && scope.hasPrevious()) {
-        scope.page--;
-      }
-      
-      onPaginationChange();
-    };
-    
     scope.onPageChange = onPaginationChange;
     
     scope.pages = function () {
@@ -91,6 +83,17 @@ function mdTablePagination() {
       
       return scope.pageSelect;
     };
+    
+    scope.$watch('limit', function (newValue, oldValue) {
+      if(newValue === oldValue) {
+        return;
+      }
+      
+      // find closest page from previous min
+      scope.page = Math.floor(((scope.page * oldValue - oldValue) + newValue) / newValue);
+      
+      onPaginationChange();
+    });
   }
   
   return {

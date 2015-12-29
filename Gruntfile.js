@@ -39,7 +39,7 @@ module.exports = function (grunt) {
       options: {
         banner: '(function (window, angular, undefined) {\n\'use strict\';\n\n',
         footer: '\n})(window, angular);',
-        process: function(src) {
+        process: function (src) {
           return src.replace(/^'use strict';\s*/, '');
         },
         separator: '\n\n'

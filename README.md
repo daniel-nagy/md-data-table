@@ -149,7 +149,7 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
   </table>
 </md-table-container>
 
-<md-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}" md-on-paginate="onPaginate" md-page-select></md-data-table-pagination>
+<md-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}" md-on-paginate="onPaginate" md-page-select></md-table-pagination>
 
 ```
 

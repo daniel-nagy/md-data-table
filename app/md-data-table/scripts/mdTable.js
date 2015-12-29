@@ -44,7 +44,7 @@ function mdTable() {
     
     function rows() {
       return $element.prop('rows').length;
-    };
+    }
     
     function rowSelect() {
       if($attrs.hasOwnProperty('mdRowSelect') && $attrs.mdRowSelect === '') {

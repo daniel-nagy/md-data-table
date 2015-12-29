@@ -1,6 +1,7 @@
-angular.module('md.data.table', ['md.table.templates']);
-
+(function (window, angular, undefined) {
 'use strict';
+
+angular.module('md.data.table', ['md.table.templates']);
 
 angular.module('md.data.table').directive('mdBody', mdBody);
 
@@ -15,8 +16,6 @@ function mdBody() {
     restrict: 'A'
   };
 }
-
-'use strict';
 
 angular.module('md.data.table').directive('mdCell', mdCell);
 
@@ -89,8 +88,6 @@ function mdCell() {
     restrict: 'A'
   };
 }
-
-'use strict';
 
 angular.module('md.data.table').directive('mdColumn', mdColumn);
 
@@ -222,8 +219,6 @@ function mdColumn($compile) {
 }
 
 mdColumn.$inject = ['$compile'];
-
-'use strict';
 
 angular.module('md.data.table')
   .decorator('$controller', controllerDecorator)
@@ -605,8 +600,6 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
 
 mdEditDialog.$inject = ['$compile', '$controller', '$document', '$mdUtil', '$q', '$rootScope', '$templateCache', '$templateRequest', '$window'];
 
-'use strict';
-
 angular.module('md.data.table').directive('mdFoot', mdFoot);
 
 function mdFoot() {
@@ -620,8 +613,6 @@ function mdFoot() {
     restrict: 'A'
   };
 }
-
-'use strict';
 
 angular.module('md.data.table').directive('mdHead', mdHead);
 
@@ -730,8 +721,6 @@ function mdHead($compile) {
 
 mdHead.$inject = ['$compile'];
 
-'use strict';
-
 angular.module('md.data.table').directive('mdRow', mdRow);
 
 function mdRow() {
@@ -765,8 +754,6 @@ function mdRow() {
     restrict: 'A'
   };
 }
-
-'use strict';
 
 angular.module('md.data.table').directive('mdSelect', mdSelect);
 
@@ -923,8 +910,6 @@ function mdSelect($compile) {
 
 mdSelect.$inject = ['$compile'];
 
-'use strict';
-
 angular.module('md.data.table').directive('mdTable', mdTable);
 
 function mdTable() {
@@ -969,7 +954,7 @@ function mdTable() {
     
     function rows() {
       return $element.prop('rows').length;
-    };
+    }
     
     function rowSelect() {
       if($attrs.hasOwnProperty('mdRowSelect') && $attrs.mdRowSelect === '') {
@@ -1082,8 +1067,6 @@ function mdTable() {
   };
 }
 
-'use strict';
-
 angular.module('md.data.table').directive('mdTablePagination', mdTablePagination);
 
 function mdTablePagination() {
@@ -1194,8 +1177,6 @@ function mdTablePagination() {
   };
 }
 
-'use strict';
-
 angular.module('md.data.table').directive('mdTableProgress', mdTableProgress);
 
 function mdTableProgress() {
@@ -1220,7 +1201,6 @@ function mdTableProgress() {
 angular.module('md.table.templates', ['md-table-pagination.html', 'md-table-progress.html', 'arrow-up.svg', 'navigate-before.svg', 'navigate-first.svg', 'navigate-last.svg', 'navigate-next.svg']);
 
 angular.module('md-table-pagination.html', []).run(['$templateCache', function($templateCache) {
-  'use strict';
   $templateCache.put('md-table-pagination.html',
     '<span class="label" ng-show="showPageSelect()">{{$$label[\'page\']}}</span>\n' +
     '\n' +
@@ -1251,7 +1231,6 @@ angular.module('md-table-pagination.html', []).run(['$templateCache', function($
 }]);
 
 angular.module('md-table-progress.html', []).run(['$templateCache', function($templateCache) {
-  'use strict';
   $templateCache.put('md-table-progress.html',
     '<tr>\n' +
     '  <th colspan="{{columnCount()}}">\n' +
@@ -1261,31 +1240,28 @@ angular.module('md-table-progress.html', []).run(['$templateCache', function($te
 }]);
 
 angular.module('arrow-up.svg', []).run(['$templateCache', function($templateCache) {
-  'use strict';
   $templateCache.put('arrow-up.svg',
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></svg>');
 }]);
 
 angular.module('navigate-before.svg', []).run(['$templateCache', function($templateCache) {
-  'use strict';
   $templateCache.put('navigate-before.svg',
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>');
 }]);
 
 angular.module('navigate-first.svg', []).run(['$templateCache', function($templateCache) {
-  'use strict';
   $templateCache.put('navigate-first.svg',
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M7 6 v12 h2 v-12 h-2z M17.41 7.41L16 6l-6 6 6 6 1.41-1.41L12.83 12z"/></svg>');
 }]);
 
 angular.module('navigate-last.svg', []).run(['$templateCache', function($templateCache) {
-  'use strict';
   $templateCache.put('navigate-last.svg',
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15 6 v12 h2 v-12 h-2z M8 6L6.59 7.41 11.17 12l-4.58 4.59L8 18l6-6z"/></svg>');
 }]);
 
 angular.module('navigate-next.svg', []).run(['$templateCache', function($templateCache) {
-  'use strict';
   $templateCache.put('navigate-next.svg',
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>');
 }]);
+
+})(window, angular);

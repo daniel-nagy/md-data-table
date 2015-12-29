@@ -47,7 +47,7 @@
       </tr>
     </thead>
     <tbody md-body>
-      <tr md-row md-select="dessert" md-select-id="{{dessert.name}}" md-auto-select ng-repeat="dessert in desserts.data">
+      <tr md-row md-select="dessert" md-select-id="{{dessert.name}}" md-on-select="onSelect" md-on-deselect="onDeselect" md-auto-select ng-repeat="dessert in desserts.data">
         <td md-cell>{{dessert.name}}</td>
         <td md-cell>{{dessert.calories.value}}</td>
         <td md-cell>{{dessert.fat.value | number: 1}}</td>

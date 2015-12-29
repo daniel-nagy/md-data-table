@@ -3,7 +3,8 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
   
   var bookmark;
   
-  $scope.selected = [];
+  $scope.selected = {};
+  $scope.selected.length = 0;
   
   $scope.filter = {
     options: {
@@ -55,6 +56,14 @@ angular.module('nutritionApp').controller('nutritionController', ['$mdDialog', '
   
   $scope.onReorder = function (order) {
     getDesserts(angular.extend({}, $scope.query, {order: order}));
+  };
+  
+  $scope.onDeselect = function () {
+    $scope.selected.length--;
+  };
+  
+  $scope.onSelect = function () {
+    $scope.selected.length++;
   };
   
   $scope.removeFilter = function () {

@@ -26,15 +26,9 @@ function mdColumn($compile) {
     }
     
     function detachSortIcon() {
-      var icons = element.find('md-icon');
-      
-      for(var i = 0; i < icons.length; i++) {
-        var icon = icons.eq(i);
-        
-        if(icon.hasClass('md-sort-icon')) {
-          return icon.remove();
-        }
-      }
+      Array.prototype.some.call(element.find('md-icon'), function (icon) {
+        return icon.classList.contains('md-sort-icon') && element[0].removeChild(icon);
+      });
     }
     
     function disableSorting() {

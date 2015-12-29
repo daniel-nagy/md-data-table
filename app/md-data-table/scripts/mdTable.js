@@ -20,30 +20,15 @@ function mdTable() {
   function Controller($attrs, $element, $q, $scope) {
     var self = this;
     
-    self.keys = {};
     self.queue = [];
     self.columns = {};
     
-    function enableSelection() {
-      var enable;
-      
-      if($attrs.hasOwnProperty('mdRowSelect') && $attrs.mdRowSelect === '') {
-        enable = true;
-      } else {
-        enable = self.rowSelect;
-      }
-      
-      if(enable && !self.selected) {
-        enable = false;
-        console.error('Missing model for row selection');
-      } else if(enable && !angular.isArray(self.selected)) {
-        enable = false;
-        console.error('Model for row selection is not an array');
-      }
-      
-      self.enableSelection = enable;
-      
-      return enable;
+    function hasKeys(rows) {
+      return rows.some(function(row) {
+        return Array.prototype.some.call(row.attributes, function (attr) {
+          return $attrs.$normalize(attr.name) === 'mdSelectId';
+        });
+      });
     }
     
     function resolvePromises() {
@@ -57,6 +42,54 @@ function mdTable() {
       });
     }
     
+    function rows() {
+      return $element.prop('rows').length;
+    };
+    
+    function rowSelect() {
+      if($attrs.hasOwnProperty('mdRowSelect') && $attrs.mdRowSelect === '') {
+        return true;
+      }
+      
+      return self.rowSelect;
+    }
+    
+    function validate() {
+      return validateModel() && (angular.isArray(self.selected) ? validateArray() : validateObject());
+    }
+    
+    function validateArray() {
+      var rows = self.getBodyRows();
+      
+      if(rows.length && hasKeys(rows)) {
+        return console.error('IDs will not work with arrays. Please use an object instead.');
+      }
+      
+      return true;
+    }
+    
+    function validateModel() {
+      if(!self.selected) {
+        return console.error('Row selection model is undefined.');
+      }
+      
+      if(!angular.isObject(self.selected)) {
+        return console.error('Row selection model is an invalid type.');
+      }
+      
+      return true;
+    }
+    
+    function validateObject() {
+      var rows = self.getBodyRows();
+      
+      if(rows.length && !hasKeys(rows)) {
+        return console.error('Please use an array if you are not using IDs.');
+      }
+      
+      return true;
+    }
+    
     self.columnCount = function () {
       return Array.prototype.reduce.call($element.prop('rows'), function (columns, row) {
         if(!row.classList.contains('md-row') || row.classList.contains('ng-leave')) {
@@ -67,29 +100,20 @@ function mdTable() {
       }, 0);
     };
     
-    self.deselectAll = function () {
-      this.keys = {};
-      this.selected = [];
+    self.getRows = function (collection) {
+      return Array.prototype.reduce.call(collection, function (result, group) {
+        return result.concat(Array.prototype.filter.call(group.rows, function (row) {
+          return !row.classList.contains('ng-leave');
+        }));
+      }, []);
     };
     
-    self.deselect = function (item, key) {
-      self.selected.splice(self.getIndex(), 1);
-      
-      if(key && self.keys.hasOwnProperty(key)) {
-        delete this.keys[key];
-      }
-    };
-    
-    self.getBody = function () {
-      return $element.find('tbody');
+    self.getBodyRows = function () {
+      return self.getRows($element.prop('tBodies'));
     };
     
     self.getElement = function () {
       return $element;
-    };
-    
-    self.getIndex = function (item, key) {
-      return self.selected.indexOf(key && self.keys.hasOwnProperty(key) ? self.keys[key] : item);
     };
     
     self.queuePromise = function (promise) {
@@ -102,25 +126,19 @@ function mdTable() {
       }
     };
     
-    self.selectionEnabled = function () {
-      return self.enableSelection;
-    };
-    
-    $scope.$watch(enableSelection, function (enable) {
-      return enable ? $element.addClass('md-row-select') : $element.removeClass('md-row-select');
+    $scope.$watchGroup([rowSelect, rows], function (enable) {
+      self.selectEnabled = enable[0] && !!validate();
+      
+      if(self.selectEnabled) {
+        $element.addClass('md-row-select');
+      } else {
+        $element.removeClass('md-row-select');
+      }
     });
     
     if($attrs.hasOwnProperty('mdProgress')) {
       $scope.$watch('$mdTable.progress', self.queuePromise);
     }
-    
-    $scope.$on('md.table.deselect', function (event, item, key) {
-      if(!item && !key) {
-        return self.deselectAll();
-      }
-      
-      self.deselect(item, key);
-    });
   }
   
   Controller.$inject = ['$attrs', '$element', '$q', '$scope'];

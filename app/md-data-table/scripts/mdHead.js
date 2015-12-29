@@ -34,43 +34,36 @@ function mdHead($compile) {
       checkbox.attr('ng-click', 'toggleAll()');
       checkbox.attr('ng-checked', 'allSelected()');
       
-      return angular.element('<th class="md-column">').append($compile(checkbox)(scope));
+      return angular.element('<th class="md-column md-checkbox-column">').append($compile(checkbox)(scope));
     }
     
-    function every(callback) {
-      for(var i = 0, rows = tableCtrl.getBody().children(); i < rows.length; i++) {
-        var row = rows.eq(i);
-        
-        if(!row.hasClass('ng-leave') && !callback(row, row.controller('mdSelect'))) {
-          return false;
-        }
-      }
-      
-      return true;
-    }
-    
-    function forEach(callback) {
-      for(var i = 0, rows = tableCtrl.getBody().children(); i < rows.length; i++) {
-        var row = rows.eq(i);
-        
-        if(!row.hasClass('ng-leave')) {
-          callback(row, row.controller('mdSelect'));
-        }
-      }
+    function getController(row) {
+      return angular.element(row).controller('mdSelect');
     }
     
     function removeCheckbox() {
-      element.find('md-checkbox').parent().remove();
+      var children = element.children();
+      var child = children.eq(children.length - 1);
+      
+      Array.prototype.some.call(child.prop('cells'), function (cell) {
+        return cell.classList.contains('md-checkbox-column') && child[0].removeChild(cell);
+      });
+    }
+    
+    function selectEnabled() {
+      return tableCtrl.selectEnabled;
     }
     
     scope.allSelected = function () {
-      return tableCtrl.getBody().children().length && every(function (row, ctrl) {
+      var rows = tableCtrl.getBodyRows();
+      
+      return rows.length && rows.map(getController).every(function (ctrl) {
         return ctrl && (ctrl.disabled || ctrl.isSelected());
       });
     };
     
     scope.selectAll = function () {
-      forEach(function (row, ctrl) {
+      tableCtrl.getBodyRows().map(getController).forEach(function (ctrl) {
         if(ctrl && !ctrl.isSelected()) {
           ctrl.select();
         }
@@ -82,14 +75,14 @@ function mdHead($compile) {
     };
     
     scope.unSelectAll = function () {
-      forEach(function (row, ctrl) {
+      tableCtrl.getBodyRows().map(getController).forEach(function (ctrl) {
         if(ctrl && ctrl.isSelected()) {
           ctrl.deselect();
         }
       });
     };
     
-    scope.$watch(tableCtrl.selectionEnabled, function (enabled) {
+    scope.$watch(selectEnabled, function (enabled) {
       if(enabled) {
         attachCheckbox();
       } else {

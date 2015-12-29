@@ -10,61 +10,65 @@ function mdSelect($compile) {
   }
   
   function postLink(scope, element, attrs, ctrls) {
+    var self = ctrls.shift();
     var tableCtrl = ctrls.shift();
-    var selectCtrl = ctrls.shift();
     
-    selectCtrl.isSelected = function () {
-      if(!tableCtrl.selectionEnabled()) {
+    self.isSelected = function () {
+      if(!tableCtrl.selectEnabled || self.disabled) {
         return false;
       }
       
-      if(selectCtrl.id) {
-        return tableCtrl.keys.hasOwnProperty(selectCtrl.id);
+      if(angular.isArray(tableCtrl.selected)) {
+        return tableCtrl.selected.indexOf(self.model) !== -1;
       }
       
-      return tableCtrl.selected.indexOf(selectCtrl.model) !== -1;
+      if(angular.isObject(tableCtrl.selected)) {
+        return self.id && tableCtrl.selected.hasOwnProperty(self.id);
+      }
     };
     
-    selectCtrl.select = function () {
-      if(selectCtrl.disabled) {
+    self.select = function () {
+      if(self.disabled) {
         return;
       }
       
-      tableCtrl.selected.push(selectCtrl.model);
-      
-      if(selectCtrl.id) {
-        tableCtrl.keys[selectCtrl.id] = selectCtrl.id;
+      if(angular.isArray(tableCtrl.selected)) {
+        tableCtrl.selected.push(self.model);
+      } else {
+        tableCtrl.selected[self.id] = self.model;
       }
       
-      if(angular.isFunction(selectCtrl.onSelect)) {
-        selectCtrl.onSelect(selectCtrl.model, selectCtrl.id);
-      }
-    };
-    
-    selectCtrl.deselect = function () {
-      tableCtrl.selected.splice(getIndex(selectCtrl.id), 1);
-      
-      if(selectCtrl.id) {
-        delete tableCtrl.keys[selectCtrl.id];
+      if(angular.isFunction(self.onSelect)) {
+        self.onSelect(self.model, self.id);
       }
     };
     
-    selectCtrl.toggle = function (event) {
+    self.deselect = function () {
+      if(angular.isArray(tableCtrl.selected)) {
+        tableCtrl.selected.splice(tableCtrl.selected.indexOf(self.model), 1);
+      } else {
+        delete tableCtrl.selected[self.id];
+      }
+      
+      if(angular.isFunction(self.onDeselect)) {
+        self.onDeselect(self.model, self.id);
+      }
+    };
+    
+    self.toggle = function (event) {
       if(event && event.stopPropagation) {
         event.stopPropagation();
       }
       
-      return selectCtrl.isSelected() ? selectCtrl.deselect() : selectCtrl.select();
+      return self.isSelected() ? self.deselect() : self.select();
     };
     
-    function attachCheckbox() {
-      element.prepend(createCheckbox());
-    }
-    
-    function autoSelect(event) {
-      scope.$applyAsync(function () {
-        selectCtrl.toggle(event);
-      });
+    function autoSelect() {
+      if(attrs.hasOwnProperty('mdAutoSelect') && attrs.mdAutoSelect === '') {
+        return true;
+      }
+      
+      return self.autoSelect;
     }
     
     function createCheckbox() {
@@ -75,39 +79,38 @@ function mdSelect($compile) {
       checkbox.attr('ng-checked', '$mdSelect.isSelected()');
       checkbox.attr('ng-disabled', '$mdSelect.disabled');
       
-      return angular.element('<td class="md-cell">').append($compile(checkbox)(scope));
+      return angular.element('<td class="md-cell md-checkbox-cell">').append($compile(checkbox)(scope));
     }
     
     function disableSelection() {
-      removeCheckbox();
-      element.off('click', autoSelect);
-    }
-    
-    function enableAutoSelect() {
-      if(attrs.hasOwnProperty('mdAutoSelect') && attrs.mdAutoSelect === '') {
-        return true;
-      }
+      Array.prototype.some.call(element.children(), function (child) {
+        return child.classList.contains('md-checkbox-cell') && element[0].removeChild(child);
+      });
       
-      return selectCtrl.autoSelect;
+      if(autoSelect()) {
+        element.off('click', toggle);
+      }
     }
     
     function enableSelection() {
-      attachCheckbox();
+      element.prepend(createCheckbox());
       
-      if(enableAutoSelect()) {
-        element.on('click', autoSelect);
+      if(autoSelect()) {
+        element.on('click', toggle);
       }
     }
     
-    function getIndex(id) {
-      return tableCtrl.selected.indexOf(id ? tableCtrl.keys[id] : selectCtrl.model);
+    function selectEnabled() {
+      return tableCtrl.selectEnabled;
     }
     
-    function removeCheckbox() {
-      element.find('md-checkbox').parent().remove();
+    function toggle(event) {
+      scope.$applyAsync(function () {
+        self.toggle(event);
+      });
     }
     
-    scope.$watch(tableCtrl.selectionEnabled, function (enabled) {
+    scope.$watch(selectEnabled, function (enabled) {
       if(enabled) {
         enableSelection();
       } else {
@@ -115,19 +118,19 @@ function mdSelect($compile) {
       }
     });
     
-    scope.$watch(enableAutoSelect, function (newValue, oldValue) {
+    scope.$watch(autoSelect, function (newValue, oldValue) {
       if(newValue === oldValue) {
         return;
       }
       
-      if(tableCtrl.selectionEnabled() && newValue) {
-        element.on('click', autoSelect);
+      if(tableCtrl.selectEnabled && newValue) {
+        element.on('click', toggle);
       } else {
-        element.off('click', autoSelect);
+        element.off('click', toggle);
       }
     });
     
-    scope.$watch(selectCtrl.isSelected, function (selected) {
+    scope.$watch(self.isSelected, function (selected) {
       return selected ? element.addClass('md-selected') : element.removeClass('md-selected');
     });
   }
@@ -137,13 +140,14 @@ function mdSelect($compile) {
     controller: Controller,
     controllerAs: '$mdSelect',
     link: postLink,
-    require: ['^^mdTable', 'mdSelect'],
+    require: ['mdSelect', '^^mdTable'],
     restrict: 'A',
     scope: {
       id: '@mdSelectId',
       model: '=mdSelect',
       disabled: '=ngDisabled',
       onSelect: '=?mdOnSelect',
+      onDeselect: '=?mdOnDeselect',
       autoSelect: '=mdAutoSelect'
     }
   };

@@ -1,7 +1,7 @@
 angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdEditDialog', '$q', '$timeout', '$scope', function ($http, $mdEditDialog, $q, $timeout, $scope) {
   'use strict';
   
-  $scope.selected = [];
+  $scope.selected = {};
   
   $scope.query = {
     order: 'name',
@@ -59,6 +59,9 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
   
   $http.get('desserts.js').then(function (desserts) {
     $scope.desserts = desserts.data;
+    // $timeout(function () {
+    //   $scope.desserts = desserts.data;
+    // }, 1000);
   });
   
   $scope.editComment = function (event, dessert) {
@@ -102,6 +105,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
     $scope.promise = $timeout(function () {
       
     }, 2000);
+  };
+  
+  $scope.deselect = function (item) {
+    console.log(item.name, 'was deselected');
   };
   
   $scope.log = function (item) {

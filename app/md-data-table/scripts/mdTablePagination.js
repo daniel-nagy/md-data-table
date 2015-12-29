@@ -10,17 +10,29 @@ function mdTablePagination() {
   }
   
   function postLink(scope, element, attrs) {
-    scope.$$label = angular.extend({
+    scope.$label = angular.extend({
       page: 'Page:',
       rowsPerPage: 'Rows per page:',
       of: 'of'
     }, scope.$eval(scope.label) || {});
+    
+    function isPositive(number) {
+      return number > 0;
+    }
+    
+    function isZero(number) {
+      return number === 0 || number === '0';
+    }
     
     function onPaginationChange() {
       if(angular.isFunction(scope.onPaginate)) {
         scope.onPaginate(scope.page, scope.limit);
       }
     }
+    
+    scope.disableNext = function () {
+      return isZero(scope.limit) || !scope.hasNext();
+    };
     
     scope.first = function () {
       scope.page = 1;
@@ -56,7 +68,7 @@ function mdTablePagination() {
     scope.onPageChange = onPaginationChange;
     
     scope.pages = function () {
-      return Math.ceil(scope.total / scope.limit);
+      return Math.ceil(scope.total / (isZero(scope.limit) ? 1 : scope.limit));
     };
     
     scope.previous = function () {
@@ -65,7 +77,7 @@ function mdTablePagination() {
     };
     
     scope.range = function (total) {
-      return new Array(total);
+      return new Array(isFinite(total) && isPositive(total) ? total : 1);
     };
     
     scope.showBoundaryLinks = function () {
@@ -90,7 +102,7 @@ function mdTablePagination() {
       }
       
       // find closest page from previous min
-      scope.page = Math.floor(((scope.page * oldValue - oldValue) + newValue) / newValue);
+      scope.page = Math.floor(((scope.page * oldValue - oldValue) + newValue) / (isZero(newValue) ? 1 : newValue));
       
       onPaginationChange();
     });

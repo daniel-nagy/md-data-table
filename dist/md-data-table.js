@@ -1077,17 +1077,29 @@ function mdTablePagination() {
   }
   
   function postLink(scope, element, attrs) {
-    scope.$$label = angular.extend({
+    scope.$label = angular.extend({
       page: 'Page:',
       rowsPerPage: 'Rows per page:',
       of: 'of'
     }, scope.$eval(scope.label) || {});
+    
+    function isPositive(number) {
+      return number > 0;
+    }
+    
+    function isZero(number) {
+      return number === 0 || number === '0';
+    }
     
     function onPaginationChange() {
       if(angular.isFunction(scope.onPaginate)) {
         scope.onPaginate(scope.page, scope.limit);
       }
     }
+    
+    scope.disableNext = function () {
+      return isZero(scope.limit) || !scope.hasNext();
+    };
     
     scope.first = function () {
       scope.page = 1;
@@ -1123,7 +1135,7 @@ function mdTablePagination() {
     scope.onPageChange = onPaginationChange;
     
     scope.pages = function () {
-      return Math.ceil(scope.total / scope.limit);
+      return Math.ceil(scope.total / (isZero(scope.limit) ? 1 : scope.limit));
     };
     
     scope.previous = function () {
@@ -1132,7 +1144,7 @@ function mdTablePagination() {
     };
     
     scope.range = function (total) {
-      return new Array(total);
+      return new Array(isFinite(total) && isPositive(total) ? total : 1);
     };
     
     scope.showBoundaryLinks = function () {
@@ -1157,7 +1169,7 @@ function mdTablePagination() {
       }
       
       // find closest page from previous min
-      scope.page = Math.floor(((scope.page * oldValue - oldValue) + newValue) / newValue);
+      scope.page = Math.floor(((scope.page * oldValue - oldValue) + newValue) / (isZero(newValue) ? 1 : newValue));
       
       onPaginationChange();
     });
@@ -1205,19 +1217,19 @@ angular.module('md.table.templates', ['md-table-pagination.html', 'md-table-prog
 
 angular.module('md-table-pagination.html', []).run(['$templateCache', function($templateCache) {
   $templateCache.put('md-table-pagination.html',
-    '<span class="label" ng-show="showPageSelect()">{{$$label[\'page\']}}</span>\n' +
+    '<span class="label" ng-show="showPageSelect()">{{$label[\'page\']}}</span>\n' +
     '\n' +
     '<md-select class="md-table-select" ng-show="showPageSelect()" ng-model="page" md-container-class="md-pagination-select" ng-change="onPageChange()" aria-label="Page">\n' +
     '  <md-option ng-repeat="num in range(pages()) track by $index" ng-value="$index + 1">{{$index + 1}}</md-option>\n' +
     '</md-select>\n' +
     '\n' +
-    '<span class="label">{{$$label[\'rowsPerPage\']}}</span>\n' +
+    '<span class="label">{{$label[\'rowsPerPage\']}}</span>\n' +
     '\n' +
     '<md-select class="md-table-select" ng-model="limit" md-container-class="md-pagination-select" aria-label="Rows" placeholder="{{options ? options[0] : 5}}">\n' +
     '  <md-option ng-repeat="rows in options ? options : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>\n' +
     '</md-select>\n' +
     '\n' +
-    '<span class="label">{{min() + 1}} - {{max()}} {{$$label[\'of\']}} {{total}}</span>\n' +
+    '<span class="label">{{min() + 1}} - {{max()}} {{$label[\'of\']}} {{total}}</span>\n' +
     '\n' +
     '<md-button class="md-icon-button" type="button" ng-if="showBoundaryLinks()" ng-click="first()" ng-disabled="!hasPrevious()" aria-label="First">\n' +
     '  <md-icon md-svg-icon="navigate-first.svg"></md-icon>\n' +
@@ -1225,10 +1237,10 @@ angular.module('md-table-pagination.html', []).run(['$templateCache', function($
     '<md-button class="md-icon-button" type="button" ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">\n' +
     '  <md-icon md-svg-icon="navigate-before.svg"></md-icon>\n' +
     '</md-button>\n' +
-    '<md-button class="md-icon-button" type="button" ng-click="next()" ng-disabled="!hasNext()" aria-label="Next">\n' +
+    '<md-button class="md-icon-button" type="button" ng-click="next()" ng-disabled="disableNext()" aria-label="Next">\n' +
     '  <md-icon md-svg-icon="navigate-next.svg"></md-icon>\n' +
     '</md-button>\n' +
-    '<md-button class="md-icon-button" type="button" ng-if="showBoundaryLinks()" ng-click="last()" ng-disabled="!hasNext()" aria-label="Last">\n' +
+    '<md-button class="md-icon-button" type="button" ng-if="showBoundaryLinks()" ng-click="last()" ng-disabled="disableNext()" aria-label="Last">\n' +
     '  <md-icon md-svg-icon="navigate-last.svg"></md-icon>\n' +
     '</md-button>');
 }]);

@@ -155,6 +155,11 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 
 ## Change Log
 
+#### Version 0.9.3
+###### December 29, 2015
+
+* A little bit of validation in the pagination directive to avoid things like divide by zero.
+
 #### Version 0.9.2
 ###### December 28, 2015
 
@@ -470,7 +475,7 @@ You may use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) 
 | `mdBoundaryLinks` | `null|expression` | Displays first and last page navigation links |
 | `mdLabel`         | `object`          | Change the pagination label. See more below. |
 | `mdLimit`         | `integer`         | A row limit. |
-| `mdPage`          | `integer`         | Page number. The page number starts at one; not zero. |
+| `mdPage`          | `integer`         | Page number. Pages are not zero indexed. The directive assumes the first page is one. |
 | `mdOnPaginate`    | `function`        | A callback function for when the page or limit changes. The page is passed as the first argument and the limit is passed as the second argument. |
 | `mdOptions`       | `array`           | Row limit options. The default is `[5, 10, 15]` |
 | `mdTotal`         | `integer`         | Total number of items. |
@@ -503,6 +508,11 @@ I used Google translate so if the translations are wrong please fix them and mak
 <!-- and your pagination element will look something like... -->
 <md-table-pagination md-limit="myLimit" md-page="myPage" md-total="{{array.length}}"></md-table-pagination>
 ```
+
+**My Pagination Isn't Working?!**
+
+* Make sure you pass `md-page`, `md-limit`, and `md-total` to the directive and that they are finite numbers.
+* Pages are not zero indexed. The directive will assume pages start at one. If your query language expects pages to be zero indexed then just subtract one before making the query.
 
 > It is important to know that the call back expression will be executed before the next digest cycle, meaning your local scope variables will still have the old values.
 

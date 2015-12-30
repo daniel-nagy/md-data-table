@@ -6,10 +6,7 @@ function mdTableProgress() {
 
   function postLink(scope, element, attrs, tableCtrl) {
     scope.columnCount = tableCtrl.columnCount;
-    
-    scope.deferred = function () {
-      return !!tableCtrl.queue.length;
-    };
+    scope.deferred = tableCtrl.waitingOnPromise;
   }
 
   return {

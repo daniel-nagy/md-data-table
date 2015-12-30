@@ -76,7 +76,7 @@ function mdColumn($compile) {
     }
     
     function updateColumn(index, column) {
-      tableCtrl.columns[index] = column;
+      tableCtrl.$$columns[index] = column;
       
       if(column.numeric) {
         element.addClass('md-numeric');

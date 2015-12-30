@@ -50,8 +50,8 @@ function mdHead($compile) {
       });
     }
     
-    function selectEnabled() {
-      return tableCtrl.selectEnabled;
+    function enableRowSelection() {
+      return tableCtrl.$$rowSelect;
     }
     
     scope.allSelected = function () {
@@ -82,8 +82,8 @@ function mdHead($compile) {
       });
     };
     
-    scope.$watch(selectEnabled, function (enabled) {
-      if(enabled) {
+    scope.$watch(enableRowSelection, function (enable) {
+      if(enable) {
         attachCheckbox();
       } else {
         removeCheckbox();

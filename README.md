@@ -72,10 +72,7 @@ angular.module('myApp', [require('angular-material-data-table')]);
 angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope', function ($nutrition, $scope) {
   'use strict';
   
-  // In this example we are paginating items on the server, therefore we need to use the
-  // md-select-id attribute and an object as our model
-  $scope.selected = {};
-  $scope.selected.length = 0;
+  $scope.selected = [];
   
   $scope.query = {
     order: 'name',
@@ -97,14 +94,6 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
   
   $scope.onReorder = function (order) {
     getDesserts(angular.extend({}, $scope.query, {order: order}));
-  };
-  
-  $scope.onDeselect = function () {
-    $scope.selected.length--;
-  };
-  
-  $scope.onSelect = function () {
-    $scope.selected.length++;
   };
 
 }]);
@@ -135,7 +124,7 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
       </tr>
     </thead>
     <tbody md-body>
-      <tr md-row md-select="dessert" md-select-id="{{dessert.name}}" md-auto-select md-on-select="onSelect" md-on-deselect="onDeselect" ng-repeat="dessert in desserts.data">
+      <tr md-row md-select="dessert" md-select-id="{{dessert.name}}" md-auto-select ng-repeat="dessert in desserts.data">
         <td md-cell>{{dessert.name}}</td>
         <td md-cell>{{dessert.calories.value}}</td>
         <td md-cell>{{dessert.fat.value | number: 1}}</td>
@@ -154,6 +143,13 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 ```
 
 ## Change Log
+
+#### Version 0.9.4
+###### December 29, 2015
+
+So I kinda changed row selection again... we're back to using arrays :stuck_out_tongue_closed_eyes:. The `mdTable` directive now has a hash table and will watch the model for changes. The `mdSelect` directive will register a callback to the `mdTable` directive for when items are added or removed. The `mdTable` directive will notify the `mdSelect` directive and the `mdSelect` directive will update the hash table in the `mdTable` directive. You can now add and remove items with unique identifiers to the model and the directive will pick up on these changes.
+
+Another benefit is the `mdSelect` directive can now update the `mdTable` model if its own model is not a reference to the selected item. Therefore, what the user sees in the table will always be the same as the selected item.
 
 #### Version 0.9.3
 ###### December 29, 2015
@@ -518,13 +514,7 @@ I used Google translate so if the translations are wrong please fix them and mak
 
 ### Row Selection
 
-It has been largely debated how row selection should work. I decided the only option was to please everybody. The only thing you can't do is select the entire collection at once unless you display the entire collection at once.
-
 By default, selected items will persist even on pagination change. For this to work with items being fetch from the server you will need to provide a unique identifier to the directive, probably the primary key of your data set.
-
-If you provide a unique identifier for a row using the `md-select-id` attribute then you must use an object model. When an item is selected, a new property will be defined on the model where the property name is the value of the `md-select-id` attribute and the value is the selected item.
-
-If you do not specify a unique identifier then you should use an array model. When an item is selected it will be pushed onto the array.
 
 If at anytime you want to add or remove items from the model in your controller you may do so.
 
@@ -535,8 +525,8 @@ If at anytime you want to add or remove items from the model in your controller 
 | `mdSelect`     | `mdRow`   | `any`             | The item to be selected. |
 | `mdSelectId`   | `mdRow`   | `string`          | A unique identifier for the selected item. This is necessary to match items that may not be strictly equal. For example, if items are swapped from the server. |
 | `mdAutoSelect` | `mdRow`   | `null|expression` | Select a row by clicking anywhere in the row. |
-| `mdOnSelect`   | `mdRow`   | `function`        | A callback function for when an item is selected. The callback will receive the item as the first argument and the key as the second argument. |
-| `mdOnDeselect` | `mdRow`   | `function`        | A callback function for when an item is deselected. The callback will receive the item as the first argument and the key as the second argument. |
+| `mdOnSelect`   | `mdRow`   | `function`        | A callback function for when an item is selected. The item will be passed as an argument to the callback. |
+| `mdOnDeselect` | `mdRow`   | `function`        | A callback function for when an item is deselected. The item will be passed as an argument to the callback. |
 | `ngDisabled`   | `mdRow`   | `expression`      | Conditionally disable row selection. |
 
 **Example: Row Selection From The Live Demo.**
@@ -550,8 +540,6 @@ If at anytime you want to add or remove items from the model in your controller 
 ```javascript
 $scope.onPaginate = function () {
   $scope.selected = [];
-  // or if you have unique identifiers
-  // $scope.selected = {};
 }
 ```
 

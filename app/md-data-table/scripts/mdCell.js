@@ -44,7 +44,7 @@ function mdCell() {
     cellCtrl.getTable = tableCtrl.getElement;
     
     function getColumn() {
-      return tableCtrl.columns[getIndex()];
+      return tableCtrl.$$columns[getIndex()];
     }
     
     function getIndex() {

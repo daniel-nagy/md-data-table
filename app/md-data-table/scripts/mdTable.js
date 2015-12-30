@@ -2,6 +2,30 @@
 
 angular.module('md.data.table').directive('mdTable', mdTable);
 
+function Hash() {
+  var keys = {};
+    
+  this.equals = function (key, item) {
+    return keys[key] === item;
+  };
+
+  this.get = function (key) {
+    return keys[key];
+  };
+  
+  this.has = function (key) {
+    return keys.hasOwnProperty(key);
+  };
+
+  this.purge = function (key) {
+    delete keys[key];
+  };
+  
+  this.update = function (key, item) {
+    keys[key] = item;
+  };
+}
+
 function mdTable() {
   
   function compile(tElement, tAttrs) {
@@ -19,31 +43,44 @@ function mdTable() {
   
   function Controller($attrs, $element, $q, $scope) {
     var self = this;
+    var queue = [];
+    var watchListener;
+    var modelChangeListeners = [];
     
-    self.queue = [];
-    self.columns = {};
+    self.$$hash = new Hash();
+    self.$$columns = {};
     
-    function hasKeys(rows) {
-      return rows.some(function(row) {
-        return Array.prototype.some.call(row.attributes, function (attr) {
-          return $attrs.$normalize(attr.name) === 'mdSelectId';
+    function enableRowSelection() {
+      self.$$rowSelect = true;
+      
+      watchListener = $scope.$watchCollection('$mdTable.selected', function (selected) {
+        modelChangeListeners.forEach(function (listener) {
+          listener(selected);
         });
       });
+      
+      $element.addClass('md-row-select');
+    }
+    
+    function disableRowSelection() {
+      self.$$rowSelect = false;
+      
+      if(angular.isFunction(watchListener)) {
+        watchListener();
+      }
+      
+      $element.removeClass('md-row-select');
     }
     
     function resolvePromises() {
-      if(!self.queue.length) {
+      if(!queue.length) {
         return $scope.$applyAsync();
       }
       
-      self.queue[0].then(function () {
-        self.queue.shift();
+      queue[0].then(function () {
+        queue.shift();
         resolvePromises();
       });
-    }
-    
-    function rows() {
-      return $element.prop('rows').length;
     }
     
     function rowSelect() {
@@ -54,66 +91,46 @@ function mdTable() {
       return self.rowSelect;
     }
     
-    function validate() {
-      return validateModel() && (angular.isArray(self.selected) ? validateArray() : validateObject());
-    }
-    
-    function validateArray() {
-      var rows = self.getBodyRows();
-      
-      if(rows.length && hasKeys(rows)) {
-        return console.error('IDs will not work with arrays. Please use an object instead.');
-      }
-      
-      return true;
-    }
-    
     function validateModel() {
       if(!self.selected) {
-        return console.error('Row selection model is undefined.');
+        return console.error('Row selection: ngModel is not defined.');
       }
       
-      if(!angular.isObject(self.selected)) {
-        return console.error('Row selection model is an invalid type.');
-      }
-      
-      return true;
-    }
-    
-    function validateObject() {
-      var rows = self.getBodyRows();
-      
-      if(rows.length && !hasKeys(rows)) {
-        return console.error('Please use an array if you are not using IDs.');
+      if(!angular.isArray(self.selected)) {
+        return console.error('Row selection: Expected an array. Recived ' + typeof self.selected + '.');
       }
       
       return true;
     }
     
     self.columnCount = function () {
-      return Array.prototype.reduce.call($element.prop('rows'), function (columns, row) {
-        if(!row.classList.contains('md-row') || row.classList.contains('ng-leave')) {
-          return columns;
-        }
-        
-        return row.cells.length > columns ? row.cells.length : columns;
+      return self.getRows($element[0]).reduce(function (count, row) {
+        return row.cells.length > count ? row.cells.length : count;
       }, 0);
     };
     
-    self.getRows = function (collection) {
-      return Array.prototype.reduce.call(collection, function (result, group) {
-        return result.concat(Array.prototype.filter.call(group.rows, function (row) {
-          return !row.classList.contains('ng-leave');
-        }));
-      }, []);
+    self.getRows = function (element) {
+      return Array.prototype.filter.call(element.rows, function (row) {
+        return !row.classList.contains('ng-leave');
+      });
     };
     
     self.getBodyRows = function () {
-      return self.getRows($element.prop('tBodies'));
+      return Array.prototype.reduce.call($element.prop('tBodies'), function (result, tbody) {
+        return result.concat(self.getRows(tbody));
+      }, []);
     };
     
     self.getElement = function () {
       return $element;
+    };
+    
+    self.getHeaderRows = function () {
+      return self.getRows($element.prop('tHead'));
+    };
+    
+    self.waitingOnPromise = function () {
+      return !!queue.length;
     };
     
     self.queuePromise = function (promise) {
@@ -121,24 +138,34 @@ function mdTable() {
         return;
       }
       
-      if(self.queue.push(angular.isArray(promise) ? $q.all(promise) : $q.when(promise)) === 1) {
+      if(queue.push(angular.isArray(promise) ? $q.all(promise) : $q.when(promise)) === 1) {
         resolvePromises();
       }
     };
     
-    $scope.$watchGroup([rowSelect, rows], function (enable) {
-      self.selectEnabled = enable[0] && !!validate();
+    self.registerModelChangeListener = function (listener) {
+      modelChangeListeners.push(listener);
+    };
+    
+    self.removeModelChangeListener = function (listener) {
+      var index = modelChangeListeners.indexOf(listener);
       
-      if(self.selectEnabled) {
-        $element.addClass('md-row-select');
-      } else {
-        $element.removeClass('md-row-select');
+      if(index !== -1) {
+        modelChangeListeners.splice(index, 1);
       }
-    });
+    };
     
     if($attrs.hasOwnProperty('mdProgress')) {
       $scope.$watch('$mdTable.progress', self.queuePromise);
     }
+    
+    $scope.$watch(rowSelect, function (enable) {
+      if(enable && !!validateModel()) {
+        enableRowSelection();
+      } else {
+        disableRowSelection();
+      }
+    });
   }
   
   Controller.$inject = ['$attrs', '$element', '$q', '$scope'];

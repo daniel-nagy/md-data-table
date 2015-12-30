@@ -10,8 +10,8 @@ function mdRow() {
   }
   
   function postLink(scope, element, attrs, tableCtrl) {
-    function selectEnabled() {
-      return tableCtrl.selectEnabled;
+    function enableRowSelection() {
+      return tableCtrl.$$rowSelect;
     }
     
     function isBodyRow() {
@@ -19,8 +19,8 @@ function mdRow() {
     }
     
     if(isBodyRow()) {
-      scope.$watch(selectEnabled, function (enabled) {
-        if(enabled && !attrs.mdSelect) {
+      scope.$watch(enableRowSelection, function (enable) {
+        if(enable && !attrs.mdSelect) {
           console.error('Missing md-select attribute on table row');
         }
       });

@@ -61,7 +61,7 @@ function mdCell() {
     cellCtrl.getTable = tableCtrl.getElement;
     
     function getColumn() {
-      return tableCtrl.columns[getIndex()];
+      return tableCtrl.$$columns[getIndex()];
     }
     
     function getIndex() {
@@ -165,7 +165,7 @@ function mdColumn($compile) {
     }
     
     function updateColumn(index, column) {
-      tableCtrl.columns[index] = column;
+      tableCtrl.$$columns[index] = column;
       
       if(column.numeric) {
         element.addClass('md-numeric');
@@ -664,8 +664,8 @@ function mdHead($compile) {
       });
     }
     
-    function selectEnabled() {
-      return tableCtrl.selectEnabled;
+    function enableRowSelection() {
+      return tableCtrl.$$rowSelect;
     }
     
     scope.allSelected = function () {
@@ -696,8 +696,8 @@ function mdHead($compile) {
       });
     };
     
-    scope.$watch(selectEnabled, function (enabled) {
-      if(enabled) {
+    scope.$watch(enableRowSelection, function (enable) {
+      if(enable) {
         attachCheckbox();
       } else {
         removeCheckbox();
@@ -731,8 +731,8 @@ function mdRow() {
   }
   
   function postLink(scope, element, attrs, tableCtrl) {
-    function selectEnabled() {
-      return tableCtrl.selectEnabled;
+    function enableRowSelection() {
+      return tableCtrl.$$rowSelect;
     }
     
     function isBodyRow() {
@@ -740,8 +740,8 @@ function mdRow() {
     }
     
     if(isBodyRow()) {
-      scope.$watch(selectEnabled, function (enabled) {
-        if(enabled && !attrs.mdSelect) {
+      scope.$watch(enableRowSelection, function (enable) {
+        if(enable && !attrs.mdSelect) {
           console.error('Missing md-select attribute on table row');
         }
       });
@@ -768,18 +768,31 @@ function mdSelect($compile) {
     var self = ctrls.shift();
     var tableCtrl = ctrls.shift();
     
+    if(tableCtrl.$$rowSelect && self.id && tableCtrl.$$hash.has(self.id)) {
+      var index = tableCtrl.selected.indexOf(tableCtrl.$$hash.get(self.id));
+      
+      // if the item is no longer selected remove it
+      if(index === -1) {
+        tableCtrl.$$hash.purge(self.id);
+      }
+      
+      // if the item is not a reference to the current model update the reference
+      else if(!tableCtrl.$$hash.equals(self.id, self.model)) {
+        tableCtrl.$$hash.update(self.id, self.model);
+        tableCtrl.selected.splice(index, 1, self.model);
+      }
+    }
+    
     self.isSelected = function () {
-      if(!tableCtrl.selectEnabled || self.disabled) {
+      if(!tableCtrl.$$rowSelect || self.disabled) {
         return false;
       }
       
-      if(angular.isArray(tableCtrl.selected)) {
-        return tableCtrl.selected.indexOf(self.model) !== -1;
+      if(self.id) {
+        return tableCtrl.$$hash.has(self.id);
       }
       
-      if(angular.isObject(tableCtrl.selected)) {
-        return self.id && tableCtrl.selected.hasOwnProperty(self.id);
-      }
+      return tableCtrl.selected.indexOf(self.model) !== -1;
     };
     
     self.select = function () {
@@ -787,26 +800,18 @@ function mdSelect($compile) {
         return;
       }
       
-      if(angular.isArray(tableCtrl.selected)) {
-        tableCtrl.selected.push(self.model);
-      } else {
-        tableCtrl.selected[self.id] = self.model;
-      }
+      tableCtrl.selected.push(self.model);
       
       if(angular.isFunction(self.onSelect)) {
-        self.onSelect(self.model, self.id);
+        self.onSelect(self.model);
       }
     };
     
     self.deselect = function () {
-      if(angular.isArray(tableCtrl.selected)) {
-        tableCtrl.selected.splice(tableCtrl.selected.indexOf(self.model), 1);
-      } else {
-        delete tableCtrl.selected[self.id];
-      }
+      tableCtrl.selected.splice(tableCtrl.selected.indexOf(self.model), 1);
       
       if(angular.isFunction(self.onDeselect)) {
-        self.onDeselect(self.model, self.id);
+        self.onDeselect(self.model);
       }
     };
     
@@ -855,8 +860,28 @@ function mdSelect($compile) {
       }
     }
     
-    function selectEnabled() {
-      return tableCtrl.selectEnabled;
+    function enableRowSelection() {
+      return tableCtrl.$$rowSelect;
+    }
+    
+    function onSelectChange(selected) {
+      if(!self.id) {
+        return;
+      }
+      
+      if(tableCtrl.$$hash.has(self.id)) {
+        // check if the item has been deselected
+        if(selected.indexOf(tableCtrl.$$hash.get(self.id)) === -1) {
+          tableCtrl.$$hash.purge(self.id);
+        }
+        
+        return;
+      }
+      
+      // check if the item has been selected
+      if(selected.indexOf(self.model) !== -1) {
+        tableCtrl.$$hash.update(self.id, self.model);
+      }
     }
     
     function toggle(event) {
@@ -865,8 +890,8 @@ function mdSelect($compile) {
       });
     }
     
-    scope.$watch(selectEnabled, function (enabled) {
-      if(enabled) {
+    scope.$watch(enableRowSelection, function (enable) {
+      if(enable) {
         enableSelection();
       } else {
         disableSelection();
@@ -878,15 +903,21 @@ function mdSelect($compile) {
         return;
       }
       
-      if(tableCtrl.selectEnabled && newValue) {
+      if(tableCtrl.$$rowSelect && newValue) {
         element.on('click', toggle);
       } else {
         element.off('click', toggle);
       }
     });
     
-    scope.$watch(self.isSelected, function (selected) {
-      return selected ? element.addClass('md-selected') : element.removeClass('md-selected');
+    scope.$watch(self.isSelected, function (isSelected) {
+      return isSelected ? element.addClass('md-selected') : element.removeClass('md-selected');
+    });
+    
+    tableCtrl.registerModelChangeListener(onSelectChange);
+    
+    element.on('$destroy', function () {
+      tableCtrl.removeModelChangeListener(onSelectChange);
     });
   }
   
@@ -912,6 +943,30 @@ mdSelect.$inject = ['$compile'];
 
 angular.module('md.data.table').directive('mdTable', mdTable);
 
+function Hash() {
+  var keys = {};
+    
+  this.equals = function (key, item) {
+    return keys[key] === item;
+  };
+
+  this.get = function (key) {
+    return keys[key];
+  };
+  
+  this.has = function (key) {
+    return keys.hasOwnProperty(key);
+  };
+
+  this.purge = function (key) {
+    delete keys[key];
+  };
+  
+  this.update = function (key, item) {
+    keys[key] = item;
+  };
+}
+
 function mdTable() {
   
   function compile(tElement, tAttrs) {
@@ -929,31 +984,44 @@ function mdTable() {
   
   function Controller($attrs, $element, $q, $scope) {
     var self = this;
+    var queue = [];
+    var watchListener;
+    var modelChangeListeners = [];
     
-    self.queue = [];
-    self.columns = {};
+    self.$$hash = new Hash();
+    self.$$columns = {};
     
-    function hasKeys(rows) {
-      return rows.some(function(row) {
-        return Array.prototype.some.call(row.attributes, function (attr) {
-          return $attrs.$normalize(attr.name) === 'mdSelectId';
+    function enableRowSelection() {
+      self.$$rowSelect = true;
+      
+      watchListener = $scope.$watchCollection('$mdTable.selected', function (selected) {
+        modelChangeListeners.forEach(function (listener) {
+          listener(selected);
         });
       });
+      
+      $element.addClass('md-row-select');
+    }
+    
+    function disableRowSelection() {
+      self.$$rowSelect = false;
+      
+      if(angular.isFunction(watchListener)) {
+        watchListener();
+      }
+      
+      $element.removeClass('md-row-select');
     }
     
     function resolvePromises() {
-      if(!self.queue.length) {
+      if(!queue.length) {
         return $scope.$applyAsync();
       }
       
-      self.queue[0].then(function () {
-        self.queue.shift();
+      queue[0].then(function () {
+        queue.shift();
         resolvePromises();
       });
-    }
-    
-    function rows() {
-      return $element.prop('rows').length;
     }
     
     function rowSelect() {
@@ -964,66 +1032,46 @@ function mdTable() {
       return self.rowSelect;
     }
     
-    function validate() {
-      return validateModel() && (angular.isArray(self.selected) ? validateArray() : validateObject());
-    }
-    
-    function validateArray() {
-      var rows = self.getBodyRows();
-      
-      if(rows.length && hasKeys(rows)) {
-        return console.error('IDs will not work with arrays. Please use an object instead.');
-      }
-      
-      return true;
-    }
-    
     function validateModel() {
       if(!self.selected) {
-        return console.error('Row selection model is undefined.');
+        return console.error('Row selection: ngModel is not defined.');
       }
       
-      if(!angular.isObject(self.selected)) {
-        return console.error('Row selection model is an invalid type.');
-      }
-      
-      return true;
-    }
-    
-    function validateObject() {
-      var rows = self.getBodyRows();
-      
-      if(rows.length && !hasKeys(rows)) {
-        return console.error('Please use an array if you are not using IDs.');
+      if(!angular.isArray(self.selected)) {
+        return console.error('Row selection: Expected an array. Recived ' + typeof self.selected + '.');
       }
       
       return true;
     }
     
     self.columnCount = function () {
-      return Array.prototype.reduce.call($element.prop('rows'), function (columns, row) {
-        if(!row.classList.contains('md-row') || row.classList.contains('ng-leave')) {
-          return columns;
-        }
-        
-        return row.cells.length > columns ? row.cells.length : columns;
+      return self.getRows($element[0]).reduce(function (count, row) {
+        return row.cells.length > count ? row.cells.length : count;
       }, 0);
     };
     
-    self.getRows = function (collection) {
-      return Array.prototype.reduce.call(collection, function (result, group) {
-        return result.concat(Array.prototype.filter.call(group.rows, function (row) {
-          return !row.classList.contains('ng-leave');
-        }));
-      }, []);
+    self.getRows = function (element) {
+      return Array.prototype.filter.call(element.rows, function (row) {
+        return !row.classList.contains('ng-leave');
+      });
     };
     
     self.getBodyRows = function () {
-      return self.getRows($element.prop('tBodies'));
+      return Array.prototype.reduce.call($element.prop('tBodies'), function (result, tbody) {
+        return result.concat(self.getRows(tbody));
+      }, []);
     };
     
     self.getElement = function () {
       return $element;
+    };
+    
+    self.getHeaderRows = function () {
+      return self.getRows($element.prop('tHead'));
+    };
+    
+    self.waitingOnPromise = function () {
+      return !!queue.length;
     };
     
     self.queuePromise = function (promise) {
@@ -1031,24 +1079,34 @@ function mdTable() {
         return;
       }
       
-      if(self.queue.push(angular.isArray(promise) ? $q.all(promise) : $q.when(promise)) === 1) {
+      if(queue.push(angular.isArray(promise) ? $q.all(promise) : $q.when(promise)) === 1) {
         resolvePromises();
       }
     };
     
-    $scope.$watchGroup([rowSelect, rows], function (enable) {
-      self.selectEnabled = enable[0] && !!validate();
+    self.registerModelChangeListener = function (listener) {
+      modelChangeListeners.push(listener);
+    };
+    
+    self.removeModelChangeListener = function (listener) {
+      var index = modelChangeListeners.indexOf(listener);
       
-      if(self.selectEnabled) {
-        $element.addClass('md-row-select');
-      } else {
-        $element.removeClass('md-row-select');
+      if(index !== -1) {
+        modelChangeListeners.splice(index, 1);
       }
-    });
+    };
     
     if($attrs.hasOwnProperty('mdProgress')) {
       $scope.$watch('$mdTable.progress', self.queuePromise);
     }
+    
+    $scope.$watch(rowSelect, function (enable) {
+      if(enable && !!validateModel()) {
+        enableRowSelection();
+      } else {
+        disableRowSelection();
+      }
+    });
   }
   
   Controller.$inject = ['$attrs', '$element', '$q', '$scope'];
@@ -1198,10 +1256,7 @@ function mdTableProgress() {
 
   function postLink(scope, element, attrs, tableCtrl) {
     scope.columnCount = tableCtrl.columnCount;
-    
-    scope.deferred = function () {
-      return !!tableCtrl.queue.length;
-    };
+    scope.deferred = tableCtrl.waitingOnPromise;
   }
 
   return {

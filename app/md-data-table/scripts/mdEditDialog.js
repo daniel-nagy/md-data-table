@@ -67,7 +67,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     
     body.prepend(backdrop).append(element.addClass('md-whiteframe-1dp'));
     
-    positionDialog(element, options.targetEvent.target);
+    positionDialog(element, options.targetEvent.currentTarget);
     
     if(options.focusOnOpen) {
       var autofocus = $mdUtil.findFocusTarget(element);
@@ -336,7 +336,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
       return logError('options.targetEvent is required to align the dialog with the table cell.');
     }
     
-    if(!options.targetEvent.target.classList.contains('md-cell')) {
+    if(!options.targetEvent.currentTarget.classList.contains('md-cell')) {
       return logError('The event target must be a table cell.');
     }
     

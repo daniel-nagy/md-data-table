@@ -287,7 +287,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     
     body.prepend(backdrop).append(element.addClass('md-whiteframe-1dp'));
     
-    positionDialog(element, options.targetEvent.target);
+    positionDialog(element, options.targetEvent.currentTarget);
     
     if(options.focusOnOpen) {
       var autofocus = $mdUtil.findFocusTarget(element);
@@ -556,7 +556,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
       return logError('options.targetEvent is required to align the dialog with the table cell.');
     }
     
-    if(!options.targetEvent.target.classList.contains('md-cell')) {
+    if(!options.targetEvent.currentTarget.classList.contains('md-cell')) {
       return logError('The event target must be a table cell.');
     }
     
@@ -599,6 +599,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
 }
 
 mdEditDialog.$inject = ['$compile', '$controller', '$document', '$mdUtil', '$q', '$rootScope', '$templateCache', '$templateRequest', '$window'];
+
 
 angular.module('md.data.table').directive('mdFoot', mdFoot);
 
@@ -759,7 +760,7 @@ angular.module('md.data.table').directive('mdSelect', mdSelect);
 
 function mdSelect($compile) {
   
-  // empty controller to be bind scope properties to
+  // empty controller to bind scope properties to
   function Controller() {
     
   }
@@ -973,7 +974,7 @@ function mdTable() {
     tElement.addClass('md-table');
     
     if(tAttrs.hasOwnProperty('mdProgress')) {
-      var body = tElement.find('tbody').eq(0)[0];
+      var body = tElement.find('tbody')[0];
       var progress = angular.element('<thead class="md-table-progress">');
       
       if(body) {

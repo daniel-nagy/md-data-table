@@ -144,6 +144,11 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 
 ## Change Log
 
+#### Version 0.9.5
+###### December 29, 2015
+
+* Merge pull request #230 from [@pdore-netfore](https://github.com/pdore-netfore) to use `currentTarget` instead of `target`.
+
 #### Version 0.9.4
 ###### December 29, 2015
 

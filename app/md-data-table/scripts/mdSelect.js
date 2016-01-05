@@ -4,7 +4,7 @@ angular.module('md.data.table').directive('mdSelect', mdSelect);
 
 function mdSelect($compile) {
   
-  // empty controller to be bind scope properties to
+  // empty controller to bind scope properties to
   function Controller() {
     
   }

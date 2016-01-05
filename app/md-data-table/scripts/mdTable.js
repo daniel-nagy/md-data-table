@@ -32,7 +32,7 @@ function mdTable() {
     tElement.addClass('md-table');
     
     if(tAttrs.hasOwnProperty('mdProgress')) {
-      var body = tElement.find('tbody').eq(0)[0];
+      var body = tElement.find('tbody')[0];
       var progress = angular.element('<thead class="md-table-progress">');
       
       if(body) {

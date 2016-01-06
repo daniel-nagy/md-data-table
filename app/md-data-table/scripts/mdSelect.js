@@ -84,7 +84,7 @@ function mdSelect($compile) {
       checkbox.attr('ng-checked', '$mdSelect.isSelected()');
       checkbox.attr('ng-disabled', '$mdSelect.disabled');
 
-      var $elem = angular.element('<td class="md-cell md-checkbox-cell">');
+      var cell = angular.element('<td class="md-cell md-checkbox-cell">');
 
       if (self.rowAvatar) {
           var avatar = angular.element('<img class="md-avatar">');
@@ -96,10 +96,10 @@ function mdSelect($compile) {
 
           element.addClass('md-row-avatar');
 
-          $elem = $elem.append($compile(avatar)(scope));
+          cell.append($compile(avatar)(scope));
       }
       
-      return $elem.append($compile(checkbox)(scope));
+      return cell.append($compile(checkbox)(scope));
     }
     
     function disableSelection() {

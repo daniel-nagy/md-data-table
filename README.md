@@ -533,11 +533,18 @@ If at anytime you want to add or remove items from the model in your controller 
 | `mdOnSelect`   | `mdRow`   | `function`        | A callback function for when an item is selected. The item will be passed as an argument to the callback. |
 | `mdOnDeselect` | `mdRow`   | `function`        | A callback function for when an item is deselected. The item will be passed as an argument to the callback. |
 | `ngDisabled`   | `mdRow`   | `expression`      | Conditionally disable row selection. |
+| `mdRowAvatar`  | `mdRow`   | `string`          | Optionally add an avatar to each row. The avatar will show in place of the checkbox until hovering over the row. You should specify a fallback image for cases when the data field is null. |
 
 **Example: Row Selection From The Live Demo.**
 
 ```html
 <tr md-row md-select="dessert" md-select-id="{{dessert.name}}" md-auto-select ng-repeat="dessert in desserts.data">
+```
+
+**Example: Adding an avatar.**
+
+```html
+<tr md-row md-select="dessert" md-select-id="{{dessert.name}}" md-row-avatar="dessert.picture || 'path/to/fallback/image.png'" md-auto-select ng-repeat="dessert in desserts.data">
 ```
 
 **Example: Clearing Selected Items On Pagination**

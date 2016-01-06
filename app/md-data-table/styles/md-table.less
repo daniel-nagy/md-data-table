@@ -135,6 +135,29 @@ table.md-table {
     &.md-selected {
       background-color: @md-dark-row-select;
     }
+
+    &.md-row-avatar {
+      .md-checkbox-cell { position: relative; }
+
+      md-checkbox { display: none; }
+
+      .md-avatar {
+        display: inline;
+        width: 28px;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 24px;
+        margin-left: -4px;
+        margin-top: -14px;
+      }
+
+      &:hover,
+      &.md-selected {
+        md-checkbox { display:block; }
+        .md-avatar { display:none; }
+      }
+    }
   }
   
   &.md-row-select td.md-cell,

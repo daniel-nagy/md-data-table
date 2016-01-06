@@ -288,6 +288,30 @@ table.md-table.md-row-select tbody.md-body > tr.md-row:not([disabled]):hover {
 table.md-table.md-row-select tbody.md-body > tr.md-row.md-selected {
   background-color: #f5f5f5;
 }
+table.md-table.md-row-select tbody.md-body > tr.md-row.md-row-avatar .md-checkbox-cell {
+  position: relative;
+}
+table.md-table.md-row-select tbody.md-body > tr.md-row.md-row-avatar md-checkbox {
+  display: none;
+}
+table.md-table.md-row-select tbody.md-body > tr.md-row.md-row-avatar .md-avatar {
+  display: inline;
+  width: 28px;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 24px;
+  margin-left: -4px;
+  margin-top: -14px;
+}
+table.md-table.md-row-select tbody.md-body > tr.md-row.md-row-avatar:hover md-checkbox,
+table.md-table.md-row-select tbody.md-body > tr.md-row.md-row-avatar.md-selected md-checkbox {
+  display: block;
+}
+table.md-table.md-row-select tbody.md-body > tr.md-row.md-row-avatar:hover .md-avatar,
+table.md-table.md-row-select tbody.md-body > tr.md-row.md-row-avatar.md-selected .md-avatar {
+  display: none;
+}
 table.md-table.md-row-select td.md-cell:first-child,
 table.md-table.md-row-select th.md-column:first-child {
   padding: 0 0 0 24px;

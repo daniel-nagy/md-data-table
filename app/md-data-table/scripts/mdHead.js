@@ -58,7 +58,7 @@ function mdHead($compile) {
       var rows = tableCtrl.getBodyRows();
       
       return rows.length && rows.map(getController).every(function (ctrl) {
-        return ctrl && (ctrl.disabled || ctrl.isSelected());
+        return !ctrl || ctrl.disabled || ctrl.isSelected();
       });
     };
     

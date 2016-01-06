@@ -673,7 +673,7 @@ function mdHead($compile) {
       var rows = tableCtrl.getBodyRows();
       
       return rows.length && rows.map(getController).every(function (ctrl) {
-        return ctrl && (ctrl.disabled || ctrl.isSelected());
+        return !ctrl || ctrl.disabled || ctrl.isSelected();
       });
     };
     
@@ -740,10 +740,23 @@ function mdRow() {
       return tableCtrl.getBodyRows().indexOf(element[0]) !== -1;
     }
     
+    function isChild(node) {
+      return node.parent()[0] === element[0];
+    }
+    
     if(isBodyRow()) {
+      var cell = angular.element('<td class="md-cell">');
+      
       scope.$watch(enableRowSelection, function (enable) {
         if(enable && !attrs.mdSelect) {
-          console.error('Missing md-select attribute on table row');
+          if(!isChild(cell)) {
+            element.prepend(cell);
+          }
+          return;
+        }
+        
+        if(isChild(cell)) {
+          cell.remove();
         }
       });
     }

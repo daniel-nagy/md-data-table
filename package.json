@@ -1,7 +1,8 @@
 {
   "name": "angular-material-data-table",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "description": "Material Design data table.",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git://github.com/daniel-nagy/md-data-table.git"
@@ -9,7 +10,7 @@
   "main": "index.js",
   "dependencies": {
     "angular": "^1.4.0",
-    "angular-material": "^0.10.1"
+    "angular-material": "^1.0.0"
   },
   "devDependencies": {
     "bower": "^1.3.9",

@@ -144,13 +144,18 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 
 ## Change Log
 
-#### Version 0.9.5
-###### December 29, 2015
+#### Version 0.9.6
+###### January 6, 2016
 
-* Merge pull request #230 from [@pdore-netfore](https://github.com/pdore-netfore) to use `currentTarget` instead of `target`.
+Removing the restriction that all rows must be selectable when row selection is enabled. There are some valid use cases for this. An empty cell will be prepended to a row that is not selectable to offset the checkbox.
+
+#### Version 0.9.5
+###### January 4, 2016
+
+Merge pull request #230 from [@pdore-netfore](https://github.com/pdore-netfore) to use `currentTarget` instead of `target`.
 
 #### Version 0.9.4
-###### December 29, 2015
+###### December 30, 2015
 
 So I kinda changed row selection again... we're back to using arrays :stuck_out_tongue_closed_eyes:. The `mdTable` directive now has a hash table and will watch the model for changes. The `mdSelect` directive will register a callback to the `mdTable` directive for when items are added or removed. The `mdTable` directive will notify the `mdSelect` directive and the `mdSelect` directive will update the hash table in the `mdTable` directive. You can now add and remove items with unique identifiers to the model and the directive will pick up on these changes.
 

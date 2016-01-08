@@ -472,7 +472,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
   function preset(size, options) {
     
     function getAttrs() {
-      var attrs = 'type="' + options.type ? options.type : 'text' + '"';
+      var attrs = 'type="' + (options.type || 'text') + '"';
       
       for(var attr in options.validators) {
         attrs += ' ' + attr + '="' + options.validators[attr] + '"';

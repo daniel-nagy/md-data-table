@@ -144,6 +144,11 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 
 ## Change Log
 
+#### Version 0.9.7
+###### January 8, 2016
+
+Fix for issue [#237](https://github.com/daniel-nagy/md-data-table/issues/237).
+
 #### Version 0.9.6
 ###### January 6, 2016
 

@@ -25,7 +25,7 @@ I ask that you visit any issues below and follow the instructions for voting for
 
 http://danielnagy.me/md-data-table
 
-Here is a fork-able [Codepen](http://codepen.io/anon/pen/zGXWWp?editors=101) of the demo application. Please use this to reproduce any issues you may be experiencing.
+Here is a fork-able [Codepen](http://codepen.io/anon/pen/wMdQap?editors=101) of the demo application. Please use this to reproduce any issues you may be experiencing.
 
 ## License
 

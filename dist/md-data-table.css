@@ -290,6 +290,7 @@ table.md-table.md-row-select tbody.md-body > tr.md-row.md-selected {
 }
 table.md-table.md-row-select td.md-cell:first-child,
 table.md-table.md-row-select th.md-column:first-child {
+  width: 20px;
   padding: 0 0 0 24px;
 }
 table.md-table.md-row-select td.md-cell:nth-child(2),
@@ -336,7 +337,7 @@ table.md-table th.md-column.md-numeric {
 table.md-table td.md-cell md-checkbox,
 table.md-table th.md-column md-checkbox {
   margin: 0;
-  width: 18px;
+  width: 20px;
 }
 table.md-table td.md-cell {
   color: rgba(0, 0, 0, 0.87);

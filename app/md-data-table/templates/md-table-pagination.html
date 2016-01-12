@@ -1,6 +1,6 @@
-<span class="label" ng-show="showPageSelect()">{{$label['page']}}</span>
+<span class="label" ng-if="showPageSelect()">{{$label['page']}}</span>
 
-<md-select class="md-table-select" ng-show="showPageSelect()" ng-model="page" md-container-class="md-pagination-select" ng-change="onPageChange()" aria-label="Page">
+<md-select class="md-table-select" ng-if="showPageSelect()" ng-model="page" md-container-class="md-pagination-select" ng-change="onPageChange()" aria-label="Page">
   <md-option ng-repeat="num in range(pages()) track by $index" ng-value="$index + 1">{{$index + 1}}</md-option>
 </md-select>
 

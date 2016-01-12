@@ -1286,9 +1286,9 @@ angular.module('md.table.templates', ['md-table-pagination.html', 'md-table-prog
 
 angular.module('md-table-pagination.html', []).run(['$templateCache', function($templateCache) {
   $templateCache.put('md-table-pagination.html',
-    '<span class="label" ng-show="showPageSelect()">{{$label[\'page\']}}</span>\n' +
+    '<span class="label" ng-if="showPageSelect()">{{$label[\'page\']}}</span>\n' +
     '\n' +
-    '<md-select class="md-table-select" ng-show="showPageSelect()" ng-model="page" md-container-class="md-pagination-select" ng-change="onPageChange()" aria-label="Page">\n' +
+    '<md-select class="md-table-select" ng-if="showPageSelect()" ng-model="page" md-container-class="md-pagination-select" ng-change="onPageChange()" aria-label="Page">\n' +
     '  <md-option ng-repeat="num in range(pages()) track by $index" ng-value="$index + 1">{{$index + 1}}</md-option>\n' +
     '</md-select>\n' +
     '\n' +
@@ -1311,7 +1311,8 @@ angular.module('md-table-pagination.html', []).run(['$templateCache', function($
     '</md-button>\n' +
     '<md-button class="md-icon-button" type="button" ng-if="showBoundaryLinks()" ng-click="last()" ng-disabled="disableNext()" aria-label="Last">\n' +
     '  <md-icon md-svg-icon="navigate-last.svg"></md-icon>\n' +
-    '</md-button>');
+    '</md-button>\n' +
+    '');
 }]);
 
 angular.module('md-table-progress.html', []).run(['$templateCache', function($templateCache) {

@@ -202,6 +202,11 @@ The way the row ID feature was implemented made it difficult for the developer t
 * If you specify a row ID using the `md-select-id` attribute then you must use an object model. When an item is selected, a new property will be defined on the model where the property name is the value of the `md-select-id` attribute and the value is the selected item.
 * I've added a deselect event to the `md-row` element.
 
+#### Version 0.10.0
+###### January 13, 2016
+
+* Allow the ability to sort multiple columns
+
 #### Version 0.9.0
 ###### December 27, 2015
 

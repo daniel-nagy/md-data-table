@@ -4,7 +4,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
   $scope.selected = [];
   
   $scope.query = {
-    order: ['name'],
+    order: ['name', '-type'],
     limit: 5,
     page: 1
   };

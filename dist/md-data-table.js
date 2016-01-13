@@ -669,7 +669,7 @@ function mdHead($compile) {
       return $attrs.hasOwnProperty('mdOrderMultiple') && $attrs.mdOrderMultiple === '';
     };
 
-    if(self.allowMultipleSorts()) {
+    if(self.allowMultipleSorts() && typeof self.order === 'undefined') {
       self.order = [];
     }
   }

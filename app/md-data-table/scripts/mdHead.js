@@ -9,13 +9,16 @@ function mdHead($compile) {
     return postLink;
   }
   
-  // empty controller to be bind scope properties to
-  function Controller() {
-    
+  function Controller($attrs) {
+    var self = this;
+
+    self.allowMultipleSorts = function() {
+      return $attrs.hasOwnProperty('mdOrderMultiple') && $attrs.mdOrderMultiple === '';
+    };
   }
   
   function postLink(scope, element, attrs, tableCtrl) {
-    
+
     function attachCheckbox() {
       var children = element.children();
       
@@ -100,6 +103,7 @@ function mdHead($compile) {
     restrict: 'A',
     scope: {
       order: '=?mdOrder',
+      orderMultiple: '=?mdOrderMultiple',
       onReorder: '=?mdOnReorder'
     }
   };

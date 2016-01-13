@@ -4,7 +4,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
   $scope.selected = [];
   
   $scope.query = {
-    order: 'name',
+    order: ['name'],
     limit: 5,
     page: 1
   };
@@ -125,6 +125,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
     
     console.log('Scope Order: ' + $scope.query.order);
     console.log('Order: ' + order);
+    console.log(order);
     
     $scope.promise = $timeout(function () {
       

@@ -139,7 +139,8 @@ function mdColumn($compile) {
         return false;
       }
       
-      return headCtrl.order === scope.orderBy || headCtrl.order === '-' + scope.orderBy;
+      return headCtrl.order.indexOf(scope.orderBy) >= 0 ||
+        headCtrl.order.indexOf('-' + scope.orderBy) >= 0;
     }
     
     function isNumeric() {
@@ -152,14 +153,51 @@ function mdColumn($compile) {
     
     function setOrder() {
       scope.$applyAsync(function () {
-        if(!isActive()) {
-          headCtrl.order = scope.getDirection() === 'md-asc' ? scope.orderBy : '-' + scope.orderBy;
+        var direction = scope.getDirection();
+        var ascendingPos = headCtrl.order.indexOf(scope.orderBy);
+        var descendingPos = headCtrl.order.indexOf('-' + scope.orderBy);
+
+        if(headCtrl.allowMultipleSorts()) {
+          if(!isActive()) {
+            console.log('test');
+            direction = 'md-desc';
+          }
         } else {
-          headCtrl.order = scope.getDirection() === 'md-asc' ? '-' + scope.orderBy : scope.orderBy;
+          headCtrl.order = [];
         }
-        
+
+        if(direction === 'md-asc') {
+          var key = '-' + scope.orderBy;
+
+          if(descendingPos >= 0) {
+            headCtrl.order.splice(descendingPos, 1);
+          }
+
+          if(ascendingPos >= 0) {
+            headCtrl.order[ascendingPos] = key;
+          } else {
+            headCtrl.order.push(key);
+          }
+        } else {
+          if(descendingPos >= 0) {
+            headCtrl.order.splice(descendingPos, 1);
+          }
+
+          // Reset the direction after leaving descending on multiple sorts
+          if(descendingPos >= 0 && headCtrl.allowMultipleSorts()) {
+            // Next remove everything after it because the parent changed
+            headCtrl.order.splice(descendingPos, (headCtrl.order.length - (descendingPos + 1)) + 1);
+          } else {
+            if(descendingPos >= 0) {
+              headCtrl.order[descendingPos] = scope.orderBy;
+            } else {
+              headCtrl.order.push(scope.orderBy);
+            }
+          }
+        }
+
         if(angular.isFunction(headCtrl.onReorder)) {
-          headCtrl.onReorder(headCtrl.order);
+          headCtrl.onReorder(!headCtrl.allowMultipleSorts() ? headCtrl.order[0] : headCtrl.order);
         }
       });
     }
@@ -179,7 +217,7 @@ function mdColumn($compile) {
         return attrs.hasOwnProperty('mdDesc') ? 'md-desc' : 'md-asc';
       }
       
-      return headCtrl.order === '-' + scope.orderBy ? 'md-desc' : 'md-asc';
+      return headCtrl.order.indexOf('-' + scope.orderBy) >= 0 ? 'md-desc' : 'md-asc';
     };
     
     scope.$watch(isActive, function (active) {
@@ -624,13 +662,16 @@ function mdHead($compile) {
     return postLink;
   }
   
-  // empty controller to be bind scope properties to
-  function Controller() {
-    
+  function Controller($attrs) {
+    var self = this;
+
+    self.allowMultipleSorts = function() {
+      return $attrs.hasOwnProperty('mdOrderMultiple') && $attrs.mdOrderMultiple === '';
+    };
   }
   
   function postLink(scope, element, attrs, tableCtrl) {
-    
+
     function attachCheckbox() {
       var children = element.children();
       
@@ -715,6 +756,7 @@ function mdHead($compile) {
     restrict: 'A',
     scope: {
       order: '=?mdOrder',
+      orderMultiple: '=?mdOrderMultiple',
       onReorder: '=?mdOnReorder'
     }
   };

@@ -70,7 +70,6 @@ function mdColumn($compile) {
 
         if(headCtrl.allowMultipleSorts()) {
           if(!isActive()) {
-            console.log('test');
             direction = 'md-desc';
           }
         } else {

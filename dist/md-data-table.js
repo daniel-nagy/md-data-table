@@ -668,6 +668,10 @@ function mdHead($compile) {
     self.allowMultipleSorts = function() {
       return $attrs.hasOwnProperty('mdOrderMultiple') && $attrs.mdOrderMultiple === '';
     };
+
+    if(self.allowMultipleSorts()) {
+      self.order = [];
+    }
   }
   
   function postLink(scope, element, attrs, tableCtrl) {

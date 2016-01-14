@@ -144,6 +144,11 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 
 ## Change Log
 
+#### Version 0.9.8
+###### January 14, 2016
+
+People with large datasets have been reporting that the pagination page selector negatively effects performance even when not enabled. This patch uses `ng-if` instead of `ng-show` to add or remove the page selector from the template. This should improve performance when the page selector is not enabled.
+
 #### Version 0.9.7
 ###### January 8, 2016
 

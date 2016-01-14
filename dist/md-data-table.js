@@ -1145,15 +1145,16 @@ function mdTablePagination() {
   
   function compile(tElement) {
     tElement.addClass('md-table-pagination');
-    return postLink;
   }
   
-  function postLink(scope, element, attrs) {
-    scope.$label = angular.extend({
+  function Controller($attrs, $scope) {
+    var self = this;
+    
+    self.$label = angular.extend({
       page: 'Page:',
       rowsPerPage: 'Rows per page:',
       of: 'of'
-    }, scope.$eval(scope.label) || {});
+    }, $scope.$eval(self.label) || {});
     
     function isPositive(number) {
       return number > 0;
@@ -1163,94 +1164,91 @@ function mdTablePagination() {
       return number === 0 || number === '0';
     }
     
-    function onPaginationChange() {
-      if(angular.isFunction(scope.onPaginate)) {
-        scope.onPaginate(scope.page, scope.limit);
+    self.disableNext = function () {
+      return isZero(self.limit) || !self.hasNext();
+    };
+    
+    self.first = function () {
+      self.page = 1;
+      self.onPaginationChange();
+    };
+    
+    self.hasNext = function () {
+      return self.page * self.limit < self.total;
+    };
+    
+    self.hasPrevious = function () {
+      return self.page > 1;
+    };
+    
+    self.last = function () {
+      self.page = self.pages();
+      self.onPaginationChange();
+    };
+    
+    self.max = function () {
+      return self.hasNext() ? self.page * self.limit : self.total;
+    };
+    
+    self.min = function () {
+      return self.page * self.limit - self.limit;
+    };
+    
+    self.next = function () {
+      self.page++;
+      self.onPaginationChange();
+    };
+    
+    self.onPaginationChange = function () {
+      if(angular.isFunction(self.onPaginate)) {
+        self.onPaginate(self.page, self.limit);
       }
-    }
-    
-    scope.disableNext = function () {
-      return isZero(scope.limit) || !scope.hasNext();
     };
     
-    scope.first = function () {
-      scope.page = 1;
-      onPaginationChange();
+    self.pages = function () {
+      return Math.ceil(self.total / (isZero(self.limit) ? 1 : self.limit));
     };
     
-    scope.hasNext = function () {
-      return scope.page * scope.limit < scope.total;
+    self.previous = function () {
+      self.page--;
+      self.onPaginationChange();
     };
     
-    scope.hasPrevious = function () {
-      return scope.page > 1;
-    };
-    
-    scope.last = function () {
-      scope.page = scope.pages();
-      onPaginationChange();
-    };
-    
-    scope.max = function () {
-      return scope.hasNext() ? scope.page * scope.limit : scope.total;
-    };
-    
-    scope.min = function () {
-      return scope.page * scope.limit - scope.limit;
-    };
-    
-    scope.next = function () {
-      scope.page++;
-      onPaginationChange();
-    };
-    
-    scope.onPageChange = onPaginationChange;
-    
-    scope.pages = function () {
-      return Math.ceil(scope.total / (isZero(scope.limit) ? 1 : scope.limit));
-    };
-    
-    scope.previous = function () {
-      scope.page--;
-      onPaginationChange();
-    };
-    
-    scope.range = function (total) {
+    self.range = function (total) {
       return new Array(isFinite(total) && isPositive(total) ? total : 1);
     };
     
-    scope.showBoundaryLinks = function () {
-      if(attrs.hasOwnProperty('mdBoundaryLinks') && attrs.mdBoundaryLinks === '') {
+    self.showBoundaryLinks = function () {
+      if($attrs.hasOwnProperty('mdBoundaryLinks') && $attrs.mdBoundaryLinks === '') {
         return true;
       }
       
-      return scope.boundaryLinks;
+      return self.boundaryLinks;
     };
     
-    scope.showPageSelect = function () {
-      if(attrs.hasOwnProperty('mdPageSelect') && attrs.mdPageSelect === '') {
+    self.showPageSelect = function () {
+      if($attrs.hasOwnProperty('mdPageSelect') && $attrs.mdPageSelect === '') {
         return true;
       }
       
-      return scope.pageSelect;
+      return self.pageSelect;
     };
     
-    scope.$watch('limit', function (newValue, oldValue) {
+    $scope.$watch('$pagination.limit', function (newValue, oldValue) {
       if(newValue === oldValue) {
         return;
       }
       
       // find closest page from previous min
-      scope.page = Math.floor(((scope.page * oldValue - oldValue) + newValue) / (isZero(newValue) ? 1 : newValue));
-      
-      onPaginationChange();
+      self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isZero(newValue) ? 1 : newValue));
+      self.onPaginationChange();
     });
   }
   
+  Controller.$inject = ['$attrs', '$scope']
+  
   return {
-    compile: compile,
-    restrict: 'E',
-    scope: {
+    bindToController: {
       boundaryLinks: '=?mdBoundaryLinks',
       label: '@?mdLabel',
       limit: '=mdLimit',
@@ -1260,6 +1258,11 @@ function mdTablePagination() {
       options: '=mdOptions',
       total: '@mdTotal'
     },
+    compile: compile,
+    controller: Controller,
+    controllerAs: '$pagination',
+    restrict: 'E',
+    scope: {},
     templateUrl: 'md-table-pagination.html'
   };
 }
@@ -1286,30 +1289,30 @@ angular.module('md.table.templates', ['md-table-pagination.html', 'md-table-prog
 
 angular.module('md-table-pagination.html', []).run(['$templateCache', function($templateCache) {
   $templateCache.put('md-table-pagination.html',
-    '<span class="label" ng-show="showPageSelect()">{{$label[\'page\']}}</span>\n' +
+    '<span class="label" ng-if="$pagination.showPageSelect()">{{$pagination.$label[\'page\']}}</span>\n' +
     '\n' +
-    '<md-select class="md-table-select" ng-show="showPageSelect()" ng-model="page" md-container-class="md-pagination-select" ng-change="onPageChange()" aria-label="Page">\n' +
-    '  <md-option ng-repeat="num in range(pages()) track by $index" ng-value="$index + 1">{{$index + 1}}</md-option>\n' +
+    '<md-select class="md-table-select" ng-if="$pagination.showPageSelect()" ng-model="$pagination.page" md-container-class="md-pagination-select" ng-change="$pagination.onPaginationChange()" aria-label="Page">\n' +
+    '  <md-option ng-repeat="num in $pagination.range($pagination.pages()) track by $index" ng-value="$index + 1">{{$index + 1}}</md-option>\n' +
     '</md-select>\n' +
     '\n' +
-    '<span class="label">{{$label[\'rowsPerPage\']}}</span>\n' +
+    '<span class="label">{{$pagination.$label[\'rowsPerPage\']}}</span>\n' +
     '\n' +
-    '<md-select class="md-table-select" ng-model="limit" md-container-class="md-pagination-select" aria-label="Rows" placeholder="{{options ? options[0] : 5}}">\n' +
-    '  <md-option ng-repeat="rows in options ? options : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>\n' +
+    '<md-select class="md-table-select" ng-model="$pagination.limit" md-container-class="md-pagination-select" aria-label="Rows" placeholder="{{$pagination.options ? $pagination.options[0] : 5}}">\n' +
+    '  <md-option ng-repeat="rows in $pagination.options ? $pagination.options : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>\n' +
     '</md-select>\n' +
     '\n' +
-    '<span class="label">{{min() + 1}} - {{max()}} {{$label[\'of\']}} {{total}}</span>\n' +
+    '<span class="label">{{$pagination.min() + 1}} - {{$pagination.max()}} {{$pagination.$label[\'of\']}} {{$pagination.total}}</span>\n' +
     '\n' +
-    '<md-button class="md-icon-button" type="button" ng-if="showBoundaryLinks()" ng-click="first()" ng-disabled="!hasPrevious()" aria-label="First">\n' +
+    '<md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.first()" ng-disabled="!$pagination.hasPrevious()" aria-label="First">\n' +
     '  <md-icon md-svg-icon="navigate-first.svg"></md-icon>\n' +
     '</md-button>\n' +
-    '<md-button class="md-icon-button" type="button" ng-click="previous()" ng-disabled="!hasPrevious()" aria-label="Previous">\n' +
+    '<md-button class="md-icon-button" type="button" ng-click="$pagination.previous()" ng-disabled="!$pagination.hasPrevious()" aria-label="Previous">\n' +
     '  <md-icon md-svg-icon="navigate-before.svg"></md-icon>\n' +
     '</md-button>\n' +
-    '<md-button class="md-icon-button" type="button" ng-click="next()" ng-disabled="disableNext()" aria-label="Next">\n' +
+    '<md-button class="md-icon-button" type="button" ng-click="$pagination.next()" ng-disabled="$pagination.disableNext()" aria-label="Next">\n' +
     '  <md-icon md-svg-icon="navigate-next.svg"></md-icon>\n' +
     '</md-button>\n' +
-    '<md-button class="md-icon-button" type="button" ng-if="showBoundaryLinks()" ng-click="last()" ng-disabled="disableNext()" aria-label="Last">\n' +
+    '<md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.last()" ng-disabled="$pagination.disableNext()" aria-label="Last">\n' +
     '  <md-icon md-svg-icon="navigate-last.svg"></md-icon>\n' +
     '</md-button>');
 }]);

@@ -1239,8 +1239,11 @@ function mdTablePagination() {
         return;
       }
       
-      // find closest page from previous min
-      self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isZero(newValue) ? 1 : newValue));
+      if(!isNaN(newValue) && !isNaN(oldValue)) {
+        // find closest page from previous min
+        self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isZero(newValue) ? 1 : newValue));
+      }
+	  
       self.onPaginationChange();
     });
   }

@@ -106,7 +106,7 @@ function mdTablePagination() {
     });
   }
   
-  Controller.$inject = ['$attrs', '$scope']
+  Controller.$inject = ['$attrs', '$scope'];
   
   return {
     bindToController: {

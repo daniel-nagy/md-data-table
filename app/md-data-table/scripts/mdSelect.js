@@ -29,7 +29,7 @@ function mdSelect($compile) {
     }
     
     self.isSelected = function () {
-      if(!tableCtrl.$$rowSelect || self.disabled) {
+      if(!tableCtrl.$$rowSelect) {
         return false;
       }
       
@@ -53,6 +53,10 @@ function mdSelect($compile) {
     };
     
     self.deselect = function () {
+      if(self.disabled) {
+        return;
+      }
+      
       tableCtrl.selected.splice(tableCtrl.selected.indexOf(self.model), 1);
       
       if(angular.isFunction(self.onDeselect)) {

@@ -38,7 +38,7 @@ module.exports = function (grunt) {
     concat: {
       options: {
         banner: '(function (window, angular, undefined) {\n\'use strict\';\n\n',
-        footer: '\n})(window, angular);',
+        footer: '\n\n})(window, angular);',
         process: function (src) {
           return src.replace(/^'use strict';\s*/, '');
         },
@@ -46,7 +46,7 @@ module.exports = function (grunt) {
       },
       build: {
         files: {
-          'dist/md-data-table.js': ['app/md-data-table/**/*.js', '.temp/templates.js']
+          'dist/md-data-table.js': ['.temp/templates.js', 'app/md-data-table/**/*.js']
         }
       }
     },
@@ -163,7 +163,7 @@ module.exports = function (grunt) {
     }
   });
   
-  grunt.registerTask('default', function() {
+  grunt.registerTask('default', function () {
     
     // buld the md-data-table module
     grunt.task.run('build');

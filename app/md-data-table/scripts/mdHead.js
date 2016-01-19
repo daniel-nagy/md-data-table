@@ -37,7 +37,11 @@ function mdHead($compile) {
       return angular.element('<th class="md-column md-checkbox-column">').append($compile(checkbox)(scope));
     }
     
-    function getController(row) {
+    function enableRowSelection() {
+      return tableCtrl.$$rowSelect;
+    }
+    
+    function mdSelectCtrl(row) {
       return angular.element(row).controller('mdSelect');
     }
     
@@ -50,20 +54,16 @@ function mdHead($compile) {
       });
     }
     
-    function enableRowSelection() {
-      return tableCtrl.$$rowSelect;
-    }
-    
     scope.allSelected = function () {
       var rows = tableCtrl.getBodyRows();
       
-      return rows.length && rows.map(getController).every(function (ctrl) {
-        return !ctrl || ctrl.disabled || ctrl.isSelected();
+      return rows.length && rows.map(mdSelectCtrl).every(function (ctrl) {
+        return ctrl && ctrl.isSelected();
       });
     };
     
     scope.selectAll = function () {
-      tableCtrl.getBodyRows().map(getController).forEach(function (ctrl) {
+      tableCtrl.getBodyRows().map(mdSelectCtrl).forEach(function (ctrl) {
         if(ctrl && !ctrl.isSelected()) {
           ctrl.select();
         }
@@ -75,7 +75,7 @@ function mdHead($compile) {
     };
     
     scope.unSelectAll = function () {
-      tableCtrl.getBodyRows().map(getController).forEach(function (ctrl) {
+      tableCtrl.getBodyRows().map(mdSelectCtrl).forEach(function (ctrl) {
         if(ctrl && ctrl.isSelected()) {
           ctrl.deselect();
         }

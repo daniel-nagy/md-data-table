@@ -144,6 +144,12 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 
 ## Change Log
 
+#### Version 0.9.9
+###### January 19, 2016
+
+* The `md.table.templates` module is now defined before the `md.data.table` module to fix issue [#252](https://github.com/daniel-nagy/md-data-table/issues/252).
+* Minor changes to selection logic concerning disabled rows.
+
 #### Version 0.9.8
 ###### January 14, 2016
 

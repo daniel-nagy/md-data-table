@@ -1180,6 +1180,10 @@ function mdTablePagination() {
     self.hasPrevious = function () {
       return self.page > 1;
     };
+	
+	self.hasFiniteTotal = function(){
+      return isFinite(self.total);
+	};
     
     self.last = function () {
       self.page = self.pages();
@@ -1206,7 +1210,8 @@ function mdTablePagination() {
     };
     
     self.pages = function () {
-      return Math.ceil(self.total / (isZero(self.limit) ? 1 : self.limit));
+      var n = Math.ceil(self.total / (isZero(self.limit) ? 1 : self.limit));
+      return isFinite(n) ? n : self.page;
     };
     
     self.previous = function () {
@@ -1239,8 +1244,11 @@ function mdTablePagination() {
         return;
       }
       
-      // find closest page from previous min
-      self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isZero(newValue) ? 1 : newValue));
+      if(!isNaN(newValue) && !isNaN(oldValue)) {
+        // find closest page from previous min
+        self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isZero(newValue) ? 1 : newValue));
+      }
+	  
       self.onPaginationChange();
     });
   }
@@ -1301,7 +1309,8 @@ angular.module('md-table-pagination.html', []).run(['$templateCache', function($
     '  <md-option ng-repeat="rows in $pagination.options ? $pagination.options : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>\n' +
     '</md-select>\n' +
     '\n' +
-    '<span class="label">{{$pagination.min() + 1}} - {{$pagination.max()}} {{$pagination.$label[\'of\']}} {{$pagination.total}}</span>\n' +
+    '<span class="label">{{$pagination.min() + 1}} - {{$pagination.max()}}</span>\n' +
+    '<span class="label" ng-show="$pagination.hasFiniteTotal($pagination.total)">&nbsp;{{$pagination.$label[\'of\']}} {{$pagination.total}}</span>\n' +
     '\n' +
     '<md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.first()" ng-disabled="!$pagination.hasPrevious()" aria-label="First">\n' +
     '  <md-icon md-svg-icon="navigate-first.svg"></md-icon>\n' +
@@ -1312,7 +1321,7 @@ angular.module('md-table-pagination.html', []).run(['$templateCache', function($
     '<md-button class="md-icon-button" type="button" ng-click="$pagination.next()" ng-disabled="$pagination.disableNext()" aria-label="Next">\n' +
     '  <md-icon md-svg-icon="navigate-next.svg"></md-icon>\n' +
     '</md-button>\n' +
-    '<md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.last()" ng-disabled="$pagination.disableNext()" aria-label="Last">\n' +
+    '<md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.last()" ng-disabled="$pagination.disableNext() || !$pagination.hasFiniteTotal($pagination.total)" aria-label="Last">\n' +
     '  <md-icon md-svg-icon="navigate-last.svg"></md-icon>\n' +
     '</md-button>');
 }]);

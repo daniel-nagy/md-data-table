@@ -41,6 +41,10 @@ function mdTablePagination() {
     self.hasPrevious = function () {
       return self.page > 1;
     };
+	
+	self.hasFiniteTotal = function(){
+      return isFinite(self.total);
+	};
     
     self.last = function () {
       self.page = self.pages();
@@ -67,7 +71,8 @@ function mdTablePagination() {
     };
     
     self.pages = function () {
-      return Math.ceil(self.total / (isZero(self.limit) ? 1 : self.limit));
+      var n = Math.ceil(self.total / (isZero(self.limit) ? 1 : self.limit));
+      return isFinite(n) ? n : self.page;
     };
     
     self.previous = function () {
@@ -100,8 +105,11 @@ function mdTablePagination() {
         return;
       }
       
-      // find closest page from previous min
-      self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isZero(newValue) ? 1 : newValue));
+      if(!isNaN(newValue) && !isNaN(oldValue)) {
+        // find closest page from previous min
+        self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isZero(newValue) ? 1 : newValue));
+      }
+	  
       self.onPaginationChange();
     });
   }

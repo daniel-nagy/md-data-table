@@ -41,6 +41,10 @@ function mdTablePagination() {
     self.hasPrevious = function () {
       return self.page > 1;
     };
+	
+	self.hasFiniteTotal = function(){
+      return isFinite(self.total);
+	};
     
     self.last = function () {
       self.page = self.pages();
@@ -67,7 +71,8 @@ function mdTablePagination() {
     };
     
     self.pages = function () {
-      return Math.ceil(self.total / (isZero(self.limit) ? 1 : self.limit));
+      var n = Math.ceil(self.total / (isZero(self.limit) ? 1 : self.limit));
+      return isFinite(n) ? n : self.page;
     };
     
     self.previous = function () {

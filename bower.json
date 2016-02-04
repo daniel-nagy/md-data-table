@@ -25,6 +25,7 @@
     "app",
     "bower_components",
     "node_modules",
+    "src",
     "Gruntfile.js"
   ],
   "dependencies": {

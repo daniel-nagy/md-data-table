@@ -8,6 +8,7 @@ md-select.md-table-select {
     border-bottom: 0 !important;
     
     > span {
+      height: auto;
       transform: none !important;
       
       &.md-select-icon {
@@ -15,6 +16,10 @@ md-select.md-table-select {
         align-items: center;
         height: 24px;
         margin: 0;
+        
+        &:after {
+          top: initial;
+        }
       }
     }
   }
@@ -22,7 +27,6 @@ md-select.md-table-select {
 
 .md-select-menu-container.md-table-select,
 .md-select-menu-container.md-pagination-select {
-  margin-top: -2px;
   margin-left: -2px;
   border-radius: 2px;
 

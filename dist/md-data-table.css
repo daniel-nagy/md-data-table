@@ -113,6 +113,7 @@ md-select.md-table-select > .md-select-value {
   border-bottom: 0 !important;
 }
 md-select.md-table-select > .md-select-value > span {
+  height: auto;
   -webkit-transform: none !important;
           transform: none !important;
 }
@@ -126,9 +127,11 @@ md-select.md-table-select > .md-select-value > span.md-select-icon {
   height: 24px;
   margin: 0;
 }
+md-select.md-table-select > .md-select-value > span.md-select-icon:after {
+  top: initial;
+}
 .md-select-menu-container.md-table-select,
 .md-select-menu-container.md-pagination-select {
-  margin-top: -2px;
   margin-left: -2px;
   border-radius: 2px;
 }

@@ -1,6 +1,20 @@
 module.exports = function (grunt) {
 'use strict';
 
+  function banner() {
+    return '/*\n' +
+      ' * Angular Material Data Table\n' +
+      ' * https://github.com/daniel-nagy/md-data-table\n' +
+      ' * @license MIT\n' +
+      ' * v' + getVersion() + '\n' +
+      ' */\n' +
+      '(function (window, angular, undefined) {\n\'use strict\';\n\n';
+  }
+  
+  function getVersion() {
+    return grunt.file.readJSON('./bower.json').version;
+  }
+
   // load plugins
   require('load-grunt-tasks')(grunt, {scope: 'devDependencies'});
 
@@ -37,7 +51,7 @@ module.exports = function (grunt) {
     // condense javascript into a single file
     concat: {
       options: {
-        banner: '(function (window, angular, undefined) {\n\'use strict\';\n\n',
+        banner: banner(),
         footer: '\n\n})(window, angular);',
         process: function (src) {
           return src.replace(/^'use strict';\s*/, '');
@@ -46,7 +60,7 @@ module.exports = function (grunt) {
       },
       build: {
         files: {
-          'dist/md-data-table.js': ['.temp/templates.js', 'app/md-data-table/**/*.js']
+          'dist/md-data-table.js': ['.temp/templates.js', 'src/**/*.js']
         }
       }
     },
@@ -86,7 +100,7 @@ module.exports = function (grunt) {
           }
         },
         files: {
-          '.temp/templates.js': ['app/md-data-table/templates/*.html', 'app/md-data-table/icons/*.svg']
+          '.temp/templates.js': ['src/templates/*.html', 'src/icons/*.svg']
         }
       }
     },
@@ -99,7 +113,7 @@ module.exports = function (grunt) {
         reporter: require('jshint-stylish'),
         force: true
       },
-      build: 'app/md-data-table/**/*.js',
+      build: 'src/**/*.js',
       app: ['app/app.js', 'app/scripts/**/*.js']
     },
 
@@ -112,7 +126,7 @@ module.exports = function (grunt) {
       },
       build: {
         files: {
-          'dist/md-data-table.css': 'app/md-data-table/styles/md-table.less'
+          'dist/md-data-table.css': 'src/styles/md-table.less'
         }
       }
     },
@@ -143,15 +157,15 @@ module.exports = function (grunt) {
         files: 'app/templates/**/*.html'
       },
       buildLess: {
-        files: 'app/md-data-table/**/*.less',
+        files: 'src/**/*.less',
         tasks: ['less:build', 'autoprefixer:build']
       },
       buildScripts: {
-        files: 'app/md-data-table/**/*.js',
+        files: 'src/**/*.js',
         tasks: ['jshint:build', 'concat:build']
       },
       buildTemplates: {
-        files: 'app/md-data-table/**/*.html',
+        files: 'src/**/*.html',
         tasks: ['html2js:build', 'concat:build']
       },
       gruntfile: {

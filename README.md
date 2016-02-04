@@ -144,6 +144,13 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 
 ## Change Log
 
+#### Version 0.9.10
+
+* Fix select menu styles for Angular Material v1.0.4
+* Renamed md-data-table directory to src and moved it outside the demo app
+* Changed main files to unminified source
+* Added comment banner to source
+
 #### Version 0.9.9
 ###### January 19, 2016
 

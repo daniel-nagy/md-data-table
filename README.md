@@ -144,7 +144,13 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 
 ## Change Log
 
+#### Version 0.9.11
+###### February 7, 2016
+
+Merge pull request [#281](https://github.com/daniel-nagy/md-data-table/pull/281) from aleeeftw/angular-symbols-fix.
+
 #### Version 0.9.10
+###### February 3, 2016
 
 * Fix select menu styles for Angular Material v1.0.4
 * Renamed md-data-table directory to src and moved it outside the demo app

@@ -32,8 +32,9 @@ function mdHead($compile) {
       
       checkbox.attr('aria-label', 'Select All');
       checkbox.attr('ng-click', 'toggleAll()');
-      checkbox.attr('ng-checked', 'allSelected()');
-      
+      checkbox.attr('ng-checked', '!allDisabled() && allSelected()');
+      checkbox.attr('ng-disabled', 'allDisabled()');
+
       return angular.element('<th class="md-column md-checkbox-column">').append($compile(checkbox)(scope));
     }
     
@@ -53,12 +54,20 @@ function mdHead($compile) {
         return cell.classList.contains('md-checkbox-column') && child[0].removeChild(cell);
       });
     }
+
+    scope.allDisabled = function () {
+      var rows = tableCtrl.getBodyRows();
+
+      return rows.length && rows.map(mdSelectCtrl).every(function (ctrl) {
+        return ctrl.disabled;
+      });
+    };
     
     scope.allSelected = function () {
       var rows = tableCtrl.getBodyRows();
       
       return rows.length && rows.map(mdSelectCtrl).every(function (ctrl) {
-        return ctrl && ctrl.isSelected();
+        return ctrl && (ctrl.disabled || ctrl.isSelected());
       });
     };
     

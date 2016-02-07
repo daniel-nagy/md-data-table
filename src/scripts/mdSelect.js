@@ -12,12 +12,14 @@ function mdSelect($compile) {
   function postLink(scope, element, attrs, ctrls) {
     var self = ctrls.shift();
     var tableCtrl = ctrls.shift();
-    
+
+    self.id = self.model[self.idField];
+
     if(tableCtrl.$$rowSelect && self.id && tableCtrl.$$hash.has(self.id)) {
-      var index = tableCtrl.selected.indexOf(tableCtrl.$$hash.get(self.id));
+      var index = findSelectedIndex();
       
       // if the item is no longer selected remove it
-      if(index === -1) {
+      if(index < 0) {
         tableCtrl.$$hash.purge(self.id);
       }
       
@@ -57,7 +59,7 @@ function mdSelect($compile) {
         return;
       }
       
-      tableCtrl.selected.splice(tableCtrl.selected.indexOf(self.model), 1);
+      tableCtrl.selected.splice(findSelectedIndex(), 1);
       
       if(angular.isFunction(self.onDeselect)) {
         self.onDeselect(self.model);
@@ -72,6 +74,19 @@ function mdSelect($compile) {
       return self.isSelected() ? self.deselect() : self.select();
     };
     
+    function findSelectedIndex() {
+      if(self.id) {
+        for(var i = 0; i < tableCtrl.selected.length; ++i) {
+          if(tableCtrl.selected[i][self.idField] === self.id) {
+            return i;
+          }
+        }
+        return -1;
+      }
+
+      return tableCtrl.selected.indexOf(self.model);
+    }
+
     function autoSelect() {
       if(attrs.hasOwnProperty('mdAutoSelect') && attrs.mdAutoSelect === '') {
         return true;
@@ -113,14 +128,14 @@ function mdSelect($compile) {
       return tableCtrl.$$rowSelect;
     }
     
-    function onSelectChange(selected) {
+    function onSelectChange() {
       if(!self.id) {
         return;
       }
       
       if(tableCtrl.$$hash.has(self.id)) {
         // check if the item has been deselected
-        if(selected.indexOf(tableCtrl.$$hash.get(self.id)) === -1) {
+        if(findSelectedIndex() < 0) {
           tableCtrl.$$hash.purge(self.id);
         }
         
@@ -128,7 +143,7 @@ function mdSelect($compile) {
       }
       
       // check if the item has been selected
-      if(selected.indexOf(self.model) !== -1) {
+      if(findSelectedIndex() >= 0) {
         tableCtrl.$$hash.update(self.id, self.model);
       }
     }
@@ -178,7 +193,7 @@ function mdSelect($compile) {
     require: ['mdSelect', '^^mdTable'],
     restrict: 'A',
     scope: {
-      id: '@mdSelectId',
+      idField: '@mdSelectId',
       model: '=mdSelect',
       disabled: '=ngDisabled',
       onSelect: '=?mdOnSelect',

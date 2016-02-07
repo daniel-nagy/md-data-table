@@ -97,7 +97,7 @@ function mdTable() {
       }
       
       if(!angular.isArray(self.selected)) {
-        return console.error('Row selection: Expected an array. Recived ' + typeof self.selected + '.');
+        return console.error('Row selection: Expected an array. Received ' + typeof self.selected + '.');
       }
       
       return true;

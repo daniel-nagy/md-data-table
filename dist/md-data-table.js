@@ -2,7 +2,7 @@
  * Angular Material Data Table
  * https://github.com/daniel-nagy/md-data-table
  * @license MIT
- * v0.9.10
+ * v0.9.11
  */
 (function (window, angular, undefined) {
 'use strict';

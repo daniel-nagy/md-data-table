@@ -179,6 +179,7 @@ function mdTable() {
     scope: {
       progress: '=?mdProgress',
       selected: '=ngModel',
+      idField: '@?ngModelId',
       rowSelect: '=mdRowSelect'
     }
   };

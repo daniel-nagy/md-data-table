@@ -720,8 +720,9 @@ function mdHead($compile) {
       
       checkbox.attr('aria-label', 'Select All');
       checkbox.attr('ng-click', 'toggleAll()');
-      checkbox.attr('ng-checked', 'allSelected()');
-      
+      checkbox.attr('ng-checked', '!allDisabled() && allSelected()');
+      checkbox.attr('ng-disabled', 'allDisabled()');
+
       return angular.element('<th class="md-column md-checkbox-column">').append($compile(checkbox)(scope));
     }
     
@@ -741,12 +742,20 @@ function mdHead($compile) {
         return cell.classList.contains('md-checkbox-column') && child[0].removeChild(cell);
       });
     }
+
+    scope.allDisabled = function () {
+      var rows = tableCtrl.getBodyRows();
+
+      return rows.length && rows.map(mdSelectCtrl).every(function (ctrl) {
+        return ctrl.disabled;
+      });
+    };
     
     scope.allSelected = function () {
       var rows = tableCtrl.getBodyRows();
       
       return rows.length && rows.map(mdSelectCtrl).every(function (ctrl) {
-        return ctrl && ctrl.isSelected();
+        return ctrl && (ctrl.disabled || ctrl.isSelected());
       });
     };
     
@@ -854,19 +863,29 @@ function mdSelect($compile) {
   function postLink(scope, element, attrs, ctrls) {
     var self = ctrls.shift();
     var tableCtrl = ctrls.shift();
-    
-    if(tableCtrl.$$rowSelect && self.id && tableCtrl.$$hash.has(self.id)) {
-      var index = tableCtrl.selected.indexOf(tableCtrl.$$hash.get(self.id));
-      
-      // if the item is no longer selected remove it
-      if(index === -1) {
-        tableCtrl.$$hash.purge(self.id);
-      }
-      
-      // if the item is not a reference to the current model update the reference
-      else if(!tableCtrl.$$hash.equals(self.id, self.model)) {
+
+    if( !self.id && tableCtrl.idField) {
+      self.id = self.model[tableCtrl.idField];
+    }
+
+    if(tableCtrl.$$rowSelect && self.id) {
+      var index = findSelectedIndex();
+
+      if(tableCtrl.$$hash.has(self.id)) {
+
+        // if the item is no longer selected remove it
+        if(index < 0) {
+          tableCtrl.$$hash.purge(self.id);
+        }
+
+        // if the item is not a reference to the current model update the reference
+        else if(!tableCtrl.$$hash.equals(self.id, self.model)) {
+          tableCtrl.$$hash.update(self.id, self.model);
+          tableCtrl.selected.splice(index, 1, self.model);
+        }
+        
+      } else if(index >= 0) {
         tableCtrl.$$hash.update(self.id, self.model);
-        tableCtrl.selected.splice(index, 1, self.model);
       }
     }
     
@@ -899,7 +918,7 @@ function mdSelect($compile) {
         return;
       }
       
-      tableCtrl.selected.splice(tableCtrl.selected.indexOf(self.model), 1);
+      tableCtrl.selected.splice(findSelectedIndex(), 1);
       
       if(angular.isFunction(self.onDeselect)) {
         self.onDeselect(self.model);
@@ -914,6 +933,19 @@ function mdSelect($compile) {
       return self.isSelected() ? self.deselect() : self.select();
     };
     
+    function findSelectedIndex() {
+      if(tableCtrl.idField) {
+        for(var i = 0, len = tableCtrl.selected.length; i < len; ++i) {
+          if(tableCtrl.selected[i][tableCtrl.idField] === self.id) {
+            return i;
+          }
+        }
+        return -1;
+      }
+      
+      return tableCtrl.selected.indexOf(self.model);
+    }
+
     function autoSelect() {
       if(attrs.hasOwnProperty('mdAutoSelect') && attrs.mdAutoSelect === '') {
         return true;
@@ -955,14 +987,14 @@ function mdSelect($compile) {
       return tableCtrl.$$rowSelect;
     }
     
-    function onSelectChange(selected) {
+    function onSelectChange() {
       if(!self.id) {
         return;
       }
       
       if(tableCtrl.$$hash.has(self.id)) {
         // check if the item has been deselected
-        if(selected.indexOf(tableCtrl.$$hash.get(self.id)) === -1) {
+        if(findSelectedIndex() < 0) {
           tableCtrl.$$hash.purge(self.id);
         }
         
@@ -970,7 +1002,7 @@ function mdSelect($compile) {
       }
       
       // check if the item has been selected
-      if(selected.indexOf(self.model) !== -1) {
+      if(findSelectedIndex() >= 0) {
         tableCtrl.$$hash.update(self.id, self.model);
       }
     }
@@ -1020,7 +1052,7 @@ function mdSelect($compile) {
     require: ['mdSelect', '^^mdTable'],
     restrict: 'A',
     scope: {
-      id: '@mdSelectId',
+      id: '@?mdSelectId',
       model: '=mdSelect',
       disabled: '=ngDisabled',
       onSelect: '=?mdOnSelect',
@@ -1129,7 +1161,7 @@ function mdTable() {
       }
       
       if(!angular.isArray(self.selected)) {
-        return console.error('Row selection: Expected an array. Recived ' + typeof self.selected + '.');
+        return console.error('Row selection: Expected an array. Received ' + typeof self.selected + '.');
       }
       
       return true;
@@ -1211,6 +1243,7 @@ function mdTable() {
     scope: {
       progress: '=?mdProgress',
       selected: '=ngModel',
+      idField: '@?ngModelId',
       rowSelect: '=mdRowSelect'
     }
   };

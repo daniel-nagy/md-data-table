@@ -13,20 +13,28 @@ function mdSelect($compile) {
     var self = ctrls.shift();
     var tableCtrl = ctrls.shift();
 
-    self.id = self.model[self.idField];
+    if( !self.id && tableCtrl.idField) {
+      self.id = self.model[tableCtrl.idField];
+    }
 
-    if(tableCtrl.$$rowSelect && self.id && tableCtrl.$$hash.has(self.id)) {
+    if(tableCtrl.$$rowSelect && self.id) {
       var index = findSelectedIndex();
-      
-      // if the item is no longer selected remove it
-      if(index < 0) {
-        tableCtrl.$$hash.purge(self.id);
-      }
-      
-      // if the item is not a reference to the current model update the reference
-      else if(!tableCtrl.$$hash.equals(self.id, self.model)) {
+
+      if(tableCtrl.$$hash.has(self.id)) {
+
+        // if the item is no longer selected remove it
+        if(index < 0) {
+          tableCtrl.$$hash.purge(self.id);
+        }
+
+        // if the item is not a reference to the current model update the reference
+        else if(!tableCtrl.$$hash.equals(self.id, self.model)) {
+          tableCtrl.$$hash.update(self.id, self.model);
+          tableCtrl.selected.splice(index, 1, self.model);
+        }
+        
+      } else if(index >= 0) {
         tableCtrl.$$hash.update(self.id, self.model);
-        tableCtrl.selected.splice(index, 1, self.model);
       }
     }
     
@@ -75,15 +83,15 @@ function mdSelect($compile) {
     };
     
     function findSelectedIndex() {
-      if(self.id) {
-        for(var i = 0; i < tableCtrl.selected.length; ++i) {
-          if(tableCtrl.selected[i][self.idField] === self.id) {
+      if(tableCtrl.idField) {
+        for(var i = 0, len = tableCtrl.selected.length; i < len; ++i) {
+          if(tableCtrl.selected[i][tableCtrl.idField] === self.id) {
             return i;
           }
         }
         return -1;
       }
-
+      
       return tableCtrl.selected.indexOf(self.model);
     }
 
@@ -193,7 +201,7 @@ function mdSelect($compile) {
     require: ['mdSelect', '^^mdTable'],
     restrict: 'A',
     scope: {
-      idField: '@mdSelectId',
+      id: '@?mdSelectId',
       model: '=mdSelect',
       disabled: '=ngDisabled',
       onSelect: '=?mdOnSelect',

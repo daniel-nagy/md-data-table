@@ -104,6 +104,16 @@ function mdTablePagination() {
       self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isZero(newValue) ? 1 : newValue));
       self.onPaginationChange();
     });
+    
+    $scope.$watch('$pagination.total', function (newValue, oldValue) {
+      if(newValue === oldValue) {
+        return;
+      }
+      
+      if ((self.page - 1) * self.limit >= newValue) {
+        self.first();
+      }
+    });
   }
   
   Controller.$inject = ['$attrs', '$scope'];

@@ -20,7 +20,7 @@ This software is provided free of charge and without restriction under the [MIT 
 
 A live [demo](http://danielnagy.me/md-data-table).
 
-A fork-able [Codepen](http://codepen.io/anon/pen/YwGJVr?editors=101). Please use this to reproduce any issues you may be experiencing.
+A fork-able [Codepen](http://codepen.io/anon/pen/BjvLVJ?editors=1010). Please use this to reproduce any issues you may be experiencing.
 
 ## Installation
 

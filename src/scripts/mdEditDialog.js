@@ -23,7 +23,7 @@ function controllerDecorator($delegate) {
 
 controllerDecorator.$inject = ['$delegate'];
   
-function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope, $templateCache, $templateRequest, $window, $timeout) {
+function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope, $templateCache, $templateRequest, $window) {
   /* jshint validthis: true */
   
   var ESCAPE = 27;
@@ -69,15 +69,9 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     
     positionDialog(element, options.targetEvent.currentTarget);
     
-    $timeout(function () {
-      if (options.focusOnOpen) {
-        var autofocus = $mdUtil.findFocusTarget(element);
-
-        if (autofocus) {
-            autofocus.focus();
-        }
-      }
-    }, 0, false);
+    if (options.focusOnOpen) {
+      focusOnOpen(element);
+    }
     
     if(options.clickOutsideToClose) {
       backdrop.on('click', function () {
@@ -189,7 +183,17 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
       body.off('keyup', keyup);
     });
   }
-  
+
+  function focusOnOpen(element) {
+    $mdUtil.nextTick(function () {
+      var autofocus = $mdUtil.findFocusTarget(element);
+      
+      if (autofocus) {
+        autofocus.focus();
+      }
+    }, false);
+  }
+
   function positionDialog(element, target) {
     var table = angular.element(target).controller('mdCell').getTable();
     
@@ -380,4 +384,4 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
   return this;
 }
 
-mdEditDialog.$inject = ['$compile', '$controller', '$document', '$mdUtil', '$q', '$rootScope', '$templateCache', '$templateRequest', '$window', '$timeout'];
+mdEditDialog.$inject = ['$compile', '$controller', '$document', '$mdUtil', '$q', '$rootScope', '$templateCache', '$templateRequest', '$window'];

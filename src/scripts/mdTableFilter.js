@@ -14,7 +14,7 @@ function columnarFilter(){
         }
 
         return obj[prop];
-    }
+    };
 
 
     return function (values, columns) {

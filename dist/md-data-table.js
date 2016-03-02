@@ -362,12 +362,8 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     
     positionDialog(element, options.targetEvent.currentTarget);
     
-    if(options.focusOnOpen) {
-      var autofocus = $mdUtil.findFocusTarget(element);
-      
-      if(autofocus) {
-        autofocus.focus();
-      }
+    if (options.focusOnOpen) {
+      focusOnOpen(element);
     }
     
     if(options.clickOutsideToClose) {
@@ -480,7 +476,17 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
       body.off('keyup', keyup);
     });
   }
-  
+
+  function focusOnOpen(element) {
+    $mdUtil.nextTick(function () {
+      var autofocus = $mdUtil.findFocusTarget(element);
+      
+      if (autofocus) {
+        autofocus.focus();
+      }
+    }, false);
+  }
+
   function positionDialog(element, target) {
     var table = angular.element(target).controller('mdCell').getTable();
     

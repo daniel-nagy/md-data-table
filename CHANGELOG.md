@@ -1,5 +1,10 @@
 ## Change Log
 
+#### Version 0.9.13
+###### March 11, 2016
+
+* Fix issue [#316](https://github.com/daniel-nagy/md-data-table/issues/316)
+
 #### Version 0.9.12
 ###### March 2, 2016
 

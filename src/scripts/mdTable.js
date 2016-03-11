@@ -77,7 +77,7 @@ function mdTable() {
         return $scope.$applyAsync();
       }
       
-      queue[0].then(function () {
+      queue[0]['finally'](function () {
         queue.shift();
         resolvePromises();
       });

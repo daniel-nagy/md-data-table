@@ -2,7 +2,7 @@
  * Angular Material Data Table
  * https://github.com/daniel-nagy/md-data-table
  * @license MIT
- * v0.9.12
+ * v0.9.13
  */
 (function (window, angular, undefined) {
 'use strict';
@@ -1117,7 +1117,7 @@ function mdTable() {
         return $scope.$applyAsync();
       }
       
-      queue[0].then(function () {
+      queue[0]['finally'](function () {
         queue.shift();
         resolvePromises();
       });

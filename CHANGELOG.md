@@ -1,5 +1,10 @@
 ## Change Log
 
+#### Version 0.9.14
+###### March 11, 2016
+
+* All rows will be considered selected if there is at least one selectable row (not disabled) and all selectable rows are selected.
+
 #### Version 0.9.13
 ###### March 11, 2016
 

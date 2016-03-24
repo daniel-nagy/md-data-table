@@ -1,6 +1,6 @@
 {
   "name": "angular-material-data-table",
-  "version": "0.9.14",
+  "version": "0.9.15",
   "description": "Material Design data table.",
   "license": "MIT",
   "repository": {
@@ -26,7 +26,7 @@
     "load-grunt-tasks": "^0.6.0"
   },
   "peerDependencies": {
-    "angular": "1.x",
-    "angular-material": "1.x"
+    "angular": "^1.4.0",
+    "angular-material": "^1.0.0"
   }
 }

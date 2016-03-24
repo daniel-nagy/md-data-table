@@ -1,5 +1,10 @@
 ## Change Log
 
+#### Version 0.9.15
+###### March 24, 2016
+
+* Use peer dependencies so npm can warn developers about incompatible versions.
+
 #### Version 0.9.14
 ###### March 11, 2016
 

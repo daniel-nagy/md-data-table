@@ -4,9 +4,9 @@
   <md-option ng-repeat="num in $pagination.range($pagination.pages()) track by $index" ng-value="$index + 1">{{$index + 1}}</md-option>
 </md-select>
 
-<span class="label">{{ $pagination.$label['rowsPerPage'] }}</span>
+<span class="label" ng-if="$pagination.showLimitSelect()">{{ $pagination.$label['rowsPerPage'] }}</span>
 
-<md-select class="md-table-select" ng-model="$pagination.limit" md-container-class="md-pagination-select" aria-label="Rows" placeholder="{{$pagination.options ? $pagination.options[0] : 5}}">
+<md-select class="md-table-select" ng-if="$pagination.showLimitSelect()" ng-model="$pagination.limit" md-container-class="md-pagination-select" aria-label="Rows" placeholder="{{$pagination.options ? $pagination.options[0] : 5}}">
   <md-option ng-repeat="rows in $pagination.options ? $pagination.options : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>
 </md-select>
 

@@ -95,6 +95,14 @@ function mdTablePagination() {
       return self.pageSelect;
     };
     
+    self.showLimitSelect = function () {
+        if($attrs.hasOwnProperty('mdLimitSelect') && $attrs.mdLimitSelect === '') {
+          return true;
+        }
+        
+        return self.limitSelect;
+      };
+      
     $scope.$watch('$pagination.limit', function (newValue, oldValue) {
       if(newValue === oldValue) {
         return;
@@ -115,6 +123,7 @@ function mdTablePagination() {
       limit: '=mdLimit',
       page: '=mdPage',
       pageSelect: '=?mdPageSelect',
+      limitSelect: '=?mdLimitSelect',
       onPaginate: '=?mdOnPaginate',
       options: '=mdOptions',
       total: '@mdTotal'

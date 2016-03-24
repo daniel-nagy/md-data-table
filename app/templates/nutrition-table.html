@@ -6,12 +6,23 @@
     <md-button ng-click="hideHead = !hideHead">{{hideHead ? 'Show Head' : 'Decapitate'}}</md-button>
     <md-button ng-click="blah = !blah">{{blah ? 'turn on' : 'turn off'}}</md-button>
     <md-button ng-click="loadStuff()">Load</md-button>
-    <md-button class="md-icon-button">
+    <md-button ng-click="showFilters=!showFilters" class="md-icon-button">
       <md-icon>filter_list</md-icon>
     </md-button>
     <md-button class="md-icon-button">
       <md-icon>more_vert</md-icon>
     </md-button>
+  </div>
+  <div layout="column" ng-if="showFilters" layout-padding>
+    <h6 class=".md-title" layout="row">Filter by Column(s)</h6>
+    <div layout="row" layout-fill>
+      <div layout="column" ng-repeat="column in columns">
+        <md-input-container>
+          <label>Filter by {{column.name}}</label>
+          <input ng-model="column.filter" type="text">
+        </md-input-container>
+      </div>
+    </div>
   </div>
 </md-toolbar>
 
@@ -27,7 +38,6 @@
     </md-button>
   </div>
 </md-toolbar>
-
 <md-table-container>
   <table data-md-table data-md-row-select="!hideCheckboxes" data-ng-model="selected" md-progress="promise">
     <!-- <thead md-head md-order="query.order">
@@ -56,7 +66,7 @@
       </tr>
     </thead>
     <tbody md-body>
-      <tr md-row md:select="dessert" data-md-on-select="log" md-on-deselect="deselect" x-md-auto-select="!blah" ng-disabled="dessert.calories.value > 400" data-ng-repeat="dessert in desserts.data | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+      <tr md-row md:select="dessert" data-md-on-select="log" md-on-deselect="deselect" x-md-auto-select="!blah" ng-disabled="dessert.calories.value > 400" data-ng-repeat="dessert in desserts.data | mdTableColumnarFilter:columns | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
         <td md-cell>{{dessert.name}}</td>
         <td md-cell>
           <md-select ng-model="dessert.type" placeholder="Other">

@@ -19,13 +19,14 @@ function mdRow() {
     }
     
     function isChild(node) {
-      return node.parent()[0] === element[0];
+      return element[0].contains(node[0]);
     }
     
     if(isBodyRow()) {
       var cell = angular.element('<td class="md-cell">');
       
       scope.$watch(enableRowSelection, function (enable) {
+        // if a row is not selectable, prepend an empty cell to it
         if(enable && !attrs.mdSelect) {
           if(!isChild(cell)) {
             element.prepend(cell);

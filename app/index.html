@@ -24,8 +24,22 @@
       </div>
     </md-toolbar>
     
-    <md-content laout="column" flex>
-      <md-card ng-include="'templates/nutrition-table.html'" ng-controller="nutritionController"></md-card>
+    <md-content laout="column" flex ng-controller="nutritionController">
+      
+      <md-card>
+        <div layout="row" layout-wrap class="checkboxes">
+          <md-checkbox ng-model="options.rowSelection">Row Selection</md-checkbox>
+          <md-checkbox ng-model="options.multiSelect">Multiple Selection</md-checkbox>
+          <md-checkbox ng-model="options.autoSelect">Auto Selection</md-checkbox>
+          <md-checkbox ng-model="options.decapitate">Decapitate</md-checkbox>
+          <md-checkbox ng-model="options.largeEditDialog">Lard Edit Dialogs</md-checkbox>
+          <md-checkbox ng-model="options.boundaryLinks">Pagination Boundary Links</md-checkbox>
+          <md-checkbox ng-model="options.pageSelector">Pagination Page Selector</md-checkbox>
+        </div>
+      </md-card>
+      
+      <md-card ng-include="'templates/nutrition-table.html'"></md-card>
+      
     </md-content>
     
     <script type="text/javascript" src="angular/angular.min.js"></script>

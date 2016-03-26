@@ -208,19 +208,11 @@ function mdColumn($compile) {
     }
     
     function isActive() {
-      if(!scope.orderBy) {
-        return false;
-      }
-      
-      return headCtrl.order === scope.orderBy || headCtrl.order === '-' + scope.orderBy;
+      return scope.orderBy && (headCtrl.order === scope.orderBy || headCtrl.order === '-' + scope.orderBy);
     }
     
     function isNumeric() {
-      if(attrs.hasOwnProperty('mdNumeric') && attrs.mdNumeric === '') {
-        return true;
-      }
-      
-      return scope.numeric;
+      return attrs.mdNumeric === '' || scope.numeric;
     }
     
     function setOrder() {
@@ -248,11 +240,11 @@ function mdColumn($compile) {
     }
     
     scope.getDirection = function () {
-      if(!isActive()) {
-        return attrs.hasOwnProperty('mdDesc') ? 'md-desc' : 'md-asc';
+      if(isActive()) {
+        return headCtrl.order.startsWith('-') ? 'md-desc' : 'md-asc';
       }
       
-      return headCtrl.order === '-' + scope.orderBy ? 'md-desc' : 'md-asc';
+      return attrs.mdDesc === '' || scope.$eval(attrs.mdDesc) ? 'md-desc' : 'md-asc';
     };
     
     scope.$watch(isActive, function (active) {
@@ -699,6 +691,8 @@ function mdFoot() {
 angular.module('md.data.table').directive('mdHead', mdHead);
 
 function mdHead($compile) {
+  // because scope.$watch is unpredictable
+  var oldValue = new Array(2);
 
   function compile(tElement) {
     tElement.addClass('md-head');
@@ -712,26 +706,29 @@ function mdHead($compile) {
   
   function postLink(scope, element, attrs, tableCtrl) {
     
-    function attachCheckbox() {
-      var children = element.children();
-      
-      // append an empty cell to preceding rows
-      for(var i = 0; i < children.length - 1; i++) {
-        children.eq(i).prepend('<th class="md-column">');
-      }
-      
-      children.eq(children.length - 1).prepend(createCheckBox());
+    function addCheckboxColumn() {
+      element.children().prepend('<th class="md-column md-checkbox-column">');
+    }
+    
+    function attatchCheckbox() {
+      element.prop('lastElementChild').firstElementChild.appendChild($compile(createCheckBox())(scope)[0]);
     }
     
     function createCheckBox() {
-      var checkbox = angular.element('<md-checkbox>');
+      return angular.element('<md-checkbox>').attr({
+        'aria-label': 'Select All',
+        'ng-click': 'toggleAll()',
+        'ng-checked': 'allSelected()',
+        'ng-disabled': '!getSelectableRows().length'
+      });
+    }
+    
+    function detachCheckbox() {
+      let cell = element.prop('lastElementChild').firstElementChild;
       
-      checkbox.attr('aria-label', 'Select All');
-      checkbox.attr('ng-click', 'toggleAll()');
-      checkbox.attr('ng-checked', 'allSelected()');
-      checkbox.attr('ng-disabled', '!getSelectableRows().length');
-      
-      return angular.element('<th class="md-column md-checkbox-column">').append($compile(checkbox)(scope));
+      if(cell.classList.contains('md-checkbox-column')) {
+        angular.element(cell).empty();
+      }
     }
     
     function enableRowSelection() {
@@ -742,12 +739,9 @@ function mdHead($compile) {
       return angular.element(row).controller('mdSelect');
     }
     
-    function removeCheckbox() {
-      var children = element.children();
-      var child = children.eq(children.length - 1);
-      
-      Array.prototype.some.call(child.prop('cells'), function (cell) {
-        return cell.classList.contains('md-checkbox-column') && child[0].removeChild(cell);
+    function removeCheckboxColumn() {
+      Array.prototype.some.call(element.find('th'), function (cell) {
+        return cell.classList.contains('md-checkbox-column') && cell.remove();
       });
     }
     
@@ -785,12 +779,31 @@ function mdHead($compile) {
       });
     };
     
-    scope.$watch(enableRowSelection, function (enable) {
-      if(enable) {
-        attachCheckbox();
-      } else {
-        removeCheckbox();
+    // because ngIf apparently doesn't destroy the directive
+    element.on('$destroy', function () {
+      oldValue = new Array(2);
+    });
+    
+    scope.$watchGroup([enableRowSelection, tableCtrl.enableMultiSelect], function (newValue) {
+      if(newValue[0] !== oldValue[0]) {
+        if(newValue[0]) {
+          addCheckboxColumn();
+          
+          if(newValue[1]) {
+            attatchCheckbox();
+          }
+        } else {
+          removeCheckboxColumn();
+        }
+      } else if(newValue[0] && newValue[1] !== oldValue[1]) {
+        if(newValue[1]) {
+          attatchCheckbox();
+        } else {
+          detachCheckbox();
+        }
       }
+      
+      angular.copy(newValue, oldValue);
     });
   }
   
@@ -829,13 +842,14 @@ function mdRow() {
     }
     
     function isChild(node) {
-      return node.parent()[0] === element[0];
+      return element[0].contains(node[0]);
     }
     
     if(isBodyRow()) {
       var cell = angular.element('<td class="md-cell">');
       
       scope.$watch(enableRowSelection, function (enable) {
+        // if a row is not selectable, prepend an empty cell to it
         if(enable && !attrs.mdSelect) {
           if(!isChild(cell)) {
             element.prepend(cell);
@@ -902,7 +916,11 @@ function mdSelect($compile) {
         return;
       }
       
-      tableCtrl.selected.push(self.model);
+      if(tableCtrl.enableMultiSelect()) {
+        tableCtrl.selected.push(self.model);
+      } else {
+        tableCtrl.selected.splice(0, tableCtrl.selected.length, self.model);
+      }
       
       if(angular.isFunction(self.onSelect)) {
         self.onSelect(self.model);
@@ -930,20 +948,16 @@ function mdSelect($compile) {
     };
     
     function autoSelect() {
-      if(attrs.hasOwnProperty('mdAutoSelect') && attrs.mdAutoSelect === '') {
-        return true;
-      }
-      
-      return self.autoSelect;
+      return attrs.mdAutoSelect === '' || self.autoSelect;
     }
     
     function createCheckbox() {
-      var checkbox = angular.element('<md-checkbox>');
-      
-      checkbox.attr('aria-label', 'Select Row');
-      checkbox.attr('ng-click', '$mdSelect.toggle($event)');
-      checkbox.attr('ng-checked', '$mdSelect.isSelected()');
-      checkbox.attr('ng-disabled', '$mdSelect.disabled');
+      var checkbox = angular.element('<md-checkbox>').attr({
+        'aria-label': 'Select Row',
+        'ng-click': '$mdSelect.toggle($event)',
+        'ng-checked': '$mdSelect.isSelected()',
+        'ng-disabled': '$mdSelect.disabled'
+      });
       
       return angular.element('<td class="md-cell md-checkbox-cell">').append($compile(checkbox)(scope));
     }
@@ -1020,6 +1034,13 @@ function mdSelect($compile) {
       return isSelected ? element.addClass('md-selected') : element.removeClass('md-selected');
     });
     
+    scope.$watch(tableCtrl.enableMultiSelect, function (multiple) {
+      if(!multiple) {
+        // remove all but the first selected item
+        tableCtrl.selected.splice(1);
+      }
+    });
+    
     tableCtrl.registerModelChangeListener(onSelectChange);
     
     element.on('$destroy', function () {
@@ -1051,7 +1072,7 @@ angular.module('md.data.table').directive('mdTable', mdTable);
 
 function Hash() {
   var keys = {};
-    
+  
   this.equals = function (key, item) {
     return keys[key] === item;
   };
@@ -1131,11 +1152,7 @@ function mdTable() {
     }
     
     function rowSelect() {
-      if($attrs.hasOwnProperty('mdRowSelect') && $attrs.mdRowSelect === '') {
-        return true;
-      }
-      
-      return self.rowSelect;
+      return $attrs.mdRowSelect === '' || self.rowSelect;
     }
     
     function validateModel() {
@@ -1174,6 +1191,10 @@ function mdTable() {
     
     self.getHeaderRows = function () {
       return self.getRows($element.prop('tHead'));
+    };
+    
+    self.enableMultiSelect = function () {
+      return $attrs.multiple === '' || $scope.$eval($attrs.multiple);
     };
     
     self.waitingOnPromise = function () {

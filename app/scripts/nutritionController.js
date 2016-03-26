@@ -1,6 +1,16 @@
 angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdEditDialog', '$q', '$timeout', '$scope', function ($http, $mdEditDialog, $q, $timeout, $scope) {
   'use strict';
   
+  $scope.options = {
+    rowSelection: true,
+    multiSelect: true,
+    autoSelect: true,
+    decapitate: false,
+    largeEditDialog: false,
+    boundaryLinks: false,
+    pageSelector: true
+  };
+  
   $scope.selected = [];
   
   $scope.query = {
@@ -9,6 +19,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
     page: 1
   };
   
+  // for testing ngRepeat
   $scope.columns = [{
     name: 'Dessert',
     orderBy: 'name',
@@ -67,7 +78,7 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
   $scope.editComment = function (event, dessert) {
     event.stopPropagation();
     
-    var promise = $mdEditDialog.large({
+    var dialog = {
       // messages: {
       //   test: 'I don\'t like tests!'
       // },
@@ -81,7 +92,9 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
       validators: {
         'md-maxlength': 30
       }
-    });
+    };
+    
+    var promise = $scope.options.largeEditDialog ? $mdEditDialog.large(dialog) : $mdEditDialog.small(dialog);
     
     promise.then(function (ctrl) {
       var input = ctrl.getInput();
@@ -97,8 +110,6 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
   };
   
   $scope.onPaginate = function(page, limit) {
-    // $scope.$broadcast('md.table.deselect');
-    
     console.log('Scope Page: ' + $scope.query.page + ' Scope Limit: ' + $scope.query.limit);
     console.log('Page: ' + page + ' Limit: ' + limit);
     

@@ -45,7 +45,11 @@ function mdSelect($compile) {
         return;
       }
       
-      tableCtrl.selected.push(self.model);
+      if(tableCtrl.enableMultiSelect()) {
+        tableCtrl.selected.push(self.model);
+      } else {
+        tableCtrl.selected.splice(0, tableCtrl.selected.length, self.model);
+      }
       
       if(angular.isFunction(self.onSelect)) {
         self.onSelect(self.model);
@@ -73,20 +77,16 @@ function mdSelect($compile) {
     };
     
     function autoSelect() {
-      if(attrs.hasOwnProperty('mdAutoSelect') && attrs.mdAutoSelect === '') {
-        return true;
-      }
-      
-      return self.autoSelect;
+      return attrs.mdAutoSelect === '' || self.autoSelect;
     }
     
     function createCheckbox() {
-      var checkbox = angular.element('<md-checkbox>');
-      
-      checkbox.attr('aria-label', 'Select Row');
-      checkbox.attr('ng-click', '$mdSelect.toggle($event)');
-      checkbox.attr('ng-checked', '$mdSelect.isSelected()');
-      checkbox.attr('ng-disabled', '$mdSelect.disabled');
+      var checkbox = angular.element('<md-checkbox>').attr({
+        'aria-label': 'Select Row',
+        'ng-click': '$mdSelect.toggle($event)',
+        'ng-checked': '$mdSelect.isSelected()',
+        'ng-disabled': '$mdSelect.disabled'
+      });
       
       return angular.element('<td class="md-cell md-checkbox-cell">').append($compile(checkbox)(scope));
     }
@@ -161,6 +161,13 @@ function mdSelect($compile) {
     
     scope.$watch(self.isSelected, function (isSelected) {
       return isSelected ? element.addClass('md-selected') : element.removeClass('md-selected');
+    });
+    
+    scope.$watch(tableCtrl.enableMultiSelect, function (multiple) {
+      if(!multiple) {
+        // remove all but the first selected item
+        tableCtrl.selected.splice(1);
+      }
     });
     
     tableCtrl.registerModelChangeListener(onSelectChange);

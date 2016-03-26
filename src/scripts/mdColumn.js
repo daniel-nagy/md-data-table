@@ -46,19 +46,11 @@ function mdColumn($compile) {
     }
     
     function isActive() {
-      if(!scope.orderBy) {
-        return false;
-      }
-      
-      return headCtrl.order === scope.orderBy || headCtrl.order === '-' + scope.orderBy;
+      return scope.orderBy && (headCtrl.order === scope.orderBy || headCtrl.order === '-' + scope.orderBy);
     }
     
     function isNumeric() {
-      if(attrs.hasOwnProperty('mdNumeric') && attrs.mdNumeric === '') {
-        return true;
-      }
-      
-      return scope.numeric;
+      return attrs.mdNumeric === '' || scope.numeric;
     }
     
     function setOrder() {
@@ -86,11 +78,11 @@ function mdColumn($compile) {
     }
     
     scope.getDirection = function () {
-      if(!isActive()) {
-        return attrs.hasOwnProperty('mdDesc') ? 'md-desc' : 'md-asc';
+      if(isActive()) {
+        return headCtrl.order.startsWith('-') ? 'md-desc' : 'md-asc';
       }
       
-      return headCtrl.order === '-' + scope.orderBy ? 'md-desc' : 'md-asc';
+      return attrs.mdDesc === '' || scope.$eval(attrs.mdDesc) ? 'md-desc' : 'md-asc';
     };
     
     scope.$watch(isActive, function (active) {

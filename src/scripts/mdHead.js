@@ -3,6 +3,8 @@
 angular.module('md.data.table').directive('mdHead', mdHead);
 
 function mdHead($compile) {
+  // because scope.$watch is unpredictable
+  var oldValue = new Array(2);
 
   function compile(tElement) {
     tElement.addClass('md-head');
@@ -16,26 +18,29 @@ function mdHead($compile) {
   
   function postLink(scope, element, attrs, tableCtrl) {
     
-    function attachCheckbox() {
-      var children = element.children();
-      
-      // append an empty cell to preceding rows
-      for(var i = 0; i < children.length - 1; i++) {
-        children.eq(i).prepend('<th class="md-column">');
-      }
-      
-      children.eq(children.length - 1).prepend(createCheckBox());
+    function addCheckboxColumn() {
+      element.children().prepend('<th class="md-column md-checkbox-column">');
+    }
+    
+    function attatchCheckbox() {
+      element.prop('lastElementChild').firstElementChild.appendChild($compile(createCheckBox())(scope)[0]);
     }
     
     function createCheckBox() {
-      var checkbox = angular.element('<md-checkbox>');
+      return angular.element('<md-checkbox>').attr({
+        'aria-label': 'Select All',
+        'ng-click': 'toggleAll()',
+        'ng-checked': 'allSelected()',
+        'ng-disabled': '!getSelectableRows().length'
+      });
+    }
+    
+    function detachCheckbox() {
+      let cell = element.prop('lastElementChild').firstElementChild;
       
-      checkbox.attr('aria-label', 'Select All');
-      checkbox.attr('ng-click', 'toggleAll()');
-      checkbox.attr('ng-checked', 'allSelected()');
-      checkbox.attr('ng-disabled', '!getSelectableRows().length');
-      
-      return angular.element('<th class="md-column md-checkbox-column">').append($compile(checkbox)(scope));
+      if(cell.classList.contains('md-checkbox-column')) {
+        angular.element(cell).empty();
+      }
     }
     
     function enableRowSelection() {
@@ -46,12 +51,9 @@ function mdHead($compile) {
       return angular.element(row).controller('mdSelect');
     }
     
-    function removeCheckbox() {
-      var children = element.children();
-      var child = children.eq(children.length - 1);
-      
-      Array.prototype.some.call(child.prop('cells'), function (cell) {
-        return cell.classList.contains('md-checkbox-column') && child[0].removeChild(cell);
+    function removeCheckboxColumn() {
+      Array.prototype.some.call(element.find('th'), function (cell) {
+        return cell.classList.contains('md-checkbox-column') && cell.remove();
       });
     }
     
@@ -89,12 +91,31 @@ function mdHead($compile) {
       });
     };
     
-    scope.$watch(enableRowSelection, function (enable) {
-      if(enable) {
-        attachCheckbox();
-      } else {
-        removeCheckbox();
+    // because ngIf apparently doesn't destroy the directive
+    element.on('$destroy', function () {
+      oldValue = new Array(2);
+    });
+    
+    scope.$watchGroup([enableRowSelection, tableCtrl.enableMultiSelect], function (newValue) {
+      if(newValue[0] !== oldValue[0]) {
+        if(newValue[0]) {
+          addCheckboxColumn();
+          
+          if(newValue[1]) {
+            attatchCheckbox();
+          }
+        } else {
+          removeCheckboxColumn();
+        }
+      } else if(newValue[0] && newValue[1] !== oldValue[1]) {
+        if(newValue[1]) {
+          attatchCheckbox();
+        } else {
+          detachCheckbox();
+        }
       }
+      
+      angular.copy(newValue, oldValue);
     });
   }
   

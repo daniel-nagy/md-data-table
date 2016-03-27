@@ -8,10 +8,12 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
     decapitate: false,
     largeEditDialog: false,
     boundaryLinks: false,
-    pageSelector: true
+    limitSelect: true,
+    pageSelect: true
   };
   
   $scope.selected = [];
+  $scope.limitOptions = [5, 10, 15];
   
   $scope.query = {
     order: 'name',
@@ -68,9 +70,36 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
     orderBy: 'comment'
   }];
   
-  $http.get('desserts.js').then(function (desserts) {
+  $http.get('desserts.json').then(function (desserts) {
     $scope.desserts = desserts.data;
-    // $timeout(function () {
+    
+    // $scope.selected.push($scope.desserts.data[1]);
+    
+    // $scope.selected.push({
+    //   name: 'Ice cream sandwich',
+    //   type: 'Ice cream',
+    //   calories: { value: 237.0 },
+    //   fat: { value: 9.0 },
+    //   carbs: { value: 37.0 },
+    //   protein: { value: 4.3 },
+    //   sodium: { value: 129.0 },
+    //   calcium: { value: 8.0 },
+    //   iron: { value: 1.0 }
+    // });
+    
+    // $scope.selected.push({
+    //   name: 'Eclair',
+    //   type: 'Pastry',
+    //   calories: { value:  262.0 },
+    //   fat: { value: 16.0 },
+    //   carbs: { value: 24.0 },
+    //   protein: { value:  6.0 },
+    //   sodium: { value: 337.0 },
+    //   calcium: { value:  6.0 },
+    //   iron: { value: 7.0 }
+    // });
+    
+    // $scope.promise = $timeout(function () {
     //   $scope.desserts = desserts.data;
     // }, 1000);
   });
@@ -103,6 +132,10 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
         input.$setValidity('test', input.$modelValue !== 'test');
       });
     });
+  };
+  
+  $scope.toggleLimitOptions = function () {
+    $scope.limitOptions = $scope.limitOptions ? undefined : [5, 10, 15];
   };
   
   $scope.getTypes = function () {

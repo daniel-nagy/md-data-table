@@ -52,7 +52,7 @@
       </tr>
     </thead>
     <tbody md-body>
-      <tr md-row md-select="dessert" data-md-on-select="log" md-on-deselect="deselect" x-md-auto-select="options.autoSelect" ng-disabled="dessert.calories.value > 400" data-ng-repeat="dessert in desserts.data | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+      <tr md-row md-select="dessert" md-select-id="name" data-md-on-select="log" md-on-deselect="deselect" x-md-auto-select="options.autoSelect" ng-disabled="dessert.calories.value > 400" data-ng-repeat="dessert in desserts.data | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
         <td md-cell>{{dessert.name}}</td>
         <td md-cell>
           <md-select ng-model="dessert.type" placeholder="Other">
@@ -74,4 +74,4 @@
   </table>
 </md-table-container>
 
-<data-md-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}" md-on-paginate="onPaginate" md-page-select="options.pageSelector" md-boundary-links="options.boundaryLinks"></data-md-table-pagination>
+<data-md-table-pagination md-limit="query.limit" md-limit-options="limitOptions" md-page="query.page" md-total="{{desserts.count}}" md-on-paginate="onPaginate" md-page-select="options.pageSelect" md-boundary-links="options.boundaryLinks"></data-md-table-pagination>

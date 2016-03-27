@@ -2,7 +2,7 @@
 
 angular.module('md.data.table').directive('mdSelect', mdSelect);
 
-function mdSelect($compile) {
+function mdSelect($compile, $parse) {
   
   // empty controller to bind scope properties to
   function Controller() {
@@ -12,19 +12,36 @@ function mdSelect($compile) {
   function postLink(scope, element, attrs, ctrls) {
     var self = ctrls.shift();
     var tableCtrl = ctrls.shift();
+    var getId = $parse(attrs.mdSelectId);
     
-    if(tableCtrl.$$rowSelect && self.id && tableCtrl.$$hash.has(self.id)) {
-      var index = tableCtrl.selected.indexOf(tableCtrl.$$hash.get(self.id));
-      
-      // if the item is no longer selected remove it
-      if(index === -1) {
-        tableCtrl.$$hash.purge(self.id);
-      }
-      
-      // if the item is not a reference to the current model update the reference
-      else if(!tableCtrl.$$hash.equals(self.id, self.model)) {
-        tableCtrl.$$hash.update(self.id, self.model);
-        tableCtrl.selected.splice(index, 1, self.model);
+    self.id = getId(self.model);
+    
+    if(self.id) {
+      if(tableCtrl.$$hash.has(self.id)) {
+        var index = tableCtrl.selected.indexOf(tableCtrl.$$hash.get(self.id));
+        
+        // if the item is no longer selected remove it
+        if(index === -1) {
+          tableCtrl.$$hash.purge(self.id);
+        }
+        
+        // if the item is not a reference to the current model update the reference
+        else if(!tableCtrl.$$hash.equals(self.id, self.model)) {
+          tableCtrl.$$hash.update(self.id, self.model);
+          tableCtrl.selected.splice(index, 1, self.model);
+        }
+        
+      } else {
+        
+        // check if the item has been selected
+        tableCtrl.selected.some(function (item, index) {
+          if(getId(item) === self.id) {
+            tableCtrl.$$hash.update(self.id, self.model);
+            tableCtrl.selected.splice(index, 1, self.model);
+            
+            return true;
+          }
+        });
       }
     }
     
@@ -185,7 +202,6 @@ function mdSelect($compile) {
     require: ['mdSelect', '^^mdTable'],
     restrict: 'A',
     scope: {
-      id: '@mdSelectId',
       model: '=mdSelect',
       disabled: '=ngDisabled',
       onSelect: '=?mdOnSelect',
@@ -195,4 +211,4 @@ function mdSelect($compile) {
   };
 }
 
-mdSelect.$inject = ['$compile'];
+mdSelect.$inject = ['$compile', '$parse'];

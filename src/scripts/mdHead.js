@@ -36,7 +36,7 @@ function mdHead($compile) {
     }
     
     function detachCheckbox() {
-      let cell = element.prop('lastElementChild').firstElementChild;
+      var cell = element.prop('lastElementChild').firstElementChild;
       
       if(cell.classList.contains('md-checkbox-column')) {
         angular.element(cell).empty();

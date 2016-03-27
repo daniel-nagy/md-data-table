@@ -1,7 +1,7 @@
 ## Change Log
 
 #### Version 0.10.0
-###### March 24, 2016
+###### March 27, 2016
 
 **Breaking Changes**
 

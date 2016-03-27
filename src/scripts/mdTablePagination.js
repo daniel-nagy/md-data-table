@@ -75,10 +75,6 @@ function mdTablePagination() {
       self.onPaginationChange();
     };
     
-    self.range = function (total) {
-      return new Array(isFinite(total) && isPositive(total) ? total : 1);
-    };
-    
     self.showBoundaryLinks = function () {
       if($attrs.hasOwnProperty('mdBoundaryLinks') && $attrs.mdBoundaryLinks === '') {
         return true;

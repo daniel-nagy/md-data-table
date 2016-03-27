@@ -1,7 +1,9 @@
 <span class="label" ng-if="$pagination.showPageSelect()">{{ $pagination.$label['page'] }}</span>
 
-<md-select class="md-table-select" ng-if="$pagination.showPageSelect()" ng-model="$pagination.page" md-container-class="md-pagination-select" ng-change="$pagination.onPaginationChange()" aria-label="Page">
-  <md-option ng-repeat="num in $pagination.range($pagination.pages()) track by $index" ng-value="$index + 1">{{$index + 1}}</md-option>
+<md-select virtual-page-select total="{{$pagination.pages()}}" class="md-table-select" ng-if="$pagination.showPageSelect()" ng-model="$pagination.page" md-container-class="md-pagination-select" ng-change="$pagination.onPaginationChange()" aria-label="Page">
+  <md-content>
+    <md-option ng-repeat="page in $pageSelect.pages" ng-value="page">{{page}}</md-option>
+  </md-content>
 </md-select>
 
 <span class="label">{{ $pagination.$label['rowsPerPage'] }}</span>

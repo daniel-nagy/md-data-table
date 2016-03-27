@@ -2,7 +2,7 @@
  * Angular Material Data Table
  * https://github.com/daniel-nagy/md-data-table
  * @license MIT
- * v0.9.15
+ * v0.10.0
  */
 (function (window, angular, undefined) {
 'use strict';
@@ -11,19 +11,21 @@ angular.module('md.table.templates', ['md-table-pagination.html', 'md-table-prog
 
 angular.module('md-table-pagination.html', []).run(['$templateCache', function($templateCache) {
   $templateCache.put('md-table-pagination.html',
-    '<span class="label" ng-if="$pagination.showPageSelect()">{{ $pagination.$label[\'page\'] }}</span>\n' +
+    '<span class="label" ng-if="$pagination.showPageSelect()">{{$pagination.label.page}}</span>\n' +
     '\n' +
-    '<md-select class="md-table-select" ng-if="$pagination.showPageSelect()" ng-model="$pagination.page" md-container-class="md-pagination-select" ng-change="$pagination.onPaginationChange()" aria-label="Page">\n' +
-    '  <md-option ng-repeat="num in $pagination.range($pagination.pages()) track by $index" ng-value="$index + 1">{{$index + 1}}</md-option>\n' +
+    '<md-select virtual-page-select total="{{$pagination.pages()}}" class="md-table-select" ng-if="$pagination.showPageSelect()" ng-model="$pagination.page" md-container-class="md-pagination-select" ng-change="$pagination.onPaginationChange()" aria-label="Page">\n' +
+    '  <md-content>\n' +
+    '    <md-option ng-repeat="page in $pageSelect.pages" ng-value="page">{{page}}</md-option>\n' +
+    '  </md-content>\n' +
     '</md-select>\n' +
     '\n' +
-    '<span class="label">{{ $pagination.$label[\'rowsPerPage\'] }}</span>\n' +
+    '<span class="label" ng-if="$pagination.limitOptions">{{$pagination.label.rowsPerPage}}</span>\n' +
     '\n' +
-    '<md-select class="md-table-select" ng-model="$pagination.limit" md-container-class="md-pagination-select" aria-label="Rows" placeholder="{{$pagination.options ? $pagination.options[0] : 5}}">\n' +
-    '  <md-option ng-repeat="rows in $pagination.options ? $pagination.options : [5, 10, 15]" ng-value="rows">{{rows}}</md-option>\n' +
+    '<md-select class="md-table-select" ng-if="$pagination.limitOptions" ng-model="$pagination.limit" md-container-class="md-pagination-select" aria-label="Rows" placeholder="{{ $pagination.limitOptions[0] }}">\n' +
+    '  <md-option ng-repeat="rows in $pagination.limitOptions" ng-value="rows">{{rows}}</md-option>\n' +
     '</md-select>\n' +
     '\n' +
-    '<span class="label">{{$pagination.min() + 1}} - {{$pagination.max()}} {{ $pagination.$label[\'of\'] }} {{$pagination.total}}</span>\n' +
+    '<span class="label">{{$pagination.min() + 1}} - {{$pagination.max()}} {{$pagination.label.of}} {{$pagination.total}}</span>\n' +
     '\n' +
     '<md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.first()" ng-disabled="!$pagination.hasPrevious()" aria-label="First">\n' +
     '  <md-icon md-svg-icon="navigate-first.svg"></md-icon>\n' +
@@ -164,7 +166,7 @@ function mdCell() {
 
 angular.module('md.data.table').directive('mdColumn', mdColumn);
 
-function mdColumn($compile) {
+function mdColumn($compile, $mdUtil) {
   
   function compile(tElement) {
     tElement.addClass('md-column');
@@ -224,7 +226,9 @@ function mdColumn($compile) {
         }
         
         if(angular.isFunction(headCtrl.onReorder)) {
-          headCtrl.onReorder(headCtrl.order);
+          $mdUtil.nextTick(function () {
+            headCtrl.onReorder(headCtrl.order);
+          });
         }
       });
     }
@@ -283,7 +287,7 @@ function mdColumn($compile) {
   };
 }
 
-mdColumn.$inject = ['$compile'];
+mdColumn.$inject = ['$compile', '$mdUtil'];
 
 angular.module('md.data.table')
   .decorator('$controller', controllerDecorator)
@@ -724,7 +728,7 @@ function mdHead($compile) {
     }
     
     function detachCheckbox() {
-      let cell = element.prop('lastElementChild').firstElementChild;
+      var cell = element.prop('lastElementChild').firstElementChild;
       
       if(cell.classList.contains('md-checkbox-column')) {
         angular.element(cell).empty();
@@ -873,7 +877,7 @@ function mdRow() {
 
 angular.module('md.data.table').directive('mdSelect', mdSelect);
 
-function mdSelect($compile) {
+function mdSelect($compile, $parse) {
   
   // empty controller to bind scope properties to
   function Controller() {
@@ -883,19 +887,36 @@ function mdSelect($compile) {
   function postLink(scope, element, attrs, ctrls) {
     var self = ctrls.shift();
     var tableCtrl = ctrls.shift();
+    var getId = $parse(attrs.mdSelectId);
     
-    if(tableCtrl.$$rowSelect && self.id && tableCtrl.$$hash.has(self.id)) {
-      var index = tableCtrl.selected.indexOf(tableCtrl.$$hash.get(self.id));
-      
-      // if the item is no longer selected remove it
-      if(index === -1) {
-        tableCtrl.$$hash.purge(self.id);
-      }
-      
-      // if the item is not a reference to the current model update the reference
-      else if(!tableCtrl.$$hash.equals(self.id, self.model)) {
-        tableCtrl.$$hash.update(self.id, self.model);
-        tableCtrl.selected.splice(index, 1, self.model);
+    self.id = getId(self.model);
+    
+    if(self.id) {
+      if(tableCtrl.$$hash.has(self.id)) {
+        var index = tableCtrl.selected.indexOf(tableCtrl.$$hash.get(self.id));
+        
+        // if the item is no longer selected remove it
+        if(index === -1) {
+          tableCtrl.$$hash.purge(self.id);
+        }
+        
+        // if the item is not a reference to the current model update the reference
+        else if(!tableCtrl.$$hash.equals(self.id, self.model)) {
+          tableCtrl.$$hash.update(self.id, self.model);
+          tableCtrl.selected.splice(index, 1, self.model);
+        }
+        
+      } else {
+        
+        // check if the item has been selected
+        tableCtrl.selected.some(function (item, index) {
+          if(getId(item) === self.id) {
+            tableCtrl.$$hash.update(self.id, self.model);
+            tableCtrl.selected.splice(index, 1, self.model);
+            
+            return true;
+          }
+        });
       }
     }
     
@@ -1056,7 +1077,6 @@ function mdSelect($compile) {
     require: ['mdSelect', '^^mdTable'],
     restrict: 'A',
     scope: {
-      id: '@mdSelectId',
       model: '=mdSelect',
       disabled: '=ngDisabled',
       onSelect: '=?mdOnSelect',
@@ -1066,7 +1086,7 @@ function mdSelect($compile) {
   };
 }
 
-mdSelect.$inject = ['$compile'];
+mdSelect.$inject = ['$compile', '$parse'];
 
 angular.module('md.data.table').directive('mdTable', mdTable);
 
@@ -1260,14 +1280,15 @@ function mdTablePagination() {
     tElement.addClass('md-table-pagination');
   }
   
-  function Controller($attrs, $scope) {
+  function Controller($attrs, $mdUtil, $scope) {
     var self = this;
-    
-    self.$label = angular.extend({
+    var defaultLabel = {
       page: 'Page:',
       rowsPerPage: 'Rows per page:',
       of: 'of'
-    }, $scope.$eval(self.label) || {});
+    };
+    
+    self.label = angular.copy(defaultLabel);
     
     function isPositive(number) {
       return number > 0;
@@ -1314,7 +1335,9 @@ function mdTablePagination() {
     
     self.onPaginationChange = function () {
       if(angular.isFunction(self.onPaginate)) {
-        self.onPaginate(self.page, self.limit);
+        $mdUtil.nextTick(function () {
+          self.onPaginate(self.page, self.limit);
+        });
       }
     };
     
@@ -1327,24 +1350,12 @@ function mdTablePagination() {
       self.onPaginationChange();
     };
     
-    self.range = function (total) {
-      return new Array(isFinite(total) && isPositive(total) ? total : 1);
-    };
-    
     self.showBoundaryLinks = function () {
-      if($attrs.hasOwnProperty('mdBoundaryLinks') && $attrs.mdBoundaryLinks === '') {
-        return true;
-      }
-      
-      return self.boundaryLinks;
+      return $attrs.mdBoundaryLinks === '' || self.boundaryLinks;
     };
     
     self.showPageSelect = function () {
-      if($attrs.hasOwnProperty('mdPageSelect') && $attrs.mdPageSelect === '') {
-        return true;
-      }
-      
-      return self.pageSelect;
+      return $attrs.mdPageSelect === '' || self.pageSelect;
     };
     
     $scope.$watch('$pagination.limit', function (newValue, oldValue) {
@@ -1356,19 +1367,22 @@ function mdTablePagination() {
       self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isZero(newValue) ? 1 : newValue));
       self.onPaginationChange();
     });
+    
+    $attrs.$observe('mdLabel', function (label) {
+      angular.extend(self.label, defaultLabel, $scope.$eval(label));
+    });
   }
   
-  Controller.$inject = ['$attrs', '$scope'];
+  Controller.$inject = ['$attrs', '$mdUtil', '$scope'];
   
   return {
     bindToController: {
       boundaryLinks: '=?mdBoundaryLinks',
-      label: '@?mdLabel',
       limit: '=mdLimit',
       page: '=mdPage',
       pageSelect: '=?mdPageSelect',
       onPaginate: '=?mdOnPaginate',
-      options: '=mdOptions',
+      limitOptions: '=?mdLimitOptions',
       total: '@mdTotal'
     },
     compile: compile,
@@ -1395,6 +1409,58 @@ function mdTableProgress() {
     restrict: 'C',
     scope: {},
     templateUrl: 'md-table-progress.html'
+  };
+}
+
+angular.module('md.data.table').directive('virtualPageSelect', virtualPageSelect);
+
+function virtualPageSelect() {
+
+  function Controller($element, $scope) {
+    var self = this;
+    var content = $element.find('md-content');
+    
+    self.pages = [];
+    
+    function getMin(pages, total) {
+      return Math.min(pages, isFinite(total) && isPositive(total) ? total : 1);
+    }
+    
+    function isPositive(number) {
+      return number > 0;
+    }
+    
+    function setPages(max) {
+      if(self.pages.length > max) {
+        return self.pages.splice(max);
+      }
+      
+      for(var i = self.pages.length; i < max; i++) {
+        self.pages.push(i + 1);
+      }
+    }
+    
+    content.on('scroll', function () {
+      if((content.prop('clientHeight') + content.prop('scrollTop')) >= content.prop('scrollHeight')) {
+        $scope.$applyAsync(function () {
+          setPages(getMin(self.pages.length + 10, self.total));
+        });
+      }
+    });
+    
+    $scope.$watch('$pageSelect.total', function (total) {
+      setPages(getMin(Math.max(self.pages.length, 10), total));
+    });
+  }
+
+  Controller.$inject = ['$element', '$scope'];
+
+  return {
+    bindToController: {
+      total: '@'
+    },
+    controller: Controller,
+    controllerAs: '$pageSelect'
   };
 }
 

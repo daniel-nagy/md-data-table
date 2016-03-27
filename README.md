@@ -110,7 +110,7 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 
 <!-- exact table from live demo -->
 <md-table-container>
-  <table md-table md-row-select ng-model="selected" md-progress="promise">
+  <table md-table md-row-select ng-model="selected" multiple md-progress="promise">
     <thead md-head md-order="query.order" md-on-reorder="onReorder">
       <tr md-row>
         <th md-column md-order-by="nameToLower"><span>Dessert (100g serving)</span></th>
@@ -124,7 +124,7 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
       </tr>
     </thead>
     <tbody md-body>
-      <tr md-row md-select="dessert" md-select-id="{{dessert.name}}" md-auto-select ng-repeat="dessert in desserts.data">
+      <tr md-row md-select="dessert" md-select-id="name" md-auto-select ng-repeat="dessert in desserts.data">
         <td md-cell>{{dessert.name}}</td>
         <td md-cell>{{dessert.calories.value}}</td>
         <td md-cell>{{dessert.fat.value | number: 1}}</td>
@@ -138,7 +138,7 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
   </table>
 </md-table-container>
 
-<md-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}" md-on-paginate="onPaginate" md-page-select></md-table-pagination>
+<md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 15]" md-page="query.page" md-total="{{desserts.count}}" md-on-paginate="onPaginate" md-page-select></md-table-pagination>
 
 ```
 
@@ -153,23 +153,22 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 * [Table Progress] (#table-progress)
 * [Table Toolbars](#table-toolbars)
 
-> I will be camelCasing attributes in tables so they do not wrap and are easier to read but don't forget to snake-case them in your template.
+> Tables are sorted alphabetically by their first column.
+> I will be **camelCasing** attributes in tables (otherwise the cells would wrap and be difficult to read) but don't forget to **snake-case** them in your template.
 > For documentation on versions prior to 0.9.0 please reference the [legacy](https://github.com/daniel-nagy/md-data-table/tree/legacy) branch.
 
 ### Column Sorting
 
-| Attribute      | Element    | Type       | Description |
-| :------------- | :--------- | :--------- | :---------- |
-| `mdOrder`      | `mdHead`   | `string`   | A variable to bind the sort order to. |
-| `mdOnReorder`  | `mdHead`   | `function` | A callback function for when the order changes. The callback will receive the new order. |
-| `mdOrderBy`    | `mdColumn` | `string`   | The value to bind to the sort order. |
-| `mdDesc`       | `mdColumn` | `null`     | If present, the column will sort descending first. The default is to sort ascending first. |
+| Attribute      | Element    | Type                 | Description |
+| :------------- | :--------- | :------------------- | :---------- |
+| `mdDesc`       | `mdColumn` | `[null, expression]` | If present, the column will sort descending first. The default is to sort ascending first. |
+| `mdOnReorder`  | `mdHead`   | `function`           | A callback function for when the order changes. The callback will receive the new order. |
+| `mdOrder`      | `mdHead`   | `string`             | A variable to bind the sort order to. |
+| `mdOrderBy`    | `mdColumn` | `string`             | The value to bind to the sort order. |
 
-When the user clicks the `md-column` element, the value of the `md-order-by` attribute will be bound to the variable provided to the `md-order` attribute on the `md-head` element. If the columns are already sorted by that value, a minus sign `-` will be prepended to the value. For most query languages, this is the universal symbol to sort descending.
+When the user clicks the `md-column` element, the value of the `md-order-by` attribute will be bound to the variable provided to the `md-order` attribute on the `md-head` element. If the column is already sorted by that value, a minus sign `-` will be prefixed to the value. For most query languages, this is the universal symbol to sort descending.
 
-The variable can then be used to send a query to the server, or bound to the `orderBy` property of an `ng-repeat` expression.
-
-> It is important to know that the callback expression will be executed before the next digest cycle, meaning your local scope variable will still have the old value.
+The variable can then be used to send a query to the server or with the `orderBy` property of an `ng-repeat` expression.
 
 **Example Using ngRepeat**
 
@@ -307,21 +306,21 @@ $mdEditDialog.show(options);
 | :-------- | :----- | :---------- |
 | options   | object | Dialog options. |
 
-| Property              | Type              | Default | Description |
-| :-------------------- | :---------------- | :------ | :---------- |
-| `bindToController`    | `bool`            | `false` | If true, properties on the provided scope object will be bound to the controller |
-| `clickOutsideToClose` | `bool`            | `true`  | The user can dismiss the dialog by clicking anywhere else on the page. |
-| `controller`          | `function|string` | `null`  | Either a constructor function or a string register with the $controller service. The controller will be automatically injected with `$scope` and `$element`. Remember to annotate your controller if you will be minifying your code. |
-| `controllerAs`        | `string`          | `null`  | An alias to publish your controller on the scope. |
-| `disableScroll`       | `bool`            | `true`  | Prevent user scroll while the dialog is open. |
-| `escToClose`          | `bool`            | `true`  | The user can dismiss the dialog by clicking the esc key. |
-| `focusOnOpen`         | `bool`            | `true`  | Will search the template for an `md-autofocus` element. |
-| `locals`              | `object`          | `null`  | Optional dependancies to be injected into your controller. It is not necessary to inject registered services, the `$injector` will provide them for you. |
-| `resolve`             | `object`          | `null`  | Similar to locals but waits for promises to be resolved. Once the promises resolve, their return value will be injected into the controller and the dialog will open. |
-| `scope`               | `object`          | `null`  | Properties to bind to the new isolated scope. |
-| `targetEvent`         | `event`           | `null`  | The event object. This must be provided and it must be from a table cell. |
-| `template`            | `string`          | `null`  | The template for your dialog. |
-| `templateUrl`         | `string`          | `null`  | A URL to fetch your template from. |
+| Property              | Type                 | Default | Description |
+| :-------------------- | :------------------- | :------ | :---------- |
+| `bindToController`    | `bool`               | `false` | If true, properties on the provided scope object will be bound to the controller |
+| `clickOutsideToClose` | `bool`               | `true`  | The user can dismiss the dialog by clicking anywhere else on the page. |
+| `controller`          | `[function, string]` | `null`  | Either a constructor function or a string register with the `$controller` service. The controller will be automatically injected with `$scope` and `$element`. Remember to annotate your controller if you will be minifying your code. |
+| `controllerAs`        | `string`             | `null`  | An alias to publish your controller on the scope. |
+| `disableScroll`       | `bool`               | `true`  | Prevent user scroll while the dialog is open. |
+| `escToClose`          | `bool`               | `true`  | The user can dismiss the dialog by clicking the esc key. |
+| `focusOnOpen`         | `bool`               | `true`  | Will search the template for an `md-autofocus` element. |
+| `locals`              | `object`             | `null`  | Optional dependancies to be injected into your controller. It is not necessary to inject registered services, the `$injector` will provide them for you. |
+| `resolve`             | `object`             | `null`  | Similar to locals but waits for promises to be resolved. Once the promises resolve, their return value will be injected into the controller and the dialog will open. |
+| `scope`               | `object`             | `null`  | Properties to bind to the new isolated scope. |
+| `targetEvent`         | `event`              | `null`  | The event object. This must be provided and it must be from a table cell. |
+| `template`            | `string`             | `null`  | The template for your dialog. |
+| `templateUrl`         | `string`             | `null`  | A URL to fetch your template from. |
 
 The `show` method will return a `promise` that will resolve with the controller instance.
 
@@ -355,9 +354,9 @@ Clicking anywhere in the cell will activate the menu. In addition, if you have a
 
 Numeric columns align to the right of table cells.
 
-| Attribute   | Element    | Type              | Description |
-| :---------  | :--------- | :---------------- | :---------- |
-| `mdNumeric` | `mdColumn` | `null|expression` | If the expression is `null` or evaluates to `true` then all the cells in that column will be right aligned |
+| Attribute   | Element    | Type                 | Description |
+| :---------  | :--------- | :------------------- | :---------- |
+| `mdNumeric` | `mdColumn` | `[null, expression]` | If the expression is `null` or evaluates to `true` then all the cells in that column will be right aligned |
 
 You may use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) filter on a cell to set the decimal precision.
 
@@ -370,25 +369,26 @@ You may use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) 
 
 ### Pagination
 
-| Attribute           | Type            | Description |
-| :---------------- | :---------------- | :---------- |
-| `mdBoundaryLinks` | `null|expression` | Displays first and last page navigation links |
-| `mdLabel`         | `object`          | Change the pagination label. See more below. |
-| `mdLimit`         | `integer`         | A row limit. |
-| `mdPage`          | `integer`         | Page number. Pages are not zero indexed. The directive assumes the first page is one. |
-| `mdOnPaginate`    | `function`        | A callback function for when the page or limit changes. The page is passed as the first argument and the limit is passed as the second argument. |
-| `mdOptions`       | `array`           | Row limit options. The default is `[5, 10, 15]` |
-| `mdTotal`         | `integer`         | Total number of items. |
+| Attribute           | Type               | Description |
+| :---------------- | :------------------- | :---------- |
+| `mdBoundaryLinks` | `[null, expression]` | Displays first and last page navigation links |
+| `mdLabel`         | `object`             | Change the pagination label (See more below). |
+| `mdLimit`         | `integer`            | A row limit. |
+| `mdLimitOptions`  | `array`              | Row limit options. |
+| `mdOnPaginate`    | `function`           | A callback function for when the page or limit changes. The page is passed as the first argument and the limit is passed as the second argument.    |
+| `mdPage`          | `integer`            | Page number. Pages are not zero indexed. The directive assumes the first page is one. |
+| `mdPageSelect`    | `[null, expression]` | Display a select dropdown for the page number |
+| `mdTotal`         | `integer`            | Total number of items. |
 
 The `md-label` attribute has the following properties.
 
 | Property    | Type     | Default |
 | :---------- | :------- | :------ |
+| of          | `string` | of (e.g. x - y of z) |
 | page        | `string` | Page:   |
 | rowsPerPage | `string` | Rows per page: |
-| of          | `string` | of e.g. (x - y of z) |
 
-**Example: Changing Pagination Label**
+**Example: Changing The Pagination Label**
 
 ```html
 <!-- how to change the pagination label -->
@@ -398,7 +398,7 @@ The `md-label` attribute has the following properties.
 <md-table-pagination md-label="{{label}}"></md-table-pagination>
 ```
 
-I used Google translate so if the translations are wrong please fix them and make a pull request.
+> I used Google translate so if the translations are wrong please fix them and make a pull request.
 
 **Example: Client Side Pagination Using ngRepeat**
 
@@ -414,29 +414,28 @@ I used Google translate so if the translations are wrong please fix them and mak
 * Make sure you pass `md-page`, `md-limit`, and `md-total` to the directive and that they are finite numbers.
 * Pages are not zero indexed. The directive will assume pages start at one. If your query language expects pages to be zero indexed then just subtract one before making the query.
 
-> It is important to know that the call back expression will be executed before the next digest cycle, meaning your local scope variables will still have the old values.
-
 ### Row Selection
 
-By default, selected items will persist even on pagination change. For this to work with items being fetch from the server you will need to provide a unique identifier to the directive, probably the primary key of your data set.
+| Attribute      | Element   | Type                 | Description |
+| :------------- | :-------- | :------------------- | :---------- |
+| `mdAutoSelect` | `mdRow`   | `[null, expression]` | Select a row by clicking anywhere in the row. |
+| `mdOnDeselect` | `mdRow`   | `function`           | A callback function for when an item is deselected. The item will be passed as an argument to the callback. |
+| `mdOnSelect`   | `mdRow`   | `function`           | A callback function for when an item is selected. The item will be passed as an argument to the callback. |
+| `mdRowSelect`  | `mdTable` | `[null, expression]` | Enable row selection. |
+| `mdSelect`     | `mdRow`   | `any`                | The item to be selected. |
+| `mdSelectId`   | `mdRow`   | `[number, string]`   | A unique identifier for the selected item. The identifier must be a property of the item. |
+| `multiple`     | `mdTable` | `[null, expression]` | Allow multiple selection. When enabled a master toggle will be prepended to the last row of table header. |
+| `ngDisabled`   | `mdRow`   | `expression`         | Conditionally disable row selection. |
+| `ngModel`      | `mdTable` | `array`              | A variable to bind selected items to. |
 
-If at anytime you want to add or remove items from the model in your controller you may do so.
+By default selected items will persist. Equality between items is determined using the `===` operator. In cases where items may not be strictly equal, you must provide a unique identifier for the item.
 
-| Attribute      | Element   | Type              | Description |
-| :------------- | :-------- | :---------------- | :---------- |
-| `mdRowSelect`  | `mdTable` | `null|expression` | Enable row selection. |
-| `ngModel`      | `mdTable` | `array`           | A variable to bind selected items to. |
-| `mdSelect`     | `mdRow`   | `any`             | The item to be selected. |
-| `mdSelectId`   | `mdRow`   | `string`          | A unique identifier for the selected item. This is necessary to match items that may not be strictly equal. For example, if items are swapped from the server. |
-| `mdAutoSelect` | `mdRow`   | `null|expression` | Select a row by clicking anywhere in the row. |
-| `mdOnSelect`   | `mdRow`   | `function`        | A callback function for when an item is selected. The item will be passed as an argument to the callback. |
-| `mdOnDeselect` | `mdRow`   | `function`        | A callback function for when an item is deselected. The item will be passed as an argument to the callback. |
-| `ngDisabled`   | `mdRow`   | `expression`      | Conditionally disable row selection. |
+You may manually add or remove items from the model but be aware select and deselect callbacks will not be triggered. When operating in single select mode, the deselect callback will not be triggered when a user selects another item. It will be trigger, however, if the user directly deselects the item. In multi-select mode, the master toggle will trigger select and deselect callbacks for all items selected or deselected respectfully.
 
 **Example: Row Selection From The Live Demo.**
 
 ```html
-<tr md-row md-select="dessert" md-select-id="{{dessert.name}}" md-auto-select ng-repeat="dessert in desserts.data">
+<tr md-row md-select="dessert" md-select-id="name" md-auto-select ng-repeat="dessert in desserts.data">
 ```
 
 **Example: Clearing Selected Items On Pagination**
@@ -449,9 +448,9 @@ $scope.onPaginate = function () {
 
 ### Table Progress
 
-| Attribute    | Target    | Type                 | Description |
-| :----------- | :-------- | :------------------- | :---------- |
-| `mdProgress` | `mdTable` | `promise|[promises]` | The table will display a loading indicator until the promise is resolved or rejected. |
+| Attribute    | Target    | Type                        | Description |
+| :----------- | :-------- | :-------------------------- | :---------- |
+| `mdProgress` | `mdTable` | `[promise, promise<Array>]` | The table will display a loading indicator until all promises are resolved or rejected. |
 
 The table module can display a loading indicator for you whenever asynchronous code is executing. It accepts a promise or an array of promises. If another promise is received before the previous promise is resolved or rejected it will be placed in a queue.
 
@@ -486,7 +485,7 @@ function () {
 <table md-table md-progress="promise"></table>
 ```
 
-In addition, if you are dealing with something that returns a promise directly and not a deferred object you don't need to worry about it.
+In addition, if you are dealing with something that returns a promise directly (not a deferred object) you don't need to worry about it.
 
 ```javascript
 function () {

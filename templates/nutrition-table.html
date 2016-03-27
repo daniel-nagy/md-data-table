@@ -33,8 +33,8 @@
 </md-toolbar>
 
 <md-table-container>
-  <table md-table md-row-select ng-model="selected" md-progress="promise">
-    <thead md-head md-order="query.order" md-on-reorder="onReorder">
+  <table md-table md-row-select multiple ng-model="selected" md-progress="promise">
+    <thead md-head md-order="query.order" md-on-reorder="getDesserts">
       <tr md-row>
         <th md-column md-order-by="nameToLower"><span>Dessert (100g serving)</span></th>
         <th md-column md-numeric md-order-by="calories.value"><span>Calories</span></th>
@@ -47,7 +47,7 @@
       </tr>
     </thead>
     <tbody md-body>
-      <tr md-row md-select="dessert" md-select-id="{{dessert.name}}" md-auto-select ng-repeat="dessert in desserts.data">
+      <tr md-row md-select="dessert" md-select-id="name" md-auto-select ng-repeat="dessert in desserts.data">
         <td md-cell>{{dessert.name}}</td>
         <td md-cell>{{dessert.calories.value}}</td>
         <td md-cell>{{dessert.fat.value | number: 1}}</td>
@@ -61,4 +61,4 @@
   </table>
 </md-table-container>
 
-<md-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}" md-on-paginate="onPaginate" md-page-select></md-table-pagination>
+<md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 15]" md-page="query.page" md-total="{{desserts.count}}" md-on-paginate="getDesserts" md-page-select></md-table-pagination>

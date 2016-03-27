@@ -428,7 +428,7 @@ The `md-label` attribute has the following properties.
 
 By default selected items will persist. Equality between items is determined using the `===` operator. In cases where items may not be strictly equal, you must provide a unique identifier for the item.
 
-You may manually add or remove items from the model but be aware select and deselect callbacks will not be triggered. When operating in single select mode, the deselect callback will not be triggered when a user selects another item. It will be trigger, however, if the user directly deselects the item. In multi-select mode, the master toggle will trigger select and deselect callbacks for all items selected or deselected respectfully.
+You may manually add or remove items from the model but be aware that select and deselect callbacks will not be triggered. When operating in single select mode, the deselect callback will not be triggered when a user selects another item. It will be trigger, however, if the user directly deselects the item. In multi-select mode, the master toggle will trigger select and deselect callbacks for all items selected or deselected respectfully.
 
 **Example: Row Selection From The Live Demo.**
 

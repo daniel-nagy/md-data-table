@@ -2,7 +2,7 @@
 
 angular.module('md.data.table').directive('mdSelect', mdSelect);
 
-function mdSelect($compile) {
+function mdSelect($compile, $parse) {
   
   // empty controller to bind scope properties to
   function Controller() {
@@ -12,19 +12,36 @@ function mdSelect($compile) {
   function postLink(scope, element, attrs, ctrls) {
     var self = ctrls.shift();
     var tableCtrl = ctrls.shift();
+    var getId = $parse(attrs.mdSelectId);
     
-    if(tableCtrl.$$rowSelect && self.id && tableCtrl.$$hash.has(self.id)) {
-      var index = tableCtrl.selected.indexOf(tableCtrl.$$hash.get(self.id));
-      
-      // if the item is no longer selected remove it
-      if(index === -1) {
-        tableCtrl.$$hash.purge(self.id);
-      }
-      
-      // if the item is not a reference to the current model update the reference
-      else if(!tableCtrl.$$hash.equals(self.id, self.model)) {
-        tableCtrl.$$hash.update(self.id, self.model);
-        tableCtrl.selected.splice(index, 1, self.model);
+    self.id = getId(self.model);
+    
+    if(self.id) {
+      if(tableCtrl.$$hash.has(self.id)) {
+        var index = tableCtrl.selected.indexOf(tableCtrl.$$hash.get(self.id));
+        
+        // if the item is no longer selected remove it
+        if(index === -1) {
+          tableCtrl.$$hash.purge(self.id);
+        }
+        
+        // if the item is not a reference to the current model update the reference
+        else if(!tableCtrl.$$hash.equals(self.id, self.model)) {
+          tableCtrl.$$hash.update(self.id, self.model);
+          tableCtrl.selected.splice(index, 1, self.model);
+        }
+        
+      } else {
+        
+        // check if the item has been selected
+        tableCtrl.selected.some(function (item, index) {
+          if(getId(item) === self.id) {
+            tableCtrl.$$hash.update(self.id, self.model);
+            tableCtrl.selected.splice(index, 1, self.model);
+            
+            return true;
+          }
+        });
       }
     }
     
@@ -45,7 +62,11 @@ function mdSelect($compile) {
         return;
       }
       
-      tableCtrl.selected.push(self.model);
+      if(tableCtrl.enableMultiSelect()) {
+        tableCtrl.selected.push(self.model);
+      } else {
+        tableCtrl.selected.splice(0, tableCtrl.selected.length, self.model);
+      }
       
       if(angular.isFunction(self.onSelect)) {
         self.onSelect(self.model);
@@ -73,20 +94,16 @@ function mdSelect($compile) {
     };
     
     function autoSelect() {
-      if(attrs.hasOwnProperty('mdAutoSelect') && attrs.mdAutoSelect === '') {
-        return true;
-      }
-      
-      return self.autoSelect;
+      return attrs.mdAutoSelect === '' || self.autoSelect;
     }
     
     function createCheckbox() {
-      var checkbox = angular.element('<md-checkbox>');
-      
-      checkbox.attr('aria-label', 'Select Row');
-      checkbox.attr('ng-click', '$mdSelect.toggle($event)');
-      checkbox.attr('ng-checked', '$mdSelect.isSelected()');
-      checkbox.attr('ng-disabled', '$mdSelect.disabled');
+      var checkbox = angular.element('<md-checkbox>').attr({
+        'aria-label': 'Select Row',
+        'ng-click': '$mdSelect.toggle($event)',
+        'ng-checked': '$mdSelect.isSelected()',
+        'ng-disabled': '$mdSelect.disabled'
+      });
       
       return angular.element('<td class="md-cell md-checkbox-cell">').append($compile(checkbox)(scope));
     }
@@ -163,6 +180,13 @@ function mdSelect($compile) {
       return isSelected ? element.addClass('md-selected') : element.removeClass('md-selected');
     });
     
+    scope.$watch(tableCtrl.enableMultiSelect, function (multiple) {
+      if(!multiple) {
+        // remove all but the first selected item
+        tableCtrl.selected.splice(1);
+      }
+    });
+    
     tableCtrl.registerModelChangeListener(onSelectChange);
     
     element.on('$destroy', function () {
@@ -178,7 +202,6 @@ function mdSelect($compile) {
     require: ['mdSelect', '^^mdTable'],
     restrict: 'A',
     scope: {
-      id: '@mdSelectId',
       model: '=mdSelect',
       disabled: '=ngDisabled',
       onSelect: '=?mdOnSelect',
@@ -188,4 +211,4 @@ function mdSelect($compile) {
   };
 }
 
-mdSelect.$inject = ['$compile'];
+mdSelect.$inject = ['$compile', '$parse'];

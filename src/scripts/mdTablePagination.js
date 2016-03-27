@@ -8,14 +8,15 @@ function mdTablePagination() {
     tElement.addClass('md-table-pagination');
   }
   
-  function Controller($attrs, $scope) {
+  function Controller($attrs, $mdUtil, $scope) {
     var self = this;
-    
-    self.$label = angular.extend({
+    var defaultLabel = {
       page: 'Page:',
       rowsPerPage: 'Rows per page:',
       of: 'of'
-    }, $scope.$eval(self.label) || {});
+    };
+    
+    self.label = angular.copy(defaultLabel);
     
     function isPositive(number) {
       return number > 0;
@@ -62,7 +63,9 @@ function mdTablePagination() {
     
     self.onPaginationChange = function () {
       if(angular.isFunction(self.onPaginate)) {
-        self.onPaginate(self.page, self.limit);
+        $mdUtil.nextTick(function () {
+          self.onPaginate(self.page, self.limit);
+        });
       }
     };
     
@@ -75,24 +78,12 @@ function mdTablePagination() {
       self.onPaginationChange();
     };
     
-    self.range = function (total) {
-      return new Array(isFinite(total) && isPositive(total) ? total : 1);
-    };
-    
     self.showBoundaryLinks = function () {
-      if($attrs.hasOwnProperty('mdBoundaryLinks') && $attrs.mdBoundaryLinks === '') {
-        return true;
-      }
-      
-      return self.boundaryLinks;
+      return $attrs.mdBoundaryLinks === '' || self.boundaryLinks;
     };
     
     self.showPageSelect = function () {
-      if($attrs.hasOwnProperty('mdPageSelect') && $attrs.mdPageSelect === '') {
-        return true;
-      }
-      
-      return self.pageSelect;
+      return $attrs.mdPageSelect === '' || self.pageSelect;
     };
     
     $scope.$watch('$pagination.limit', function (newValue, oldValue) {
@@ -104,19 +95,22 @@ function mdTablePagination() {
       self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isZero(newValue) ? 1 : newValue));
       self.onPaginationChange();
     });
+    
+    $attrs.$observe('mdLabel', function (label) {
+      angular.extend(self.label, defaultLabel, $scope.$eval(label));
+    });
   }
   
-  Controller.$inject = ['$attrs', '$scope'];
+  Controller.$inject = ['$attrs', '$mdUtil', '$scope'];
   
   return {
     bindToController: {
       boundaryLinks: '=?mdBoundaryLinks',
-      label: '@?mdLabel',
       limit: '=mdLimit',
       page: '=mdPage',
       pageSelect: '=?mdPageSelect',
       onPaginate: '=?mdOnPaginate',
-      options: '=mdOptions',
+      limitOptions: '=?mdLimitOptions',
       total: '@mdTotal'
     },
     compile: compile,

@@ -4,7 +4,7 @@ angular.module('md.data.table').directive('mdTable', mdTable);
 
 function Hash() {
   var keys = {};
-    
+  
   this.equals = function (key, item) {
     return keys[key] === item;
   };
@@ -84,11 +84,7 @@ function mdTable() {
     }
     
     function rowSelect() {
-      if($attrs.hasOwnProperty('mdRowSelect') && $attrs.mdRowSelect === '') {
-        return true;
-      }
-      
-      return self.rowSelect;
+      return $attrs.mdRowSelect === '' || self.rowSelect;
     }
     
     function validateModel() {
@@ -127,6 +123,10 @@ function mdTable() {
     
     self.getHeaderRows = function () {
       return self.getRows($element.prop('tHead'));
+    };
+    
+    self.enableMultiSelect = function () {
+      return $attrs.multiple === '' || $scope.$eval($attrs.multiple);
     };
     
     self.waitingOnPromise = function () {

@@ -2,7 +2,7 @@
 
 angular.module('md.data.table').directive('mdColumn', mdColumn);
 
-function mdColumn($compile) {
+function mdColumn($compile, $mdUtil) {
   
   function compile(tElement) {
     tElement.addClass('md-column');
@@ -46,31 +46,25 @@ function mdColumn($compile) {
     }
     
     function isActive() {
-      if(!scope.orderBy) {
-        return false;
-      }
-      
-      return headCtrl.order === scope.orderBy || headCtrl.order === '-' + scope.orderBy;
+      return scope.orderBy && (headCtrl.order === scope.orderBy || headCtrl.order === '-' + scope.orderBy);
     }
     
     function isNumeric() {
-      if(attrs.hasOwnProperty('mdNumeric') && attrs.mdNumeric === '') {
-        return true;
-      }
-      
-      return scope.numeric;
+      return attrs.mdNumeric === '' || scope.numeric;
     }
     
     function setOrder() {
       scope.$applyAsync(function () {
-        if(!isActive()) {
-          headCtrl.order = scope.getDirection() === 'md-asc' ? scope.orderBy : '-' + scope.orderBy;
-        } else {
+        if(isActive()) {
           headCtrl.order = scope.getDirection() === 'md-asc' ? '-' + scope.orderBy : scope.orderBy;
+        } else {
+          headCtrl.order = scope.getDirection() === 'md-asc' ? scope.orderBy : '-' + scope.orderBy;
         }
         
         if(angular.isFunction(headCtrl.onReorder)) {
-          headCtrl.onReorder(headCtrl.order);
+          $mdUtil.nextTick(function () {
+            headCtrl.onReorder(headCtrl.order);
+          });
         }
       });
     }
@@ -86,11 +80,11 @@ function mdColumn($compile) {
     }
     
     scope.getDirection = function () {
-      if(!isActive()) {
-        return attrs.hasOwnProperty('mdDesc') ? 'md-desc' : 'md-asc';
+      if(isActive()) {
+        return headCtrl.order.charAt(0) === '-' ? 'md-desc' : 'md-asc';
       }
       
-      return headCtrl.order === '-' + scope.orderBy ? 'md-desc' : 'md-asc';
+      return attrs.mdDesc === '' || scope.$eval(attrs.mdDesc) ? 'md-desc' : 'md-asc';
     };
     
     scope.$watch(isActive, function (active) {
@@ -129,4 +123,4 @@ function mdColumn($compile) {
   };
 }
 
-mdColumn.$inject = ['$compile'];
+mdColumn.$inject = ['$compile', '$mdUtil'];

@@ -1,11 +1,10 @@
-<md-toolbar class="md-table-toolbar md-default" ng-show="!selected.length">
+<md-toolbar class="md-table-toolbar md-default" ng-show="!options.rowSelection || !selected.length">
   <div class="md-toolbar-tools">
     <span>Nutrition</span>
     <span flex></span>
-    <md-button ng-click="hideCheckboxes = !hideCheckboxes">{{hideCheckboxes ? 'Enable Selection' : 'Disable Selection'}}</md-button>
-    <md-button ng-click="hideHead = !hideHead">{{hideHead ? 'Show Head' : 'Decapitate'}}</md-button>
-    <md-button ng-click="blah = !blah">{{blah ? 'turn on' : 'turn off'}}</md-button>
-    <md-button ng-click="loadStuff()">Load</md-button>
+    <md-button class="md-icon-button" ng-click="loadStuff()">
+      <md-icon>refresh</md-icon>
+    </md-button>
     <md-button class="md-icon-button">
       <md-icon>filter_list</md-icon>
     </md-button>
@@ -15,21 +14,18 @@
   </div>
 </md-toolbar>
 
-<md-toolbar class="md-table-toolbar alternate" ng-show="selected.length">
+<md-toolbar class="md-table-toolbar alternate" ng-show="options.rowSelection && selected.length">
   <div class="md-toolbar-tools">
     <span>{{selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</span>
     <span flex></span>
     <md-button class="md-icon-button">
       <md-icon>delete</md-icon>
     </md-button>
-    <md-button class="md-icon-button">
-      <md-icon>more_vert</md-icon>
-    </md-button>
   </div>
 </md-toolbar>
 
 <md-table-container>
-  <table data-md-table data-md-row-select="!hideCheckboxes" data-ng-model="selected" md-progress="promise">
+  <table data-md-table data-md-row-select="options.rowSelection" multiple="{{options.multiSelect}}" data-ng-model="selected" md-progress="promise">
     <!-- <thead md-head md-order="query.order">
       <tr md-row>
         <th md-column ng-repeat="column in columns" md-numeric="column.numeric" md-order-by="{{column.orderBy}}">
@@ -38,7 +34,7 @@
         </th>
       </tr>
     </thead> -->
-    <thead ng-if="!hideHead" md-head data-md-order="query.order" md-on-reorder="onReorder">
+    <thead ng-if="!options.decapitate" md-head data-md-order="query.order" md-on-reorder="onReorder">
       <tr md-row>
         <th md-column md:order:by="name"><span>Dessert (100g serving)</span></th>
         <th md-column md:order:by="type"><span>Type</span></th>
@@ -56,7 +52,7 @@
       </tr>
     </thead>
     <tbody md-body>
-      <tr md-row md:select="dessert" data-md-on-select="log" md-on-deselect="deselect" x-md-auto-select="!blah" ng-disabled="dessert.calories.value > 400" data-ng-repeat="dessert in desserts.data | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
+      <tr md-row md-select="dessert" md-select-id="name" data-md-on-select="log" md-on-deselect="deselect" x-md-auto-select="options.autoSelect" ng-disabled="dessert.calories.value > 400" data-ng-repeat="dessert in desserts.data | filter: filter.search | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit">
         <td md-cell>{{dessert.name}}</td>
         <td md-cell>
           <md-select ng-model="dessert.type" placeholder="Other">
@@ -78,4 +74,4 @@
   </table>
 </md-table-container>
 
-<data-md-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{desserts.count}}" md-on-paginate="onPaginate" md-page-select></data-md-table-pagination>
+<data-md-table-pagination md-limit="query.limit" md-limit-options="limitOptions" md-page="query.page" md-total="{{desserts.count}}" md-on-paginate="onPaginate" md-page-select="options.pageSelect" md-boundary-links="options.boundaryLinks"></data-md-table-pagination>

@@ -8,7 +8,7 @@ function mdTablePagination() {
     tElement.addClass('md-table-pagination');
   }
   
-  function Controller($attrs, $scope) {
+  function Controller($attrs, $mdUtil, $scope) {
     var self = this;
     var defaultLabel = {
       page: 'Page:',
@@ -63,7 +63,9 @@ function mdTablePagination() {
     
     self.onPaginationChange = function () {
       if(angular.isFunction(self.onPaginate)) {
-        self.onPaginate(self.page, self.limit);
+        $mdUtil.nextTick(function () {
+          self.onPaginate(self.page, self.limit);
+        });
       }
     };
     
@@ -99,7 +101,7 @@ function mdTablePagination() {
     });
   }
   
-  Controller.$inject = ['$attrs', '$scope'];
+  Controller.$inject = ['$attrs', '$mdUtil', '$scope'];
   
   return {
     bindToController: {

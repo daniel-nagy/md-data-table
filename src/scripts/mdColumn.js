@@ -2,7 +2,7 @@
 
 angular.module('md.data.table').directive('mdColumn', mdColumn);
 
-function mdColumn($compile) {
+function mdColumn($compile, $mdUtil) {
   
   function compile(tElement) {
     tElement.addClass('md-column');
@@ -62,7 +62,9 @@ function mdColumn($compile) {
         }
         
         if(angular.isFunction(headCtrl.onReorder)) {
-          headCtrl.onReorder(headCtrl.order);
+          $mdUtil.nextTick(function () {
+            headCtrl.onReorder(headCtrl.order);
+          });
         }
       });
     }
@@ -121,4 +123,4 @@ function mdColumn($compile) {
   };
 }
 
-mdColumn.$inject = ['$compile'];
+mdColumn.$inject = ['$compile', '$mdUtil'];

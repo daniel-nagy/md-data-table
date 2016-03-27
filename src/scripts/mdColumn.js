@@ -55,10 +55,10 @@ function mdColumn($compile, $mdUtil) {
     
     function setOrder() {
       scope.$applyAsync(function () {
-        if(!isActive()) {
-          headCtrl.order = scope.getDirection() === 'md-asc' ? scope.orderBy : '-' + scope.orderBy;
-        } else {
+        if(isActive()) {
           headCtrl.order = scope.getDirection() === 'md-asc' ? '-' + scope.orderBy : scope.orderBy;
+        } else {
+          headCtrl.order = scope.getDirection() === 'md-asc' ? scope.orderBy : '-' + scope.orderBy;
         }
         
         if(angular.isFunction(headCtrl.onReorder)) {
@@ -81,7 +81,7 @@ function mdColumn($compile, $mdUtil) {
     
     scope.getDirection = function () {
       if(isActive()) {
-        return headCtrl.order.startsWith('-') ? 'md-desc' : 'md-asc';
+        return headCtrl.order.charAt(0) === '-' ? 'md-desc' : 'md-asc';
       }
       
       return attrs.mdDesc === '' || scope.$eval(attrs.mdDesc) ? 'md-desc' : 'md-asc';

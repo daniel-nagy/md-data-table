@@ -99,6 +99,16 @@ function mdTablePagination() {
     $attrs.$observe('mdLabel', function (label) {
       angular.extend(self.label, defaultLabel, $scope.$eval(label));
     });
+    
+    $scope.$watch('$pagination.total', function (newValue, oldValue) {
+      if(newValue === oldValue) {
+        return;
+      }
+      
+      if(self.page > self.pages()) {
+        self.last();
+      }
+    });
   }
   
   Controller.$inject = ['$attrs', '$mdUtil', '$scope'];
@@ -106,6 +116,7 @@ function mdTablePagination() {
   return {
     bindToController: {
       boundaryLinks: '=?mdBoundaryLinks',
+      disabled: '=ngDisabled',
       limit: '=mdLimit',
       page: '=mdPage',
       pageSelect: '=?mdPageSelect',

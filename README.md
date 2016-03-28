@@ -377,6 +377,7 @@ You may use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) 
 | `mdPage`          | `integer`      | Page number. Pages are not zero indexed. The directive assumes the first page is one. |
 | `mdPageSelect`    | `[expression]` | Display a select dropdown for the page number |
 | `mdTotal`         | `integer`      | Total number of items. |
+| `ngDisabled`      | `[expression]` | Disable pagination elements. |
 
 The `md-label` attribute has the following properties.
 

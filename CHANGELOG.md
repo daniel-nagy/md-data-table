@@ -1,5 +1,16 @@
 ## Change Log
 
+#### Version 0.10.1
+###### March 27, 2016
+
+**New Features**
+
+* Pagination elements may now be disabled with the `ng-disabled` attribute.
+
+**Bug Fixes & Improvements**
+
+* When the total changes, the pagination directive will check if the current page is greater than the total number of pages. If it is greater, the page will be set to the last available page.
+
 #### Version 0.10.0
 ###### March 27, 2016
 

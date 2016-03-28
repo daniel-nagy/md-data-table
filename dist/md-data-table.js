@@ -2,7 +2,7 @@
  * Angular Material Data Table
  * https://github.com/daniel-nagy/md-data-table
  * @license MIT
- * v0.10.0
+ * v0.10.1
  */
 (function (window, angular, undefined) {
 'use strict';
@@ -13,7 +13,7 @@ angular.module('md-table-pagination.html', []).run(['$templateCache', function($
   $templateCache.put('md-table-pagination.html',
     '<span class="label" ng-if="$pagination.showPageSelect()">{{$pagination.label.page}}</span>\n' +
     '\n' +
-    '<md-select virtual-page-select total="{{$pagination.pages()}}" class="md-table-select" ng-if="$pagination.showPageSelect()" ng-model="$pagination.page" md-container-class="md-pagination-select" ng-change="$pagination.onPaginationChange()" aria-label="Page">\n' +
+    '<md-select virtual-page-select total="{{$pagination.pages()}}" class="md-table-select" ng-if="$pagination.showPageSelect()" ng-model="$pagination.page" md-container-class="md-pagination-select" ng-change="$pagination.onPaginationChange()" ng-disabled="$pagination.disabled" aria-label="Page">\n' +
     '  <md-content>\n' +
     '    <md-option ng-repeat="page in $pageSelect.pages" ng-value="page">{{page}}</md-option>\n' +
     '  </md-content>\n' +
@@ -21,22 +21,22 @@ angular.module('md-table-pagination.html', []).run(['$templateCache', function($
     '\n' +
     '<span class="label" ng-if="$pagination.limitOptions">{{$pagination.label.rowsPerPage}}</span>\n' +
     '\n' +
-    '<md-select class="md-table-select" ng-if="$pagination.limitOptions" ng-model="$pagination.limit" md-container-class="md-pagination-select" aria-label="Rows" placeholder="{{ $pagination.limitOptions[0] }}">\n' +
+    '<md-select class="md-table-select" ng-if="$pagination.limitOptions" ng-model="$pagination.limit" md-container-class="md-pagination-select" ng-disabled="$pagination.disabled" aria-label="Rows" placeholder="{{ $pagination.limitOptions[0] }}">\n' +
     '  <md-option ng-repeat="rows in $pagination.limitOptions" ng-value="rows">{{rows}}</md-option>\n' +
     '</md-select>\n' +
     '\n' +
     '<span class="label">{{$pagination.min() + 1}} - {{$pagination.max()}} {{$pagination.label.of}} {{$pagination.total}}</span>\n' +
     '\n' +
-    '<md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.first()" ng-disabled="!$pagination.hasPrevious()" aria-label="First">\n' +
+    '<md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.first()" ng-disabled="$pagination.disabled || !$pagination.hasPrevious()" aria-label="First">\n' +
     '  <md-icon md-svg-icon="navigate-first.svg"></md-icon>\n' +
     '</md-button>\n' +
-    '<md-button class="md-icon-button" type="button" ng-click="$pagination.previous()" ng-disabled="!$pagination.hasPrevious()" aria-label="Previous">\n' +
+    '<md-button class="md-icon-button" type="button" ng-click="$pagination.previous()" ng-disabled="$pagination.disabled || !$pagination.hasPrevious()" aria-label="Previous">\n' +
     '  <md-icon md-svg-icon="navigate-before.svg"></md-icon>\n' +
     '</md-button>\n' +
-    '<md-button class="md-icon-button" type="button" ng-click="$pagination.next()" ng-disabled="$pagination.disableNext()" aria-label="Next">\n' +
+    '<md-button class="md-icon-button" type="button" ng-click="$pagination.next()" ng-disabled="$pagination.disabled || $pagination.disableNext()" aria-label="Next">\n' +
     '  <md-icon md-svg-icon="navigate-next.svg"></md-icon>\n' +
     '</md-button>\n' +
-    '<md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.last()" ng-disabled="$pagination.disableNext()" aria-label="Last">\n' +
+    '<md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.last()" ng-disabled="$pagination.disabled || $pagination.disableNext()" aria-label="Last">\n' +
     '  <md-icon md-svg-icon="navigate-last.svg"></md-icon>\n' +
     '</md-button>');
 }]);
@@ -1371,6 +1371,16 @@ function mdTablePagination() {
     $attrs.$observe('mdLabel', function (label) {
       angular.extend(self.label, defaultLabel, $scope.$eval(label));
     });
+    
+    $scope.$watch('$pagination.total', function (newValue, oldValue) {
+      if(newValue === oldValue) {
+        return;
+      }
+      
+      if(self.page > self.pages()) {
+        self.last();
+      }
+    });
   }
   
   Controller.$inject = ['$attrs', '$mdUtil', '$scope'];
@@ -1378,6 +1388,7 @@ function mdTablePagination() {
   return {
     bindToController: {
       boundaryLinks: '=?mdBoundaryLinks',
+      disabled: '=ngDisabled',
       limit: '=mdLimit',
       page: '=mdPage',
       pageSelect: '=?mdPageSelect',

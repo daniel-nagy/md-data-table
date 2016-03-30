@@ -2,7 +2,7 @@
  * Angular Material Data Table
  * https://github.com/daniel-nagy/md-data-table
  * @license MIT
- * v0.10.1
+ * v0.10.2
  */
 (function (window, angular, undefined) {
 'use strict';
@@ -695,8 +695,6 @@ function mdFoot() {
 angular.module('md.data.table').directive('mdHead', mdHead);
 
 function mdHead($compile) {
-  // because scope.$watch is unpredictable
-  var oldValue = new Array(2);
 
   function compile(tElement) {
     tElement.addClass('md-head');
@@ -709,6 +707,8 @@ function mdHead($compile) {
   }
   
   function postLink(scope, element, attrs, tableCtrl) {
+    // because scope.$watch is unpredictable
+    var oldValue = new Array(2);
     
     function addCheckboxColumn() {
       element.children().prepend('<th class="md-column md-checkbox-column">');
@@ -782,11 +782,6 @@ function mdHead($compile) {
         }
       });
     };
-    
-    // because ngIf apparently doesn't destroy the directive
-    element.on('$destroy', function () {
-      oldValue = new Array(2);
-    });
     
     scope.$watchGroup([enableRowSelection, tableCtrl.enableMultiSelect], function (newValue) {
       if(newValue[0] !== oldValue[0]) {

@@ -1,5 +1,12 @@
 ## Change Log
 
+#### Version 0.10.2
+###### March 30, 2016
+
+**Bug Fixes**
+
+* Fixes bug where the select all checkbox would not be added to subsequent tables.
+
 #### Version 0.10.1
 ###### March 27, 2016
 

@@ -83,7 +83,7 @@ function mdTablePagination() {
     };
 
     $scope.$watch('$pagination.limit', function (newValue, oldValue) {
-      if(newValue === oldValue) {
+      if(oldValue == undefined || newValue === oldValue) {
         return;
       }
 

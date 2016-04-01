@@ -1,5 +1,12 @@
 ## Change Log
 
+#### Version 0.10.3
+###### April 1, 2016
+
+**Bug Fixes**
+
+* The pagination directive will now display `0 - 0 of 0` if the total is zero.
+
 #### Version 0.10.2
 ###### March 30, 2016
 

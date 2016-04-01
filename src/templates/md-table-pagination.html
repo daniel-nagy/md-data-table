@@ -12,7 +12,7 @@
   <md-option ng-repeat="rows in $pagination.limitOptions" ng-value="rows">{{rows}}</md-option>
 </md-select>
 
-<span class="label">{{$pagination.min() + 1}} - {{$pagination.max()}} {{$pagination.label.of}} {{$pagination.total}}</span>
+<span class="label">{{$pagination.min()}} - {{$pagination.max()}} {{$pagination.label.of}} {{$pagination.total}}</span>
 
 <md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.first()" ng-disabled="$pagination.disabled || !$pagination.hasPrevious()" aria-label="First">
   <md-icon md-svg-icon="navigate-first.svg"></md-icon>

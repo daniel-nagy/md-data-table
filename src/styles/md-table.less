@@ -187,11 +187,19 @@ table.md-table {
     
     &.md-numeric {
       text-align: right;
+
+      &:first-child {
+        width: 1%;
+      }
     }
     
     md-checkbox {
       margin: 0;
       width: 20px;
+    }
+
+    &.md-checkbox-column + .md-numeric {
+      width: 1%;
     }
   }
   

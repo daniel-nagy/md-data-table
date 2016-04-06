@@ -2,6 +2,6 @@ angular.module('nutritionApp').factory('$nutrition', ['$resource', function ($re
   'use strict';
 
   return {
-    desserts: $resource('https://infinite-earth-4803.herokuapp.com/nutriton/desserts/:id')
+    desserts: $resource('https://infinite-earth-4803.herokuapp.com/nutrition/desserts/:id')
   };
 }]);

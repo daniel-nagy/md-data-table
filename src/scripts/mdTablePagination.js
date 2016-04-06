@@ -19,16 +19,8 @@ function mdTablePagination() {
     self.label = angular.copy(defaultLabel);
 
     function isPositive(number) {
-      return !isNaN(number) && !isZero(number);
+      return parseInt(number, 10) > 0;
     }
-
-    function isZero(number) {
-      return parseInt(number, 10) === 0;
-    }
-
-    self.disableNext = function () {
-      return isZero(self.limit) || !self.hasNext();
-    };
 
     self.first = function () {
       self.page = 1;
@@ -53,7 +45,7 @@ function mdTablePagination() {
     };
 
     self.min = function () {
-      return isZero(self.total) ? 0 : self.page * self.limit - self.limit + 1;
+      return isPositive(self.total) ? self.page * self.limit - self.limit + 1 : 0;
     };
 
     self.next = function () {
@@ -70,7 +62,7 @@ function mdTablePagination() {
     };
 
     self.pages = function () {
-      return isPositive(self.total) ? Math.ceil(self.total / (isPositive(self.limit) ? 1 : self.limit)) : 1;
+      return isPositive(self.total) ? Math.ceil(self.total / (isPositive(self.limit) ? self.limit : 1)) : 1;
     };
 
     self.previous = function () {
@@ -92,7 +84,7 @@ function mdTablePagination() {
       }
 
       // find closest page from previous min
-      self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isZero(newValue) ? 1 : newValue));
+      self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isPositive(newValue) ? newValue : 1));
       self.onPaginationChange();
     });
 

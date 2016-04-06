@@ -27,11 +27,11 @@
     <md-icon md-svg-icon="navigate-before.svg"></md-icon>
   </md-button>
 
-  <md-button class="md-icon-button" type="button" ng-click="$pagination.next()" ng-disabled="$pagination.disabled || $pagination.disableNext()" aria-label="Next">
+  <md-button class="md-icon-button" type="button" ng-click="$pagination.next()" ng-disabled="$pagination.disabled || !$pagination.hasNext()" aria-label="Next">
     <md-icon md-svg-icon="navigate-next.svg"></md-icon>
   </md-button>
 
-  <md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.last()" ng-disabled="$pagination.disabled || $pagination.disableNext()" aria-label="Last">
+  <md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.last()" ng-disabled="$pagination.disabled || !$pagination.hasNext()" aria-label="Last">
     <md-icon md-svg-icon="navigate-last.svg"></md-icon>
   </md-button>
 </div>

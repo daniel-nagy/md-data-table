@@ -18,8 +18,12 @@ function mdTablePagination() {
 
     self.label = angular.copy(defaultLabel);
 
+    function isPositive(number) {
+      return !isNaN(number) && !isZero(number);
+    }
+
     function isZero(number) {
-      return number === 0 || number === '0';
+      return parseInt(number, 10) === 0;
     }
 
     self.disableNext = function () {
@@ -66,7 +70,7 @@ function mdTablePagination() {
     };
 
     self.pages = function () {
-      return Math.ceil(self.total / (isZero(self.limit) ? 1 : self.limit));
+      return isPositive(self.total) ? Math.ceil(self.total / (isPositive(self.limit) ? 1 : self.limit)) : 1;
     };
 
     self.previous = function () {
@@ -83,7 +87,7 @@ function mdTablePagination() {
     };
 
     $scope.$watch('$pagination.limit', function (newValue, oldValue) {
-      if(newValue === oldValue) {
+      if(isNaN(newValue) || isNaN(oldValue) || newValue === oldValue) {
         return;
       }
 
@@ -97,7 +101,7 @@ function mdTablePagination() {
     });
 
     $scope.$watch('$pagination.total', function (newValue, oldValue) {
-      if(newValue === oldValue) {
+      if(isNaN(newValue) || newValue === oldValue) {
         return;
       }
 

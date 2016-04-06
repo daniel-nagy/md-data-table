@@ -2,8 +2,8 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  flex-wrap: wrap-reverse;
   box-sizing: border-box;
-  height: 56px;
   padding: 0 24px;
   font-size: 12px;
   color: @md-dark-secondary;
@@ -18,11 +18,12 @@
     }
 
     .md-select-value {
-      flex-grow: initial;
+      flex: 0 0 auto;
 
       span.md-select-icon {
         justify-content: center;
         text-align: center;
+        margin-right: -6px !important;
 
         &:after {
           top: initial;
@@ -32,19 +33,26 @@
     }
   }
 
-  > md-select + span {
+  > * {
+    display: flex;
+    align-items: center;
+    height: 56px;
+  }
+
+  > .buttons:not(:first-child),
+  > .limit-select:not(:first-child) {
     margin-left: 32px;
   }
 
-  > .md-button.md-icon-button {
-    margin: 0;
-  }
-
-  > span + .md-button.md-icon-button {
-    margin-left: 20px;
-  }
-
-  > .md-button.md-icon-button:last-child {
+  > .buttons {
     margin-right: -16px;
+
+    > .md-button.md-icon-button {
+      margin: 0;
+    }
+
+    > .label + .md-button.md-icon-button {
+      margin-left: 20px;
+    }
   }
 }

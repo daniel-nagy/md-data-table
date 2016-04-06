@@ -1,5 +1,17 @@
 ## Change Log
 
+#### Version 0.10.4
+###### April 5, 2016
+
+**Improvements**
+
+* Pagination is now usable on mobile.
+* More safeguards in pagination directive against performing calculations on `NaN`.
+
+**Bug Fixes**
+
+* Fixing issue where errors would be thrown if row selection was not enabled.
+
 #### Version 0.10.3
 ###### April 1, 2016
 

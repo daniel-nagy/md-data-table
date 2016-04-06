@@ -59,8 +59,10 @@ md-edit-dialog > .md-actions .md-button + .md-button {
   -webkit-justify-content: flex-end;
       -ms-flex-pack: end;
           justify-content: flex-end;
+  -webkit-flex-wrap: wrap-reverse;
+      -ms-flex-wrap: wrap-reverse;
+          flex-wrap: wrap-reverse;
   box-sizing: border-box;
-  height: 56px;
   padding: 0 24px;
   font-size: 12px;
   color: rgba(0, 0, 0, 0.54);
@@ -76,46 +78,64 @@ md-edit-dialog > .md-actions .md-button + .md-button {
   color: rgba(0, 0, 0, 0.54);
 }
 .md-table-pagination md-select .md-select-value {
-  -webkit-flex-grow: initial;
-      -ms-flex-positive: initial;
-          flex-grow: initial;
+  -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
 }
 .md-table-pagination md-select .md-select-value span.md-select-icon {
   -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
   text-align: center;
+  margin-right: -6px !important;
 }
 .md-table-pagination md-select .md-select-value span.md-select-icon:after {
   top: initial;
   -webkit-transform: scaleY(0.5) scaleX(1);
           transform: scaleY(0.5) scaleX(1);
 }
-.md-table-pagination > md-select + span {
+.md-table-pagination > * {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 56px;
+}
+.md-table-pagination > .buttons:not(:first-child),
+.md-table-pagination > .limit-select:not(:first-child) {
   margin-left: 32px;
 }
-.md-table-pagination > .md-button.md-icon-button {
+.md-table-pagination > .buttons {
+  margin-right: -16px;
+}
+.md-table-pagination > .buttons > .md-button.md-icon-button {
   margin: 0;
 }
-.md-table-pagination > span + .md-button.md-icon-button {
+.md-table-pagination > .buttons > .label + .md-button.md-icon-button {
   margin-left: 20px;
-}
-.md-table-pagination > .md-button.md-icon-button:last-child {
-  margin-right: -16px;
 }
 md-select.md-table-select {
   margin: 0;
 }
 md-select.md-table-select > .md-select-value {
   padding: 0;
-  min-width: initial;
+  min-width: 0;
   min-height: 24px;
   border-bottom: 0 !important;
 }
 md-select.md-table-select > .md-select-value > span {
+  display: block;
   height: auto;
   -webkit-transform: none !important;
           transform: none !important;
+}
+md-select.md-table-select > .md-select-value > span > .md-text {
+  display: inherit;
+  height: inherit;
+  -webkit-transform: inherit;
+          transform: inherit;
 }
 md-select.md-table-select > .md-select-value > span.md-select-icon {
   display: -webkit-flex;
@@ -353,9 +373,9 @@ table.md-table td.md-cell.md-numeric md-select {
           justify-content: flex-end;
 }
 table.md-table td.md-cell.md-numeric md-select .md-select-value {
-  -webkit-flex-grow: initial;
-      -ms-flex-positive: initial;
-          flex-grow: initial;
+  -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
 }
 table.md-table td.md-cell.md-placeholder {
   color: rgba(0, 0, 0, 0.26);

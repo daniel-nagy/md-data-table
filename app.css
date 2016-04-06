@@ -31,7 +31,6 @@ input::input-placeholder {
 .material-icons {
   position: static;
   margin: 0;
-  /* justify-content: flex-start; */
 }
 md-toolbar,
 footer-content {

@@ -1,5 +1,12 @@
 ## Change Log
 
+#### Version 0.10.5
+###### April 9, 2016
+
+**Bug Fixes**
+
+* Fixing bug in pagination directive where the number of pages was always equal to the number of rows in the table.
+
 #### Version 0.10.4
 ###### April 5, 2016
 

@@ -1,5 +1,12 @@
 ## Change Log
 
+#### Version 0.10.6
+###### April 19, 2016
+
+**Bug Fixes**
+
+* Fixing bug where changing the `orderBy` property of a column would add an additional sort icon.
+
 #### Version 0.10.5
 ###### April 9, 2016
 

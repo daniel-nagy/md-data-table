@@ -104,59 +104,63 @@ function mdBody() {
 angular.module('md.data.table').directive('mdCell', mdCell);
 
 function mdCell() {
-  
+
   function compile(tElement) {
     var select = tElement.find('md-select');
-    
+
     if(select.length) {
       select.addClass('md-table-select').attr('md-container-class', 'md-table-select');
     }
-    
+
     tElement.addClass('md-cell');
-    
+
     return postLink;
   }
-  
+
   // empty controller to be bind properties to in postLink function
   function Controller() {
-    
+
   }
-  
+
   function postLink(scope, element, attrs, ctrls) {
     var select = element.find('md-select');
     var cellCtrl = ctrls.shift();
     var tableCtrl = ctrls.shift();
-    
+
     if(attrs.ngClick) {
       element.addClass('md-clickable');
     }
-    
+
     if(select.length) {
       select.on('click', function (event) {
         event.stopPropagation();
       });
-      
+
       element.addClass('md-clickable').on('click', function (event) {
         event.stopPropagation();
         select[0].click();
       });
     }
-    
-    cellCtrl.getTable = tableCtrl.getElement;
-    
-    function getColumn() {
-      return tableCtrl.$$columns[getIndex()];
+
+    if(tableCtrl) {
+      cellCtrl.getTable = tableCtrl.getElement;
     }
-    
+
+    function getColumn() {
+      if(tableCtrl) {
+        return tableCtrl.$$columns[getIndex()];
+      }
+    }
+
     function getIndex() {
       return Array.prototype.indexOf.call(element.parent().children(), element[0]);
     }
-    
+
     scope.$watch(getColumn, function (column) {
       if(!column) {
         return;
       }
-      
+
       if(column.numeric) {
         element.addClass('md-numeric');
       } else {
@@ -164,11 +168,11 @@ function mdCell() {
       }
     });
   }
-  
+
   return {
     controller: Controller,
     compile: compile,
-    require: ['mdCell', '^^mdTable'],
+    require: ['mdCell', '^?mdTable'],
     restrict: 'A'
   };
 }
@@ -841,23 +845,29 @@ function mdRow() {
     tElement.addClass('md-row');
     return postLink;
   }
-  
+
   function postLink(scope, element, attrs, tableCtrl) {
     function enableRowSelection() {
-      return tableCtrl.$$rowSelect;
+      if(tableCtrl) {
+        return tableCtrl.$$rowSelect;
+      }
     }
-    
+
     function isBodyRow() {
-      return tableCtrl.getBodyRows().indexOf(element[0]) !== -1;
+      if(tableCtrl) {
+        return tableCtrl.getBodyRows().indexOf(element[0]) !== -1;
+      } else {
+        return false;
+      }
     }
-    
+
     function isChild(node) {
       return element[0].contains(node[0]);
     }
-    
+
     if(isBodyRow()) {
       var cell = angular.element('<td class="md-cell">');
-      
+
       scope.$watch(enableRowSelection, function (enable) {
         // if a row is not selectable, prepend an empty cell to it
         if(enable && !attrs.mdSelect) {
@@ -866,7 +876,7 @@ function mdRow() {
           }
           return;
         }
-        
+
         if(isChild(cell)) {
           cell.remove();
         }
@@ -876,7 +886,7 @@ function mdRow() {
 
   return {
     compile: compile,
-    require: '^^mdTable',
+    require: '^?mdTable',
     restrict: 'A'
   };
 }
@@ -897,7 +907,7 @@ function mdSelect($compile, $parse) {
 
     self.id = getId(self.model);
 
-    if(tableCtrl.$$rowSelect && self.id) {
+    if(tableCtrl && tableCtrl.$$rowSelect && self.id) {
       if(tableCtrl.$$hash.has(self.id)) {
         var index = tableCtrl.selected.indexOf(tableCtrl.$$hash.get(self.id));
 
@@ -927,15 +937,15 @@ function mdSelect($compile, $parse) {
     }
 
     self.isSelected = function () {
-      if(!tableCtrl.$$rowSelect) {
+      if(tableCtrl && !tableCtrl.$$rowSelect) {
         return false;
       }
 
       if(self.id) {
-        return tableCtrl.$$hash.has(self.id);
+        return tableCtrl && tableCtrl.$$hash.has(self.id);
       }
 
-      return tableCtrl.selected.indexOf(self.model) !== -1;
+      return tableCtrl && tableCtrl.selected.indexOf(self.model) !== -1;
     };
 
     self.select = function () {
@@ -943,9 +953,9 @@ function mdSelect($compile, $parse) {
         return;
       }
 
-      if(tableCtrl.enableMultiSelect()) {
+      if(tableCtrl && tableCtrl.enableMultiSelect()) {
         tableCtrl.selected.push(self.model);
-      } else {
+      } else if(tableCtrl) {
         tableCtrl.selected.splice(0, tableCtrl.selected.length, self.model);
       }
 
@@ -959,7 +969,9 @@ function mdSelect($compile, $parse) {
         return;
       }
 
-      tableCtrl.selected.splice(tableCtrl.selected.indexOf(self.model), 1);
+      if(tableCtrl) {
+        tableCtrl.selected.splice(tableCtrl.selected.indexOf(self.model), 1);
+      }
 
       if(angular.isFunction(self.onDeselect)) {
         self.onDeselect(self.model);
@@ -1080,7 +1092,7 @@ function mdSelect($compile, $parse) {
     controller: Controller,
     controllerAs: '$mdSelect',
     link: postLink,
-    require: ['mdSelect', '^^mdTable'],
+    require: ['mdSelect', '^?mdTable'],
     restrict: 'A',
     scope: {
       model: '=mdSelect',

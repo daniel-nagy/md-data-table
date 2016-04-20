@@ -1,5 +1,12 @@
 ## Change Log
 
+#### Version 0.10.7
+###### April 19, 2016
+
+**Bug Fixes**
+
+* Fix bug where pagination page number would disappear.
+
 #### Version 0.10.6
 ###### April 19, 2016
 

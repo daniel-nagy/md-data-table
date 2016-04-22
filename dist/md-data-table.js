@@ -1323,6 +1323,9 @@ function mdTablePagination() {
     };
 
     self.min = function () {
+      if(self.limit === self.showAllOption) {
+        return isPositive(self.total) ? 1 : 0;
+      }
       return isPositive(self.total) ? self.page * self.limit - self.limit + 1 : 0;
     };
 
@@ -1357,7 +1360,10 @@ function mdTablePagination() {
     };
 
     $scope.$watch('$pagination.limit', function (newValue, oldValue) {
-      if(isNaN(newValue) || isNaN(oldValue) || newValue === oldValue) {
+
+      if (newValue === self.showAllOption) {
+        newValue = parseInt(self.total, 10);
+      } else if(isNaN(newValue) || isNaN(oldValue) || newValue === oldValue) {
         return;
       }
 
@@ -1392,7 +1398,8 @@ function mdTablePagination() {
       pageSelect: '=?mdPageSelect',
       onPaginate: '=?mdOnPaginate',
       limitOptions: '=?mdLimitOptions',
-      total: '@mdTotal'
+      total: '@mdTotal',
+      showAllOption: '=?mdShowAllOption'
     },
     compile: compile,
     controller: Controller,

@@ -1,5 +1,21 @@
 ## Change Log
 
+#### Version 0.10.8
+###### April 23, 2016
+
+**New Feature**
+
+* You can now map language to limit options using the `label` and `value` properties, e.g.
+
+  ```javascript
+  ctrl.limitOptions = [5, 10, 15, {
+    label: 'All',
+    value: function () {
+      return collection.length;
+    }
+  }];
+  ```
+
 #### Version 0.10.7
 ###### April 19, 2016
 

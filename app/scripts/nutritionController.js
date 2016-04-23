@@ -13,7 +13,12 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
   };
 
   $scope.selected = [];
-  $scope.limitOptions = [5, 10, 15];
+  $scope.limitOptions = [5, 10, 15, {
+    label: 'All',
+    value: function () {
+      return $scope.desserts ? $scope.desserts.count : 0;
+    }
+  }];
 
   $scope.query = {
     order: 'name',

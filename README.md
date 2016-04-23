@@ -370,9 +370,9 @@ You may use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) 
 | Attribute           | Type         | Description |
 | :---------------- | :------------- | :---------- |
 | `mdBoundaryLinks` | `[expression]` | Displays first and last page navigation links |
-| `mdLabel`         | `object`       | Change the pagination label (See more below). |
+| `mdLabel`         | `object`       | Change the pagination label (see more below). |
 | `mdLimit`         | `integer`      | A row limit. |
-| `mdLimitOptions`  | `array`        | Row limit options. |
+| `mdLimitOptions`  | `array`        | Row limit options (see more below). |
 | `mdOnPaginate`    | `function`     | A callback function for when the page or limit changes. The page is passed as the first argument and the limit is passed as the second argument.    |
 | `mdPage`          | `integer`      | Page number. Pages are not zero indexed. The directive assumes the first page is one. |
 | `mdPageSelect`    | `[expression]` | Display a select dropdown for the page number |
@@ -386,6 +386,18 @@ The `md-label` attribute has the following properties.
 | of          | `string` | 'of' (e.g. x - y of z) |
 | page        | `string` | 'Page:'   |
 | rowsPerPage | `string` | 'Rows per page:' |
+
+The `md-limit-options` attribute supports integers or objects with the properties `label` and `value`. The latter is convenient for when you want to use language to give meaning to individual options, e.g.
+
+```javascript
+// the 'All' option will show all items in the collection
+ctrl.limitOptions = [5, 10, 15, {
+  label: 'All',
+  value: function () {
+    return collection.length;
+  }
+}];
+```
 
 **Example: Changing The Pagination Label**
 

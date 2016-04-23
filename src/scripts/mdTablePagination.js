@@ -22,6 +22,10 @@ function mdTablePagination() {
       return parseInt(number, 10) > 0;
     }
 
+    self.eval = function (expression) {
+      return $scope.$eval(expression);
+    };
+
     self.first = function () {
       self.page = 1;
       self.onPaginationChange();

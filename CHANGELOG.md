@@ -1,5 +1,12 @@
 ## Change Log
 
+#### Version 0.10.9
+###### April 26, 2016
+
+**Bug Fix**
+
+* Removing one time binding from pagination limit options.
+
 #### Version 0.10.8
 ###### April 23, 2016
 

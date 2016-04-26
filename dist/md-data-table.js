@@ -2,7 +2,7 @@
  * Angular Material Data Table
  * https://github.com/daniel-nagy/md-data-table
  * @license MIT
- * v0.10.8
+ * v0.10.9
  */
 (function (window, angular, undefined) {
 'use strict';
@@ -25,7 +25,7 @@ angular.module('md-table-pagination.html', []).run(['$templateCache', function($
     '  <div class="label">{{$pagination.label.rowsPerPage}}</div>\n' +
     '\n' +
     '  <md-select class="md-table-select" ng-model="$pagination.limit" md-container-class="md-pagination-select" ng-disabled="$pagination.disabled" aria-label="Rows" placeholder="{{ $pagination.limitOptions[0] }}">\n' +
-    '    <md-option ng-repeat="option in $pagination.limitOptions" ng-value="::option.value ? $pagination.eval(option.value) : option">{{::option.label ? option.label : option}}</md-option>\n' +
+    '    <md-option ng-repeat="option in $pagination.limitOptions" ng-value="option.value ? $pagination.eval(option.value) : option">{{::option.label ? option.label : option}}</md-option>\n' +
     '  </md-select>\n' +
     '</div>\n' +
     '\n' +

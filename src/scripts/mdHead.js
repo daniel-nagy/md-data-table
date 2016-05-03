@@ -123,7 +123,7 @@ function mdHead($compile) {
     restrict: 'A',
     scope: {
       order: '=?mdOrder',
-      onReorder: '=?mdOnReorder'
+      onReorder: '&?mdOnReorder'
     }
   };
 }

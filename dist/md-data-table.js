@@ -1394,7 +1394,7 @@ function mdTablePagination() {
       limit: '=mdLimit',
       page: '=mdPage',
       pageSelect: '=?mdPageSelect',
-      onPaginate: '&mdOnPaginate',
+      onPaginate: '&?mdOnPaginate',
       limitOptions: '=?mdLimitOptions',
       total: '@mdTotal'
     },

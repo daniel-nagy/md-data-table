@@ -1338,7 +1338,7 @@ function mdTablePagination() {
     self.onPaginationChange = function () {
       if(angular.isFunction(self.onPaginate)) {
         $mdUtil.nextTick(function () {
-          self.onPaginate(self.page, self.limit);
+          self.onPaginate({ page: self.page, limit: self.limit });
         });
       }
     };
@@ -1394,7 +1394,7 @@ function mdTablePagination() {
       limit: '=mdLimit',
       page: '=mdPage',
       pageSelect: '=?mdPageSelect',
-      onPaginate: '=?mdOnPaginate',
+      onPaginate: '&mdOnPaginate',
       limitOptions: '=?mdLimitOptions',
       total: '@mdTotal'
     },
@@ -1406,6 +1406,7 @@ function mdTablePagination() {
     templateUrl: 'md-table-pagination.html'
   };
 }
+
 
 angular.module('md.data.table').directive('mdTableProgress', mdTableProgress);
 

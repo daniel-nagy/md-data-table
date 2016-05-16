@@ -71,19 +71,19 @@ angular.module('myApp', [require('angular-material-data-table')]);
 
 angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope', function ($nutrition, $scope) {
   'use strict';
-  
+
   $scope.selected = [];
-  
+
   $scope.query = {
     order: 'name',
     limit: 5,
     page: 1
   };
-  
+
   function success(desserts) {
     $scope.desserts = desserts;
   }
-  
+
   $scope.getDesserts = function () {
     $scope.promise = $nutrition.desserts.get($scope.query, success).$promise;
   };
@@ -205,14 +205,14 @@ $scope.editComment = function (event, dessert) {
   // if auto selection is enabled you will want to stop the event
   // from propagating and selecting the row
   event.stopPropagation();
-  
-  /* 
+
+  /*
    * messages is commented out because there is a bug currently
    * with ngRepeat and ngMessages were the messages are always
    * displayed even if the error property on the ngModelController
    * is not set, I've included it anyway so you get the idea
    */
-   
+
   var promise = $mdEditDialog.small({
     // messages: {
     //   test: 'I don\'t like tests!'
@@ -410,6 +410,19 @@ ctrl.limitOptions = [5, 10, 15, {
 ```
 
 > I used Google translate so if the translations are wrong please fix them and make a pull request.
+
+**Example: Passing callback function to md-on-paginate attribute**
+
+```html
+<md-table-pagination md-on-paginate="onPaginateCallback(page, limit)"></md-table-pagination>
+```
+
+```javascript
+  // method on the md-table-pagination directive's parent controller
+  $scope.onPaginateCallback = function (page, limit) {
+    console.log(page, limit)
+  }
+```
 
 **Example: Client Side Pagination Using ngRepeat**
 

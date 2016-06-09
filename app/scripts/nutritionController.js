@@ -9,7 +9,8 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
     largeEditDialog: false,
     boundaryLinks: false,
     limitSelect: true,
-    pageSelect: true
+    pageSelect: true,
+    pageInput: false
   };
 
   $scope.selected = [];

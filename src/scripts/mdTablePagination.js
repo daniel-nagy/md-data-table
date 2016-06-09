@@ -82,6 +82,10 @@ function mdTablePagination() {
       return $attrs.mdPageSelect === '' || self.pageSelect;
     };
 
+    self.showPageInput = function () {
+      return $attrs.mdPageInput === '' || self.pageInput;
+    };
+
     $scope.$watch('$pagination.limit', function (newValue, oldValue) {
       if(isNaN(newValue) || isNaN(oldValue) || newValue === oldValue) {
         return;
@@ -116,6 +120,7 @@ function mdTablePagination() {
       limit: '=mdLimit',
       page: '=mdPage',
       pageSelect: '=?mdPageSelect',
+      pageInput: '=?mdPageInput',
       onPaginate: '=?mdOnPaginate',
       limitOptions: '=?mdLimitOptions',
       total: '@mdTotal'

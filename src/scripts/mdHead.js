@@ -19,7 +19,6 @@ function mdHead($compile) {
     var oldValue = new Array(2);
     
     function addCheckboxColumn() {
-      element.children().prepend('<th class="md-column md-checkbox-column">');
     }
     
     function attatchCheckbox() {

@@ -133,7 +133,7 @@ function mdColumn($compile, $mdUtil) {
     scope: {
       numeric: '=?mdNumeric',
       orderBy: '@?mdOrderBy'
-      customSortFunc: '=?customSort'
+      customSortFunc: '=?mdCustomSort'
     }
   };
 }

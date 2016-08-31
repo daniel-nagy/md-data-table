@@ -48,6 +48,10 @@ function mdColumn($compile, $mdUtil) {
     function isActive() {
       return scope.orderBy && (headCtrl.order === scope.orderBy || headCtrl.order === '-' + scope.orderBy);
     }
+    
+    function hasCustomSortFunc() {
+      return scope.customSortFunc;
+    }
 
     function isNumeric() {
       return attrs.mdNumeric === '' || scope.numeric;
@@ -56,9 +60,17 @@ function mdColumn($compile, $mdUtil) {
     function setOrder() {
       scope.$applyAsync(function () {
         if(isActive()) {
+          if (hasCustomSortFunc()) {
+            headCtrl.order = scope.customSortFunc;
+          } else {
           headCtrl.order = scope.getDirection() === 'md-asc' ? '-' + scope.orderBy : scope.orderBy;
+          }
         } else {
+          if (hasCustomSortFunc()) {
+            headCtrl.order = scope.customSortFunc;
+          } else {
           headCtrl.order = scope.getDirection() === 'md-asc' ? scope.orderBy : '-' + scope.orderBy;
+          }
         }
 
         if(angular.isFunction(headCtrl.onReorder)) {
@@ -121,6 +133,7 @@ function mdColumn($compile, $mdUtil) {
     scope: {
       numeric: '=?mdNumeric',
       orderBy: '@?mdOrderBy'
+      customSortFunc: '=?customSort'
     }
   };
 }

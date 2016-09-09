@@ -1,4 +1,4 @@
-angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdEditDialog', '$q', '$timeout', '$scope', function ($http, $mdEditDialog, $q, $timeout, $scope) {
+angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdEditDialog', '$q', '$timeout', '$scope', '$mdToast', function ($http, $mdEditDialog, $q, $timeout, $scope, $mdToast) {
   'use strict';
 
   $scope.options = {
@@ -32,30 +32,30 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
     orderBy: 'name',
     unit: '100g serving'
   }, {
-    descendFirst: true,
-    name: 'Type',
-    orderBy: 'type'
-  }, {
-    name: 'Calories',
-    numeric: true,
-    orderBy: 'calories.value'
-  }, {
-    name: 'Fat',
-    numeric: true,
-    orderBy: 'fat.value',
-    unit: 'g'
-  }, /* {
+      descendFirst: true,
+      name: 'Type',
+      orderBy: 'type'
+    }, {
+      name: 'Calories',
+      numeric: true,
+      orderBy: 'calories.value'
+    }, {
+      name: 'Fat',
+      numeric: true,
+      orderBy: 'fat.value',
+      unit: 'g'
+    }, /* {
     name: 'Carbs',
     numeric: true,
     orderBy: 'carbs.value',
     unit: 'g'
   }, */ {
-    name: 'Protein',
-    numeric: true,
-    orderBy: 'protein.value',
-    trim: true,
-    unit: 'g'
-  }, /* {
+      name: 'Protein',
+      numeric: true,
+      orderBy: 'protein.value',
+      trim: true,
+      unit: 'g'
+    }, /* {
     name: 'Sodium',
     numeric: true,
     orderBy: 'sodium.value',
@@ -66,14 +66,14 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
     orderBy: 'calcium.value',
     unit: '%'
   }, */ {
-    name: 'Iron',
-    numeric: true,
-    orderBy: 'iron.value',
-    unit: '%'
-  }, {
-    name: 'Comments',
-    orderBy: 'comment'
-  }];
+      name: 'Iron',
+      numeric: true,
+      orderBy: 'iron.value',
+      unit: '%'
+    }, {
+      name: 'Comments',
+      orderBy: 'comment'
+    }];
 
   $http.get('desserts.json').then(function (desserts) {
     $scope.desserts = desserts.data;
@@ -111,7 +111,17 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
 
   $scope.editComment = function (event, dessert) {
     event.stopPropagation();
-
+    var clickOutsideCallback;
+    if ($scope.options.dialogClickOutsideCallback) {
+      clickOutsideCallback = function () {
+        $mdToast.show(
+          $mdToast.simple()
+            .content('Clicked outside')
+            .position('top right')
+            .hideDelay(3000)
+        );
+      };
+    }
     var dialog = {
       // messages: {
       //   test: 'I don\'t like tests!'
@@ -121,6 +131,8 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
       save: function (input) {
         dessert.comment = input.$modelValue;
       },
+      clickOutsideToClose: $scope.options.dialogClickOutsideToClose,
+      clickOutsideCallback: clickOutsideCallback,
       targetEvent: event,
       title: 'Add a comment',
       validators: {

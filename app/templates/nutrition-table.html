@@ -73,5 +73,16 @@
     </tbody>
   </table>
 </md-table-container>
-
 <data-md-table-pagination md-limit="query.limit" md-limit-options="limitOptions" md-page="query.page" md-total="{{desserts.count}}" md-on-paginate="onPaginate" md-page-select="options.pageSelect" md-boundary-links="options.boundaryLinks"></data-md-table-pagination>
+<div flex layout="row" layout-align="center center">
+  <div flex>
+<md-button data-ng-click="previous()" data-ng-disabled="(query.page<=1)">
+  PREVIOUS
+</md-butoon>
+</div>
+<div flex>
+<md-button data-ng-click="next()" data-ng-disabled="(query.page>=desserts.count/query.limit)">
+  NEXT
+</md-butoon>
+</div>
+</div>

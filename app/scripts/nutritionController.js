@@ -179,5 +179,11 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
 
     }, 2000);
   };
+  $scope.next = function (){
+    $scope.query.page++;
+  };
+  $scope.previous = function (){
+    $scope.query.page--;
+  };
 
 }]);

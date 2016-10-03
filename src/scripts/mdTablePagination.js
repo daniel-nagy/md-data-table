@@ -106,6 +106,14 @@ function mdTablePagination() {
       }
     });
   }
+  
+  $scope.$watch('$pagination.page', function (newValue, oldValue) {
+      if(isNaN(newValue) || newValue === oldValue) {
+        return;
+      }
+      self.onPaginationChange();
+    });
+  }
 
   Controller.$inject = ['$attrs', '$mdUtil', '$scope'];
 

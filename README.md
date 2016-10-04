@@ -153,7 +153,7 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 * [<=0.8.14](https://github.com/daniel-nagy/md-data-table/tree/legacy#api-documentation)
 
 > Tables are sorted alphabetically by their first column.
-> I will be **camelCasing** attributes in tables (otherwise the cells would wrap and be difficult to read) but don't forget to **snake-case** them in your template.
+> I will be **camelCasing** attributes in tables (otherwise the cells would wrap and be difficult to read) but don't forget to **kebab-case** them in your template.
 
 ### Column Sorting
 

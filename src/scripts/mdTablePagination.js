@@ -105,6 +105,19 @@ function mdTablePagination() {
         self.last();
       }
     });
+
+    $scope.$watch('$pagination.page', function (newValue, oldValue) {
+      if(isNaN(newValue) || newValue === oldValue) {
+        return;
+      }
+      if(self.page > self.pages()) {
+        self.last();
+      }else if (self.page<=0) {
+        self.first();
+      }
+      self.onPaginationChange();
+    });
+
   }
 
   Controller.$inject = ['$attrs', '$mdUtil', '$scope'];

@@ -14,6 +14,8 @@ function mdTableProgress() {
     require: '^^mdTable',
     restrict: 'C',
     scope: {},
-    templateUrl: 'md-table-progress.html'
+    templateUrl: function (elem, attributes) {
+      return attributes.templateUrl || 'md-table-progress.html';
+    }
   };
 }

@@ -52,10 +52,10 @@ angular.module('md-table-pagination.html', []).run(['$templateCache', function($
 
 angular.module('md-table-progress.html', []).run(['$templateCache', function($templateCache) {
   $templateCache.put('md-table-progress.html',
-    '<tr>\n' +
-    '  <th colspan="{{columnCount()}}">\n' +
+    '<tr aria-hidden="true">\n' +
+    '  <td colspan="{{columnCount()}}">\n' +
     '    <md-progress-linear ng-show="deferred()" md-mode="indeterminate"></md-progress-linear>\n' +
-    '  </th>\n' +
+    '  </td>\n' +
     '</tr>');
 }]);
 
@@ -722,7 +722,7 @@ function mdHead($compile) {
     var oldValue = new Array(2);
     
     function addCheckboxColumn() {
-      element.children().prepend('<th class="md-column md-checkbox-column">');
+      element.children().prepend('<th class="md-column md-checkbox-column"><span class="hidden-title">Select All</span></th>');
     }
     
     function attatchCheckbox() {

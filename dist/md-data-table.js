@@ -883,7 +883,7 @@ function mdRow() {
 
 angular.module('md.data.table').directive('mdSelect', mdSelect);
 
-function mdSelect($compile, $parse) {
+function mdSelect($compile) {
 
   // empty controller to bind scope properties to
   function Controller() {
@@ -893,7 +893,6 @@ function mdSelect($compile, $parse) {
   function postLink(scope, element, attrs, ctrls) {
     var self = ctrls.shift();
     var tableCtrl = ctrls.shift();
-    var getId = $parse(attrs.mdSelectId);
 
     self.id = getId(self.model);
 
@@ -930,6 +929,8 @@ function mdSelect($compile, $parse) {
       if(!tableCtrl.$$rowSelect) {
         return false;
       }
+
+      self.id = getId(self.model);
 
       if(self.id) {
         return tableCtrl.$$hash.has(self.id);
@@ -1011,7 +1012,13 @@ function mdSelect($compile, $parse) {
       return tableCtrl.$$rowSelect;
     }
 
+    function getId(model) {
+      return model ? model[attrs.mdSelectId] : undefined;
+    }
+
     function onSelectChange(selected) {
+      self.id = getId(self.model);
+
       if(!self.id) {
         return;
       }
@@ -1092,7 +1099,8 @@ function mdSelect($compile, $parse) {
   };
 }
 
-mdSelect.$inject = ['$compile', '$parse'];
+mdSelect.$inject = ['$compile'];
+
 
 angular.module('md.data.table').directive('mdTable', mdTable);
 

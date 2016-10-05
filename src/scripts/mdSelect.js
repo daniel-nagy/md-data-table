@@ -2,11 +2,14 @@
 
 angular.module('md.data.table').directive('mdSelect', mdSelect);
 
-function mdSelect($compile, $parse) {
+function mdSelect($compile, $parse, $filter) {
 
   // empty controller to bind scope properties to
-  function Controller() {
-
+    function Controller() {
+        //Added this function which returns filtered array of objects
+        this.searchResults = function (data, searchText) {
+            return $filter('filter')(data, searchText);
+      }
   }
 
   function postLink(scope, element, attrs, ctrls) {
@@ -14,7 +17,17 @@ function mdSelect($compile, $parse) {
     var tableCtrl = ctrls.shift();
     var getId = $parse(attrs.mdSelectId);
 
+
     self.id = getId(self.model);
+      /*
+         Added this function which 
+         - returns filtered arrary of object from the searchResults function 
+         - based on the list(json object) passed from the md-select-all atttribute 
+         - and filters the list based on the text passed from the md-search atttribute 
+      */
+    self.data = function () {
+        return self.searchResults(self.model_allRows, self.search);
+    }
 
     if(tableCtrl.$$rowSelect && self.id) {
       if(tableCtrl.$$hash.has(self.id)) {
@@ -44,8 +57,9 @@ function mdSelect($compile, $parse) {
         });
       }
     }
-
-    self.isSelected = function () {
+    
+    //Added this opitional object argument when passed isSelected returns a boolean value based on the argument 
+    self.isSelected = function (model) {
       if(!tableCtrl.$$rowSelect) {
         return false;
       }
@@ -54,16 +68,18 @@ function mdSelect($compile, $parse) {
         return tableCtrl.$$hash.has(self.id);
       }
 
+      if (model) {
+              return tableCtrl.selected.indexOf(model) !== -1;
+      }
       return tableCtrl.selected.indexOf(self.model) !== -1;
-    };
+     };
 
     self.select = function () {
       if(self.disabled) {
         return;
       }
-
-      if(tableCtrl.enableMultiSelect()) {
-        tableCtrl.selected.push(self.model);
+      if (tableCtrl.enableMultiSelect()) {
+          tableCtrl.selected.push(self.model);    
       } else {
         tableCtrl.selected.splice(0, tableCtrl.selected.length, self.model);
       }
@@ -72,6 +88,44 @@ function mdSelect($compile, $parse) {
         self.onSelect(self.model);
       }
     };
+    
+      /*
+      Added this function which 
+      - will select rows based on the array of objects returned from the data function
+      - will select all rows if the are not selected      
+      */
+    self.selectAll = function () {
+        if (self.disabled) {
+            return;
+        }
+        if (tableCtrl.enableMultiSelect()) {
+               self.deselectAll();
+               angular.forEach(self.data(), function (model, key) {
+                   if (!self.isSelected(model)) {
+                       tableCtrl.selected.push(model);
+                   }
+                });
+        } else {
+            tableCtrl.selected.splice(0, tableCtrl.selected.length, self.data());
+        }
+
+        if (angular.isFunction(self.onSelect)) {
+            self.onSelect(self.data());
+        }
+    }
+      /*
+       Added this function which 
+       - will deselect rows based on the array of objects returned from the data function
+       - will deselect all rows if the are selected      
+       */
+    self.deselectAll = function () {
+        angular.forEach(self.data(), function (model, index) {
+            if (self.isSelected(model))
+            {
+                tableCtrl.selected.splice(tableCtrl.selected.indexOf(model), 1);
+            }
+        });
+    }
 
     self.deselect = function () {
       if(self.disabled) {
@@ -206,9 +260,11 @@ function mdSelect($compile, $parse) {
       disabled: '=ngDisabled',
       onSelect: '=?mdOnSelect',
       onDeselect: '=?mdOnDeselect',
-      autoSelect: '=mdAutoSelect'
+      autoSelect: '=mdAutoSelect',
+      model_allRows: '=mdSelectAll',
+      search: '=mdSearch'
     }
   };
 }
 
-mdSelect.$inject = ['$compile', '$parse'];
+mdSelect.$inject = ['$compile', '$parse','$filter'];

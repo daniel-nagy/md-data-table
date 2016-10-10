@@ -78,7 +78,12 @@ function mdSelect($compile, $parse) {
         return;
       }
 
-      tableCtrl.selected.splice(tableCtrl.selected.indexOf(self.model), 1);
+      if(self.id) {
+        tableCtrl.selected.splice(tableCtrl.selected.indexOf(tableCtrl.$$hash.get(self.id)), 1);
+      }
+      else {
+        tableCtrl.selected.splice(tableCtrl.selected.indexOf(self.model), 1);
+      }
 
       if(angular.isFunction(self.onDeselect)) {
         self.onDeselect(self.model);

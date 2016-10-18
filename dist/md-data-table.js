@@ -556,41 +556,48 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
   }
   
   function preset(size, options) {
-    
+
     function getAttrs() {
-      var attrs = 'type="' + (options.type || 'text') + '"';
-      
+      var attrs = '';
+
       for(var attr in options.validators) {
         attrs += ' ' + attr + '="' + options.validators[attr] + '"';
       }
-      
+
       return attrs;
     }
-    
+
     return {
       controller: ['$element', '$q', 'save', '$scope', function ($element, $q, save, $scope) {
         function update() {
           if($scope.editDialog.$invalid) {
             return $q.reject();
           }
-          
+
           if(angular.isFunction(save)) {
             return $q.when(save($scope.editDialog.input));
           }
-          
+
           return $q.resolve();
         }
-        
+
         this.dismiss = function () {
           $element.remove();
         };
-        
+
         this.getInput = function () {
           return $scope.editDialog.input;
         };
         
-        $scope.dismiss = this.dismiss;
+        $scope.keydown = function(e) {
+            if ($scope.size == 'small' && e.keyCode == 13 && !e.shiftKey) {
+                e.preventDefault();
+                $scope.submit();
+            }
+        };
         
+        $scope.dismiss = this.dismiss;
+
         $scope.submit = function () {
           update().then(function () {
             $scope.dismiss();
@@ -607,25 +614,28 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
         ok: options.ok || 'Save',
         placeholder: options.placeholder,
         title: options.title,
+        type: options.type || 'text',
         size: size
       },
       template:
         '<md-edit-dialog>' +
-          '<div layout="column" class="md-content">' +
-            '<div ng-if="size === \'large\'" class="md-title">{{title || \'Edit\'}}</div>' +
-            '<form name="editDialog" layout="column" ng-submit="submit(model)">' +
-              '<md-input-container md-no-float>' +
-                '<input name="input" ng-model="model" md-autofocus placeholder="{{placeholder}} "' + getAttrs() + '>' +
-                '<div ng-messages="editDialog.input.$error">' +
-                  '<div ng-repeat="(key, message) in messages" ng-message="{{key}}">{{message}}</div>' +
-                '</div>' +
-              '</md-input-container>' +
-            '</form>' +
-          '</div>' +
-          '<div ng-if="size === \'large\'" layout="row" layout-align="end" class="md-actions">' +
-            '<md-button class="md-primary" ng-click="dismiss()">{{cancel}}</md-button>' +
-            '<md-button class="md-primary" ng-click="submit()">{{ok}}</md-button>' +
-          '</div>' +
+        '   <div layout="column" class="md-content">' +
+        '       <div ng-if="size === \'large\'" class="md-title">{{title || \'Edit\'}}</div>' +
+        '       <form name="editDialog" layout="column" ng-submit="submit(model)">' +
+        '           <md-input-container md-no-float>' +
+        '               <input ng-if="type !== \'textarea\'" type="{{type}}" aria-label="{{placeholder}}" name="input" ng-model="model" md-autofocus placeholder="{{placeholder}} "' + getAttrs() + '>' +
+        '               <textarea ng-if="type === \'textarea\'" ng-keydown="keydown($event)" aria-label="{{placeholder}}" name="input" ng-model="model" md-autofocus placeholder="{{placeholder}} "' + getAttrs() + '>' +
+        '               </textarea>' +
+        '               <div ng-messages="editDialog.input.$error">' +
+        '                   <div ng-repeat="(key, message) in messages" ng-message="{{key}}">{{message}}</div>' +
+        '               </div>' +
+        '           </md-input-container>' +
+        '       </form>' +
+        '   </div>' +
+        '   <div ng-if="size === \'large\'" layout="row" layout-align="end" class="md-actions">' +
+        '       <md-button class="md-primary" ng-click="dismiss()">{{cancel}}</md-button>' +
+        '       <md-button class="md-primary" ng-click="submit()">{{ok}}</md-button>' +
+        '   </div>' +
         '</md-edit-dialog>'
     };
   }

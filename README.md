@@ -259,7 +259,7 @@ $mdEditDialog.small(options);
 | `placeholder`         | `string`   | `null`   | Placeholder text for input element. |
 | `save`                | `function` | `null`   | A callback function for when the use clicks the save button. The callback will receive the [ngModelController](https://docs.angularjs.org/api/ng/type/ngModel.NgModelController). The dialog will close unless the callback returns a rejected promise. |
 | `targetEvent`         | `event`    | `null`   | The event object. This must be provided and it must be from a table cell. |
-| `type`                | `string`   | `"text"` | The value of the `type` attribute on the `input` element. |
+| `type`                | `string`   | `"text"` | The value of the `type` attribute on the `input` element, or `textarea` to render a `textarea` element (use `Shift+Enter` for newline). |
 | `validators`          | `object`   | `null`   | Optional attributes to be placed on the input element. |
 
 The `small` method will return a `promise` that will resolve with the controller instance. The controller has two public methods, `dismiss` which will close the dialog without saving and `getInput` which will return the `ngModelController`.
@@ -289,7 +289,7 @@ $mdEditDialog.large(options);
 | `save`                | `function` | `null`     | A callback function for when the use clicks the save button. The callback will receive the `ngModelController`. The dialog will close unless the callback returns a rejected promise. |
 | `targetEvent`         | `event`    | `null`     | The event object. This must be provided and it must be from a table cell. |
 | `title`               | `string`   | `"Edit"`   | Dialog title text. |
-| `type`                | `string`   | `"text"`   | The value of the `type` attribute on the `input` element. |
+| `type`                | `string`   | `"text"`   | The value of the `type` attribute on the `input` element, or `textarea` to render a `textarea` element. |
 | `validators`          | `object`   | `null`     | Optional attributes to be placed on the input element. |
 
 The `large` method will return a `promise` that will resolve with the controller instance. The controller has two public methods, `dismiss` which will close the dialog without saving and `getInput` which will return the `ngModelController`.

@@ -1,4 +1,4 @@
-angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdEditDialog', '$q', '$timeout', '$scope', function ($http, $mdEditDialog, $q, $timeout, $scope) {
+angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdEditDialog', '$q', '$timeout', '$scope', '$mdToast', function ($http, $mdEditDialog, $q, $timeout, $scope, $mdToast) {
   'use strict';
 
   $scope.options = {
@@ -111,6 +111,17 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
 
   $scope.editComment = function (event, dessert) {
     event.stopPropagation();
+    var clickOutsideCallback;
+    if ($scope.options.dialogClickOutsideCallback) {
+      clickOutsideCallback = function () {
+        $mdToast.show(
+          $mdToast.simple()
+            .content('Clicked outside')
+            .position('top right')
+            .hideDelay(3000)
+        );
+      };
+    }
 
     var dialog = {
       // messages: {
@@ -121,6 +132,8 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
       save: function (input) {
         dessert.comment = input.$modelValue;
       },
+      clickOutsideToClose: $scope.options.dialogClickOutsideToClose,
+      clickOutsideCallback: clickOutsideCallback,
       targetEvent: event,
       title: 'Add a comment',
       validators: {

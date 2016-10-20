@@ -76,8 +76,10 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     if(options.clickOutsideToClose) {
       if (angular.isFunction(options.clickOutsideCallback)) {
         backdrop.on('click', function () {
-          options.clickOutsideCallback();
-          element.remove();
+          $q.when(options.clickOutsideCallback())
+            .then(function(){
+               element.remove();
+            });
         });
       }
       else {

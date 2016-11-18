@@ -371,6 +371,7 @@ You may use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) 
 | :---------------- | :------------- | :---------- |
 | `mdBoundaryLinks` | `[expression]` | Displays first and last page navigation links |
 | `mdLabel`         | `object`       | Change the pagination label (see more below). |
+|  mdCountLabel     |  [expression]  | Show/hide the item count (1 - m of n). |
 | `mdLimit`         | `integer`      | A row limit. |
 | `mdLimitOptions`  | `array`        | Row limit options (see more below). |
 | `mdOnPaginate`    | `function`     | A callback function for when the page or limit changes. The page is passed as the first argument and the limit is passed as the second argument.    |

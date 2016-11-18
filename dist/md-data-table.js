@@ -30,7 +30,7 @@ angular.module('md-table-pagination.html', []).run(['$templateCache', function($
     '</div>\n' +
     '\n' +
     '<div class="buttons">\n' +
-    '  <div class="label">{{$pagination.min()}} - {{$pagination.max()}} {{$pagination.label.of}} {{$pagination.total}}</div>\n' +
+    '  <div class="label" ng-if="$pagination.showItemCountLabel()">{{$pagination.min()}} - {{$pagination.max()}} {{$pagination.label.of}} {{$pagination.total}}</div>\n' +
     '\n' +
     '  <md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.first()" ng-disabled="$pagination.disabled || !$pagination.hasPrevious()" aria-label="First">\n' +
     '    <md-icon md-svg-icon="navigate-first.svg"></md-icon>\n' +
@@ -1356,6 +1356,10 @@ function mdTablePagination() {
       return $attrs.mdBoundaryLinks === '' || self.boundaryLinks;
     };
 
+    self.showItemCountLabel = function() {
+      return $attrs.mdCountLabel === '' || self.countLabel;
+    }
+
     self.showPageSelect = function () {
       return $attrs.mdPageSelect === '' || self.pageSelect;
     };
@@ -1389,6 +1393,7 @@ function mdTablePagination() {
 
   return {
     bindToController: {
+      countLabel: '=?mdCountLabel',
       boundaryLinks: '=?mdBoundaryLinks',
       disabled: '=ngDisabled',
       limit: '=mdLimit',

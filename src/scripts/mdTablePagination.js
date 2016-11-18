@@ -78,6 +78,10 @@ function mdTablePagination() {
       return $attrs.mdBoundaryLinks === '' || self.boundaryLinks;
     };
 
+    self.showItemCountLabel = function() {
+      return $attrs.mdCountLabel === '' || self.countLabel;
+    }
+
     self.showPageSelect = function () {
       return $attrs.mdPageSelect === '' || self.pageSelect;
     };
@@ -111,6 +115,7 @@ function mdTablePagination() {
 
   return {
     bindToController: {
+      countLabel: '=?mdCountLabel',
       boundaryLinks: '=?mdBoundaryLinks',
       disabled: '=ngDisabled',
       limit: '=mdLimit',

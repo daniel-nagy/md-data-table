@@ -12,7 +12,7 @@ function mdTableProgress() {
   return {
     link: postLink,
     require: '^^mdTable',
-    restrict: 'C',
+    restrict: 'A',
     scope: {},
     templateUrl: 'md-table-progress.html'
   };

@@ -33,7 +33,7 @@ function mdTable() {
     
     if(tAttrs.hasOwnProperty('mdProgress')) {
       var body = tElement.find('tbody')[0];
-      var progress = angular.element('<thead class="md-table-progress">');
+      var progress = angular.element('<thead class="md-table-progress" md-table-progress>');
       
       if(body) {
         tElement[0].insertBefore(progress[0], body);

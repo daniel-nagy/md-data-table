@@ -305,6 +305,7 @@ table.md-table tr.md-row[data-ng-repeat].ng-leave {
 table.md-table.md-row-select tbody.md-body > tr.md-row {
   transition: background-color 0.2s;
 }
+table.md-table.md-row-hover tbody.md-body > tr.md-row:not([disabled]):hover,
 table.md-table.md-row-select tbody.md-body > tr.md-row:not([disabled]):hover {
   background-color: #eeeeee !important;
 }

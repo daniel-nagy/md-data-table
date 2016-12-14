@@ -1143,7 +1143,15 @@ function mdTable() {
     
     self.$$hash = new Hash();
     self.$$columns = {};
-    
+
+    function enableRowHover () {
+      $element.addClass('md-row-hover');
+    }
+
+    function disableRowHover() {
+      $element.removeClass('md-row-hover');
+    }
+
     function enableRowSelection() {
       self.$$rowSelect = true;
       
@@ -1179,6 +1187,14 @@ function mdTable() {
     
     function rowSelect() {
       return $attrs.mdRowSelect === '' || self.rowSelect;
+    }
+
+    function rowHover() {
+      if($attrs.hasOwnProperty('mdRowHover') && $attrs.mdRowHover === '') {
+        return true;
+      }
+      
+      return self.rowSelect;
     }
     
     function validateModel() {
@@ -1252,7 +1268,15 @@ function mdTable() {
     if($attrs.hasOwnProperty('mdProgress')) {
       $scope.$watch('$mdTable.progress', self.queuePromise);
     }
-    
+
+    $scope.$watch(rowHover, function (enable) {
+      if(enable) {
+        enableRowSelection();
+      } else {
+        disableRowSelection();
+      }
+    });
+
     $scope.$watch(rowSelect, function (enable) {
       if(enable && !!validateModel()) {
         enableRowSelection();

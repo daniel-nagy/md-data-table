@@ -1,5 +1,12 @@
 ## Change Log
 
+#### Version 0.10.10
+###### December 14, 2016
+
+**Future Proofing**
+
+* Merge #517 from [@christophercr](https://github.com/christophercr) to change the restriction on the `mdTableProgress` directive from class name to attribute to support newer versions of AngularJS.
+
 #### Version 0.10.9
 ###### April 26, 2016
 

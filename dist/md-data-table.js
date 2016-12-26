@@ -2,7 +2,7 @@
  * Angular Material Data Table
  * https://github.com/daniel-nagy/md-data-table
  * @license MIT
- * v0.10.9
+ * v0.10.10
  */
 (function (window, angular, undefined) {
 'use strict';
@@ -958,8 +958,23 @@ function mdSelect($compile, $parse) {
       if(self.disabled) {
         return;
       }
+      
+      var indexOfItem = tableCtrl.selected.indexOf(self.model);
 
-      tableCtrl.selected.splice(tableCtrl.selected.indexOf(self.model), 1);
+      if(indexOfItem === -1 && self.id && tableCtrl.selected && tableCtrl.selected[0] !== undefined){
+        for(var key in tableCtrl.selected){
+          if(tableCtrl.selected[key].id === self.id){
+            indexOfItem = key;
+            break;
+          }
+        }
+      }
+
+      if(indexOfItem !== -1){
+        tableCtrl.selected.splice(indexOfItem , 1);
+      } else {
+        return;
+      }
 
       if(angular.isFunction(self.onDeselect)) {
         self.onDeselect(self.model);

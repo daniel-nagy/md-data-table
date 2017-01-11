@@ -1,6 +1,6 @@
 {
-  "name": "angular-material-data-table",
-  "version": "0.10.11",
+  "name": "angular-material-data-table-fixed-deselect-bug",
+  "version": "0.10.12",
   "description": "Material Design data table.",
   "license": "MIT",
   "repository": {

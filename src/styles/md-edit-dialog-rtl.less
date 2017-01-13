@@ -1,0 +1,23 @@
+[dir=rtl] md-edit-dialog {
+  > .md-content {
+    md-input-container {
+      .md-errors-spacer {
+        .md-char-counter {
+          padding: 5px 0 5px 2px;
+        }
+      }
+      
+      [ng-message] {
+        padding: 5px 2px 5px 0;
+      }
+    }
+  }
+
+  > .md-actions {
+    .md-button {
+      & + .md-button {
+        margin-right: 8px;
+      }
+    }
+  }
+}

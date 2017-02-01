@@ -26,7 +26,7 @@
     "load-grunt-tasks": "^0.6.0"
   },
   "peerDependencies": {
-    "angular": "^1.4.0",
-    "angular-material": "^1.0.0"
+    "angular": "^1.6.0",
+    "angular-material": "^1.1.0"
   }
 }

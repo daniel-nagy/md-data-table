@@ -17,7 +17,7 @@
 </div>
 
 <div class="buttons">
-  <div class="label">{{$pagination.min()}} - {{$pagination.max()}} {{$pagination.label.of}} {{$pagination.total}}</div>
+  <div class="label">{{$pagination.min()}}&ndash;{{$pagination.max()}} {{$pagination.label.of}} {{$pagination.total}}</div>
 
   <md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.first()" ng-disabled="$pagination.disabled || !$pagination.hasPrevious()" aria-label="First">
     <md-icon md-svg-icon="navigate-first.svg"></md-icon>

@@ -10,7 +10,7 @@ Specification for Material Design data tables can be found [here](http://www.goo
 * [Usage](#usage)
 * [Change Log](CHANGELOG.md)
 * [API Documentation](#api-documentation)
-* [Contributing] (#contributing)
+* [Contributing](#contributing)
 
 ## License
 

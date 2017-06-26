@@ -144,7 +144,7 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 * [Numeric Columns](#numeric-columns)
 * [Pagination](#pagination)
 * [Row Selection](#row-selection)
-* [Table Progress] (#table-progress)
+* [Table Progress](#table-progress)
 * [Table Toolbars](#table-toolbars)
 
 **Earlier Versions**

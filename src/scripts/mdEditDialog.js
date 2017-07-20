@@ -310,22 +310,23 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
         size: size
       },
       template:
-        '<md-edit-dialog>' +
+     '<md-edit-dialog>' +
           '<div layout="column" class="md-content">' +
             '<div ng-if="size === \'large\'" class="md-title">{{title || \'Edit\'}}</div>' +
             '<form name="editDialog" layout="column" ng-submit="submit(model)">' +
-              '<md-input-container md-no-float>' +
-                '<input name="input" ng-model="model" md-autofocus placeholder="{{placeholder}} "' + getAttrs() + '>' +
+              '<md-input-container class="md-accent" md-no-float>' +
+                '<input required name="input" ng-model="model" md-autofocus placeholder="{{placeholder}} "' + getAttrs() + '>' +
                 '<div ng-messages="editDialog.input.$error">' +
                   '<div ng-repeat="(key, message) in messages" ng-message="{{key}}">{{message}}</div>' +
                 '</div>' +
               '</md-input-container>' +
-            '</form>' +
+            
           '</div>' +
           '<div ng-if="size === \'large\'" layout="row" layout-align="end" class="md-actions">' +
-            '<md-button class="md-primary" ng-click="dismiss()">{{cancel}}</md-button>' +
-            '<md-button class="md-primary" ng-click="submit()">{{ok}}</md-button>' +
+            '<md-button class="md-primary" ng-click="dismiss()" translate ="{{cancel}}"></md-button>' +
+            '<md-button ng-disabled="editDialog.$invalid" class=" md-accent" ng-click="submit()" translate="{{ok}}"></md-button>' +
           '</div>' +
+          '</form>' +
         '</md-edit-dialog>'
     };
   }

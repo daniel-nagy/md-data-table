@@ -85,6 +85,10 @@ angular.module('navigate-next.svg', []).run(['$templateCache', function ($templa
 }]);
 
 
+var mdDataTableThemeOverrides = mdDataTableThemeOverrides || {};
+mdDataTableThemeOverrides[".temp/md-theme.min.css"] = '.md-table-pagination,table.md-table td.md-cell{border-top-color:\'{{foreground-4}}\'}';
+
+
 angular.module('md.data.table', ['md.table.templates', 'ngMaterial']);
 
 angular.module('md.data.table').directive('mdBody', mdBody);
@@ -1430,7 +1434,7 @@ function mdTableProgress() {
 angular.module('md.data.table').config(mdTableTheming);
 
 function mdTableTheming($mdThemingProvider) {
-    $mdThemingProvider.registerStyles("table.md-table td.md-cell { border-top-color: '{{foreground-4}}';} .md-table-pagination { border-top-color: '{{foreground-4}}'; }");
+    $mdThemingProvider.registerStyles(mdDataTableThemeOverrides[".temp/md-theme.min.css"]);
 }
 
 mdTableTheming.$inject = ['$mdThemingProvider'];

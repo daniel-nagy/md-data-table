@@ -60,7 +60,7 @@ module.exports = function (grunt) {
       },
       build: {
         files: {
-          'dist/md-data-table.js': ['.temp/templates.js', 'src/**/*.js']
+          'dist/md-data-table.js': ['.temp/templates.js', '.temp/md-theme.min.css.js', 'src/**/*.js']
         }
       }
     },
@@ -82,8 +82,15 @@ module.exports = function (grunt) {
     cssmin: {
       build: {
         files: {
-          'dist/md-data-table.min.css': 'dist/md-data-table.css'
+          'dist/md-data-table.min.css': 'dist/md-data-table.css',
+          '.temp/md-theme.min.css' : 'src/styles/md-table.theme.css'
         }
+      }
+    },
+
+    str2js: {
+      mdDataTableThemeOverrides: {
+        '.temp/md-theme.min.css.js': ['.temp/md-theme.min.css']
       }
     },
     
@@ -191,6 +198,7 @@ module.exports = function (grunt) {
     'less:build',
     'autoprefixer:build',
     'cssmin:build',
+    'str2js:mdDataTableThemeOverrides',
     'html2js:build',
     'concat:build',
     'uglify:build'

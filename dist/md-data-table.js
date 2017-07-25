@@ -85,7 +85,7 @@ angular.module('navigate-next.svg', []).run(['$templateCache', function ($templa
 }]);
 
 
-angular.module('md.data.table', ['md.table.templates']);
+angular.module('md.data.table', ['md.table.templates', 'ngMaterial']);
 
 angular.module('md.data.table').directive('mdBody', mdBody);
 
@@ -1424,6 +1424,16 @@ function mdTableProgress() {
     templateUrl: 'md-table-progress.html'
   };
 }
+
+"use strict";
+
+angular.module('md.data.table').config(mdTableTheming);
+
+function mdTableTheming($mdThemingProvider) {
+    $mdThemingProvider.registerStyles("table.md-table td.md-cell { border-top-color: '{{foreground-4}}';} .md-table-pagination { border-top-color: '{{foreground-4}}'; }");
+}
+
+mdTableTheming.$inject = ['$mdThemingProvider'];
 
 angular.module('md.data.table').directive('virtualPageSelect', virtualPageSelect);
 

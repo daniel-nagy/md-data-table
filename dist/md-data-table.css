@@ -56,6 +56,8 @@ md-edit-dialog > .md-actions .md-button + .md-button {
   box-sizing: border-box;
   padding: 0 24px;
   font-size: 12px;
+  border-top-width: 1px;
+  border-top-style: solid;
 }
 .md-table-pagination md-select {
   -ms-flex-pack: end;
@@ -313,6 +315,8 @@ table.md-table th.md-column md-checkbox {
 }
 table.md-table td.md-cell {
   font-size: 13px;
+  border-top-width: 1px;
+  border-top-style: solid;
 }
 table.md-table td.md-cell.md-numeric md-select {
   -ms-flex-pack: end;

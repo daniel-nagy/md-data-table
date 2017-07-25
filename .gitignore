@@ -4,6 +4,7 @@
 # generated files
 app/app.css
 .temp
+.idea/
 
 # folders
 bower_components

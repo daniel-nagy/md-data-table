@@ -1,7 +1,0 @@
-table.md-table td.md-cell {
-    border-top-color: '{{foreground-4}}';
-}
-
-.md-table-pagination {
-    border-top-color: '{{foreground-4}}';
-}

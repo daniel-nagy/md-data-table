@@ -86,7 +86,7 @@ angular.module('navigate-next.svg', []).run(['$templateCache', function ($templa
 
 
 var mdDataTableThemeOverrides = mdDataTableThemeOverrides || {};
-mdDataTableThemeOverrides[".temp/md-theme.min.css"] = '.md-table-pagination,table.md-table td.md-cell{border-top-color:\'{{foreground-4}}\'}';
+mdDataTableThemeOverrides[".temp/md-theme.min.css"] = 'table.md-table td.md-cell{color:\'{{foreground-1}}\';border-top-color:\'{{foreground-4}}\'}.md-table-pagination{border-top-color:\'{{foreground-4}}\'}md-edit-dialog{background-color:\'{{background-100}}\'}md-edit-dialog>.md-content .md-title{color:\'{{foreground-1}}\'}.md-table-pagination,.md-table-pagination md-select:not([disabled]):focus .md-select-value,md-edit-dialog>.md-content md-input-container .md-errors-spacer,table.md-table th.md-column{color:\'{{foreground-2}}\'}table.md-table th.md-column md-icon.md-sort-icon{color:\'{{foreground-3}}\'}table.md-table th.md-column.md-active,table.md-table th.md-column.md-active md-icon{color:\'{{foreground-1}}\'}table.md-table.md-row-select tbody.md-body>tr.md-row:not([disabled]):hover{background-color:\'{{background-200}}\'!important}table.md-table.md-row-select tbody.md-body>tr.md-row.md-selected{background-color:\'{{background-100}}\'}table.md-table td.md-cell.md-placeholder{color:\'{{foreground-3}}\'}table.md-table td.md-cell md-select>.md-select-value>span.md-select-icon{color:\'{{foreground-2}}\'}';
 
 
 angular.module('md.data.table', ['md.table.templates', 'ngMaterial']);

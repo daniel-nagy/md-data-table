@@ -83,7 +83,7 @@ module.exports = function (grunt) {
       build: {
         files: {
           'dist/md-data-table.min.css': 'dist/md-data-table.css',
-          '.temp/md-theme.min.css' : 'src/styles/md-table.theme.css'
+          '.temp/md-theme.min.css' : '.temp/md-theme.css'
         }
       }
     },
@@ -133,7 +133,8 @@ module.exports = function (grunt) {
       },
       build: {
         files: {
-          'dist/md-data-table.css': 'src/styles/md-table.less'
+          'dist/md-data-table.css': 'src/styles/md-table.less',
+          '.temp/md-theme.css': 'src/styles/md-table.theme.less'
         }
       }
     },

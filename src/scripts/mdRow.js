@@ -2,11 +2,10 @@
 
 angular.module('md.data.table').directive('mdRow', mdRow);
 
-function mdRow($mdTheming) {
+function mdRow() {
 
   function compile(tElement) {
     tElement.addClass('md-row');
-    $mdTheming(tElement);
     return postLink;
   }
   
@@ -48,4 +47,3 @@ function mdRow($mdTheming) {
     restrict: 'A'
   };
 }
-mdRow.$inject = ['$mdTheming'];

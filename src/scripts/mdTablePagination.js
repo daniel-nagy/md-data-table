@@ -2,11 +2,10 @@
 
 angular.module('md.data.table').directive('mdTablePagination', mdTablePagination);
 
-function mdTablePagination($mdTheming) {
+function mdTablePagination() {
 
   function compile(tElement) {
     tElement.addClass('md-table-pagination');
-    $mdTheming(tElement);
   }
 
   function Controller($attrs, $mdUtil, $scope) {
@@ -129,5 +128,3 @@ function mdTablePagination($mdTheming) {
     templateUrl: 'md-table-pagination.html'
   };
 }
-
-mdTablePagination.$inject = ['$mdTheming'];

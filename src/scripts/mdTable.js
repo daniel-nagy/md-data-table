@@ -26,11 +26,12 @@ function Hash() {
   };
 }
 
-function mdTable() {
+function mdTable($mdTheming) {
   
   function compile(tElement, tAttrs) {
     tElement.addClass('md-table');
-    
+    $mdTheming(tElement);
+
     if(tAttrs.hasOwnProperty('mdProgress')) {
       var body = tElement.find('tbody')[0];
       var progress = angular.element('<thead class="md-table-progress" md-table-progress>');
@@ -183,3 +184,5 @@ function mdTable() {
     }
   };
 }
+
+mdTable.$inject = ['$mdTheming'];

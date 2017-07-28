@@ -29,7 +29,10 @@
     "Gruntfile.js"
   ],
   "dependencies": {
-    "angular": "^1.4.0",
+    "angular": "^1.5.0",
     "angular-material": "^1.1.0"
+  },
+  "resolutions": {
+    "angular": "1.4.0"
   }
 }

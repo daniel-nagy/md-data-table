@@ -16,15 +16,16 @@
 
   </head>
 
-  <body layout="column">
+  <body layout="column" ng-controller="nutritionController" md-theme="{{currentTheme}}" md-theme-watch>
 
     <md-toolbar>
-      <div class="md-toolbar-tools">
+      <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
         <div class="md-title">Material Design Data Table</div>
+        <md-button ng-click="switchTheme()">Switch theme!</md-button>
       </div>
     </md-toolbar>
 
-    <md-content md-theme="alternate" layout="column" flex ng-controller="nutritionController">
+    <md-content layout="column" flex>
 
       <md-card>
         <div layout="row" layout-wrap class="checkboxes">

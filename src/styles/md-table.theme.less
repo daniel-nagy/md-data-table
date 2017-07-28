@@ -2,63 +2,64 @@
 @primaryTextColor: '{{foreground-1}}';
 @secondaryTextColor: '{{foreground-2}}';
 @fadedTextColor: '{{foreground-3}}';
-@lightBackground: '{{background-100}}';
-@contrastBackground: '{{background-200}}';
+@lightBackground: '{{background-hue-2}}';
+@contrastBackground: '{{background-hue-3}}';
 
-table.md-table td.md-cell {
+@primaryFadedBackground: '{{primary-hue-3}}';
+@primaryHighlightText: '{{primary-default}}';
+
+table.md-table.md-THEME_NAME-theme td.md-cell {
     color: @primaryTextColor;
     border-top-color: @borderColor;
 }
 
-.md-table-pagination {
+.md-table-pagination.md-THEME_NAME-theme {
     border-top-color: @borderColor;
 }
 
-md-edit-dialog {
+md-edit-dialog.md-THEME_NAME-theme {
     background-color: @lightBackground;
-}
-
-md-edit-dialog > .md-content .md-title {
-    color: @primaryTextColor;
-}
-
-md-edit-dialog > .md-content md-input-container .md-errors-spacer {
     color: @secondaryTextColor;
 }
 
-.md-table-pagination {
+.md-table-pagination.md-THEME_NAME-theme {
     color: @secondaryTextColor;
 }
 
-.md-table-pagination md-select:not([disabled]):focus .md-select-value {
+.md-table-pagination.md-THEME_NAME-theme md-select:not([disabled]):focus .md-select-value {
     color: @secondaryTextColor;
 }
 
-table.md-table th.md-column {
+table.md-table.md-THEME_NAME-theme th.md-column {
     color: @secondaryTextColor;
 }
 
-table.md-table th.md-column md-icon.md-sort-icon {
+table.md-table.md-THEME_NAME-theme th.md-column md-icon.md-sort-icon {
     color: @fadedTextColor;
 }
 
-table.md-table th.md-column.md-active,
-table.md-table th.md-column.md-active md-icon {
+table.md-table.md-THEME_NAME-theme th.md-column.md-active,
+table.md-table.md-THEME_NAME-theme th.md-column.md-active md-icon {
     color: @primaryTextColor;
 }
 
-table.md-table.md-row-select tbody.md-body > tr.md-row:not([disabled]):hover {
+table.md-table.md-THEME_NAME-theme.md-row-select tbody.md-body > tr.md-row:not([disabled]):hover {
     background-color: @contrastBackground !important;
 }
 
-table.md-table.md-row-select tbody.md-body > tr.md-row.md-selected {
+table.md-table.md-THEME_NAME-theme.md-row-select tbody.md-body > tr.md-row.md-selected {
     background-color: @lightBackground;
 }
 
-table.md-table td.md-cell.md-placeholder {
+table.md-table.md-THEME_NAME-theme td.md-cell.md-placeholder {
     color: @fadedTextColor;
 }
 
-table.md-table td.md-cell md-select > .md-select-value > span.md-select-icon {
+table.md-table.md-THEME_NAME-theme td.md-cell md-select > .md-select-value > span.md-select-icon {
     color: @secondaryTextColor;
+}
+
+md-toolbar.md-THEME_NAME-theme.md-table-toolbar.alternate {
+    background-color: @primaryFadedBackground;
+    color: @primaryHighlightText;
 }

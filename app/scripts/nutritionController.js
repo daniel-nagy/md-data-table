@@ -1,5 +1,10 @@
-angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdEditDialog', '$q', '$timeout', '$scope', function ($http, $mdEditDialog, $q, $timeout, $scope) {
+angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdEditDialog', '$q', '$timeout', '$scope', '$element', function ($http, $mdEditDialog, $q, $timeout, $scope, $element) {
   'use strict';
+
+  $scope.currentTheme = 'default';
+  $scope.switchTheme = function() {
+    $scope.currentTheme = $scope.currentTheme === 'default' ? 'alternate' : 'default';
+  };
 
   $scope.options = {
     rowSelection: true,
@@ -125,7 +130,8 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
       title: 'Add a comment',
       validators: {
         'md-maxlength': 30
-      }
+      },
+      mdTheme: $scope.currentTheme
     };
 
     var promise = $scope.options.largeEditDialog ? $mdEditDialog.large(dialog) : $mdEditDialog.small(dialog);

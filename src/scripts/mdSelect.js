@@ -14,7 +14,7 @@ function mdSelect($compile, $parse) {
     var self = ctrls.shift();
     var tableCtrl = ctrls.shift();
     var getId = $parse(attrs.mdSelectId);
-    $mdThemeController = ctrls[0];
+    $mdThemeController = ctrls.shift();
 
     self.id = getId(self.model);
 

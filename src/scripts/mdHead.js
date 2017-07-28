@@ -19,7 +19,8 @@ function mdHead($compile) {
   function postLink(scope, element, attrs, ctrls) {
     // because scope.$watch is unpredictable
     var oldValue = new Array(2);
-    $mdThemeController = ctrls[1];
+    var tableCtrl = ctrls.shift();
+    $mdThemeController = ctrls.shift();
 
     function addCheckboxColumn() {
       element.children().prepend('<th class="md-column md-checkbox-column">');
@@ -53,7 +54,7 @@ function mdHead($compile) {
     }
 
     function enableRowSelection() {
-      return ctrls[0].$$rowSelect;
+      return tableCtrl.$$rowSelect;
     }
 
     function mdSelectCtrl(row) {
@@ -70,18 +71,18 @@ function mdHead($compile) {
       var rows = scope.getSelectableRows();
 
       return rows.length && rows.every(function (row) {
-            return row.isSelected();
-          });
+          return row.isSelected();
+        });
     };
 
     scope.getSelectableRows = function () {
-      return ctrls[0].getBodyRows().map(mdSelectCtrl).filter(function (ctrl) {
+      return tableCtrl.getBodyRows().map(mdSelectCtrl).filter(function (ctrl) {
         return ctrl && !ctrl.disabled;
       });
     };
 
     scope.selectAll = function () {
-      ctrls[0].getBodyRows().map(mdSelectCtrl).forEach(function (ctrl) {
+      tableCtrl.getBodyRows().map(mdSelectCtrl).forEach(function (ctrl) {
         if (ctrl && !ctrl.isSelected()) {
           ctrl.select();
         }
@@ -93,14 +94,14 @@ function mdHead($compile) {
     };
 
     scope.unSelectAll = function () {
-      ctrls[0].getBodyRows().map(mdSelectCtrl).forEach(function (ctrl) {
+      tableCtrl.getBodyRows().map(mdSelectCtrl).forEach(function (ctrl) {
         if (ctrl && ctrl.isSelected()) {
           ctrl.deselect();
         }
       });
     };
 
-    scope.$watchGroup([enableRowSelection, ctrls[0].enableMultiSelect], function (newValue) {
+    scope.$watchGroup([enableRowSelection, tableCtrl.enableMultiSelect], function (newValue) {
       if (newValue[0] !== oldValue[0]) {
         if (newValue[0]) {
           addCheckboxColumn();

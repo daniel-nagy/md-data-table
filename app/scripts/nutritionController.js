@@ -1,4 +1,4 @@
-angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdEditDialog', '$q', '$timeout', '$scope', '$element', function ($http, $mdEditDialog, $q, $timeout, $scope, $element) {
+angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdEditDialog', '$q', '$timeout', '$scope', '$element', function ($http, $mdEditDialog, $q, $timeout, $scope) {
   'use strict';
 
   $scope.currentTheme = 'default';

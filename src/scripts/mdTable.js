@@ -26,7 +26,7 @@ function Hash() {
   };
 }
 
-function mdTable() {
+function mdTable($mdTheming) {
   
   function compile(tElement, tAttrs) {
     tElement.addClass('md-table');
@@ -39,6 +39,7 @@ function mdTable() {
         tElement[0].insertBefore(progress[0], body);
       }
     }
+    $mdTheming(tElement);
   }
   
   function Controller($attrs, $element, $q, $scope) {
@@ -183,3 +184,5 @@ function mdTable() {
     }
   };
 }
+
+mdTable.$inject = ['$mdTheming'];

@@ -839,10 +839,11 @@ mdHead.$inject = ['$compile'];
 
 angular.module('md.data.table').directive('mdRow', mdRow);
 
-function mdRow() {
+function mdRow($mdTheming) {
 
   function compile(tElement) {
     tElement.addClass('md-row');
+    $mdTheming(tElement);
     return postLink;
   }
   
@@ -884,6 +885,7 @@ function mdRow() {
     restrict: 'A'
   };
 }
+mdRow.$inject = ['$mdTheming'];
 
 angular.module('md.data.table').directive('mdSelect', mdSelect);
 
@@ -1124,7 +1126,7 @@ function Hash() {
   };
 }
 
-function mdTable() {
+function mdTable($mdTheming) {
   
   function compile(tElement, tAttrs) {
     tElement.addClass('md-table');
@@ -1137,6 +1139,7 @@ function mdTable() {
         tElement[0].insertBefore(progress[0], body);
       }
     }
+    $mdTheming(tElement);
   }
   
   function Controller($attrs, $element, $q, $scope) {
@@ -1282,12 +1285,15 @@ function mdTable() {
   };
 }
 
+mdTable.$inject = ['$mdTheming'];
+
 angular.module('md.data.table').directive('mdTablePagination', mdTablePagination);
 
-function mdTablePagination() {
+function mdTablePagination($mdTheming) {
 
   function compile(tElement) {
     tElement.addClass('md-table-pagination');
+    $mdTheming(tElement);
   }
 
   function Controller($attrs, $mdUtil, $scope) {
@@ -1410,6 +1416,8 @@ function mdTablePagination() {
     templateUrl: 'md-table-pagination.html'
   };
 }
+
+mdTablePagination.$inject = ['$mdTheming'];
 
 angular.module('md.data.table').directive('mdTableProgress', mdTableProgress);
 

@@ -86,7 +86,7 @@ angular.module('navigate-next.svg', []).run(['$templateCache', function ($templa
 
 
 var mdDataTableThemeOverrides = mdDataTableThemeOverrides || {};
-mdDataTableThemeOverrides[".temp/md-theme.min.css"] = 'table.md-table.md-THEME_NAME-theme td.md-cell{color:\'{{foreground-1}}\';border-top-color:\'{{foreground-4}}\'}.md-table-pagination.md-THEME_NAME-theme{border-top-color:\'{{foreground-4}}\'}md-edit-dialog.md-THEME_NAME-theme{background-color:\'{{background-hue-2}}\';color:\'{{foreground-2}}\'}.md-table-pagination.md-THEME_NAME-theme,.md-table-pagination.md-THEME_NAME-theme md-select:not([disabled]):focus .md-select-value,table.md-table.md-THEME_NAME-theme th.md-column{color:\'{{foreground-2}}\'}table.md-table.md-THEME_NAME-theme th.md-column md-icon.md-sort-icon{color:\'{{foreground-3}}\'}table.md-table.md-THEME_NAME-theme th.md-column.md-active,table.md-table.md-THEME_NAME-theme th.md-column.md-active md-icon{color:\'{{foreground-1}}\'}table.md-table.md-THEME_NAME-theme.md-row-select tbody.md-body>tr.md-row:not([disabled]):hover{background-color:\'{{background-hue-3}}\'!important}table.md-table.md-THEME_NAME-theme.md-row-select tbody.md-body>tr.md-row.md-selected{background-color:\'{{background-hue-2}}\'}table.md-table.md-THEME_NAME-theme td.md-cell.md-placeholder{color:\'{{foreground-3}}\'}table.md-table.md-THEME_NAME-theme td.md-cell md-select>.md-select-value>span.md-select-icon{color:\'{{foreground-2}}\'}md-toolbar.md-THEME_NAME-theme.md-table-toolbar.alternate{background-color:\'{{primary-hue-3}}\';color:\'{{primary-default}}\'}';
+mdDataTableThemeOverrides[".temp/md-theme.min.css"] = 'table.md-table td.md-cell,table.md-table.md-THEME_NAME-theme td.md-cell{color:\'{{foreground-1}}\';border-top-color:\'{{foreground-4}}\'}.md-table-pagination,.md-table-pagination.md-THEME_NAME-theme{border-top-color:\'{{foreground-4}}\'}md-edit-dialog,md-edit-dialog.md-THEME_NAME-theme{background-color:\'{{background-hue-2}}\';color:\'{{foreground-2}}\'}.md-table-pagination,.md-table-pagination md-select:not([disabled]):focus .md-select-value,.md-table-pagination.md-THEME_NAME-theme,.md-table-pagination.md-THEME_NAME-theme md-select:not([disabled]):focus .md-select-value,table.md-table th.md-column,table.md-table.md-THEME_NAME-theme th.md-column{color:\'{{foreground-2}}\'}table.md-table th.md-column md-icon.md-sort-icon,table.md-table.md-THEME_NAME-theme th.md-column md-icon.md-sort-icon{color:\'{{foreground-3}}\'}table.md-table th.md-column.md-active,table.md-table th.md-column.md-active md-icon,table.md-table.md-THEME_NAME-theme th.md-column.md-active,table.md-table.md-THEME_NAME-theme th.md-column.md-active md-icon{color:\'{{foreground-1}}\'}table.md-table.md-THEME_NAME-theme.md-row-select tbody.md-body>tr.md-row:not([disabled]):hover,table.md-table.md-row-select tbody.md-body>tr.md-row:not([disabled]):hover{background-color:\'{{background-hue-3}}\'!important}table.md-table.md-THEME_NAME-theme.md-row-select tbody.md-body>tr.md-row.md-selected,table.md-table.md-row-select tbody.md-body>tr.md-row.md-selected{background-color:\'{{background-hue-2}}\'}table.md-table td.md-cell.md-placeholder,table.md-table.md-THEME_NAME-theme td.md-cell.md-placeholder{color:\'{{foreground-3}}\'}table.md-table td.md-cell md-select>.md-select-value>span.md-select-icon,table.md-table.md-THEME_NAME-theme td.md-cell md-select>.md-select-value>span.md-select-icon{color:\'{{foreground-2}}\'}md-toolbar.md-THEME_NAME-theme.md-table-toolbar.alternate,md-toolbar.md-table-toolbar.alternate{background-color:\'{{primary-hue-3}}\';color:\'{{primary-default}}\'}';
 
 
 angular.module('md.data.table', ['md.table.templates', 'ngMaterial']);
@@ -754,7 +754,8 @@ function mdHead($compile) {
   function postLink(scope, element, attrs, ctrls) {
     // because scope.$watch is unpredictable
     var oldValue = new Array(2);
-    $mdThemeController = ctrls[1];
+    var tableCtrl = ctrls.shift();
+    $mdThemeController = ctrls.shift();
 
     function addCheckboxColumn() {
       element.children().prepend('<th class="md-column md-checkbox-column">');
@@ -788,7 +789,7 @@ function mdHead($compile) {
     }
 
     function enableRowSelection() {
-      return ctrls[0].$$rowSelect;
+      return tableCtrl.$$rowSelect;
     }
 
     function mdSelectCtrl(row) {
@@ -805,18 +806,18 @@ function mdHead($compile) {
       var rows = scope.getSelectableRows();
 
       return rows.length && rows.every(function (row) {
-            return row.isSelected();
-          });
+          return row.isSelected();
+        });
     };
 
     scope.getSelectableRows = function () {
-      return ctrls[0].getBodyRows().map(mdSelectCtrl).filter(function (ctrl) {
+      return tableCtrl.getBodyRows().map(mdSelectCtrl).filter(function (ctrl) {
         return ctrl && !ctrl.disabled;
       });
     };
 
     scope.selectAll = function () {
-      ctrls[0].getBodyRows().map(mdSelectCtrl).forEach(function (ctrl) {
+      tableCtrl.getBodyRows().map(mdSelectCtrl).forEach(function (ctrl) {
         if (ctrl && !ctrl.isSelected()) {
           ctrl.select();
         }
@@ -828,14 +829,14 @@ function mdHead($compile) {
     };
 
     scope.unSelectAll = function () {
-      ctrls[0].getBodyRows().map(mdSelectCtrl).forEach(function (ctrl) {
+      tableCtrl.getBodyRows().map(mdSelectCtrl).forEach(function (ctrl) {
         if (ctrl && ctrl.isSelected()) {
           ctrl.deselect();
         }
       });
     };
 
-    scope.$watchGroup([enableRowSelection, ctrls[0].enableMultiSelect], function (newValue) {
+    scope.$watchGroup([enableRowSelection, tableCtrl.enableMultiSelect], function (newValue) {
       if (newValue[0] !== oldValue[0]) {
         if (newValue[0]) {
           addCheckboxColumn();
@@ -938,7 +939,7 @@ function mdSelect($compile, $parse) {
     var self = ctrls.shift();
     var tableCtrl = ctrls.shift();
     var getId = $parse(attrs.mdSelectId);
-    $mdThemeController = ctrls[0];
+    $mdThemeController = ctrls.shift();
 
     self.id = getId(self.model);
 

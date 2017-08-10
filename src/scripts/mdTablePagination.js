@@ -2,10 +2,11 @@
 
 angular.module('md.data.table').directive('mdTablePagination', mdTablePagination);
 
-function mdTablePagination() {
+function mdTablePagination($mdTheming) {
 
   function compile(tElement) {
     tElement.addClass('md-table-pagination');
+    $mdTheming(tElement);
   }
 
   function Controller($attrs, $mdUtil, $scope) {
@@ -58,7 +59,7 @@ function mdTablePagination() {
     };
 
     self.onPaginationChange = function () {
-      if(angular.isFunction(self.onPaginate)) {
+      if (angular.isFunction(self.onPaginate)) {
         $mdUtil.nextTick(function () {
           self.onPaginate(self.page, self.limit);
         });
@@ -83,7 +84,7 @@ function mdTablePagination() {
     };
 
     $scope.$watch('$pagination.limit', function (newValue, oldValue) {
-      if(isNaN(newValue) || isNaN(oldValue) || newValue === oldValue) {
+      if (isNaN(newValue) || isNaN(oldValue) || newValue === oldValue) {
         return;
       }
 
@@ -97,11 +98,11 @@ function mdTablePagination() {
     });
 
     $scope.$watch('$pagination.total', function (newValue, oldValue) {
-      if(isNaN(newValue) || newValue === oldValue) {
+      if (isNaN(newValue) || newValue === oldValue) {
         return;
       }
 
-      if(self.page > self.pages()) {
+      if (self.page > self.pages()) {
         self.last();
       }
     });
@@ -128,3 +129,5 @@ function mdTablePagination() {
     templateUrl: 'md-table-pagination.html'
   };
 }
+
+mdTablePagination.$inject = ['$mdTheming'];

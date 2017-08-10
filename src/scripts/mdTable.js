@@ -26,11 +26,12 @@ function Hash() {
   };
 }
 
-function mdTable() {
+function mdTable($mdTheming) {
   
   function compile(tElement, tAttrs) {
     tElement.addClass('md-table');
-    
+    $mdTheming(tElement);
+
     if(tAttrs.hasOwnProperty('mdProgress')) {
       var body = tElement.find('tbody')[0];
       var progress = angular.element('<thead class="md-table-progress" md-table-progress>');
@@ -39,6 +40,12 @@ function mdTable() {
         tElement[0].insertBefore(progress[0], body);
       }
     }
+    return function postLink(scope, iElement, iAttrs, $mdThemeController) {
+      if ($mdThemeController) {
+        iElement.data('$mdThemeController', $mdThemeController);
+      }
+      $mdTheming(tElement);
+    };
   }
   
   function Controller($attrs, $element, $q, $scope) {
@@ -176,6 +183,7 @@ function mdTable() {
     controller: Controller,
     controllerAs: '$mdTable',
     restrict: 'A',
+    require: '?^mdTheme',
     scope: {
       progress: '=?mdProgress',
       selected: '=ngModel',
@@ -183,3 +191,5 @@ function mdTable() {
     }
   };
 }
+
+mdTable.$inject = ['$mdTheming'];

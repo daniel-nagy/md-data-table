@@ -1,1 +1,1 @@
-angular.module('md.data.table', ['md.table.templates']);
+angular.module('md.data.table', ['md.table.templates', 'ngMaterial']);

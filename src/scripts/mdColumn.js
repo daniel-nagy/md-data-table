@@ -4,6 +4,8 @@ angular.module('md.data.table').directive('mdColumn', mdColumn);
 
 function mdColumn($compile, $mdUtil) {
 
+  var $mdThemeController;
+
   function compile(tElement) {
     tElement.addClass('md-column');
     return postLink;
@@ -12,9 +14,14 @@ function mdColumn($compile, $mdUtil) {
   function postLink(scope, element, attrs, ctrls) {
     var headCtrl = ctrls.shift();
     var tableCtrl = ctrls.shift();
+    $mdThemeController = ctrls.shift();
 
     function attachSortIcon() {
       var sortIcon = angular.element('<md-icon md-svg-icon="arrow-up.svg">');
+
+      if ($mdThemeController) {
+        sortIcon.data('$mdThemeController', $mdThemeController);
+      }
 
       $compile(sortIcon.addClass('md-sort-icon').attr('ng-class', 'getDirection()'))(scope);
 
@@ -116,7 +123,7 @@ function mdColumn($compile, $mdUtil) {
 
   return {
     compile: compile,
-    require: ['^^mdHead', '^^mdTable'],
+    require: ['^^mdHead', '^^mdTable', '?^mdTheme'],
     restrict: 'A',
     scope: {
       numeric: '=?mdNumeric',

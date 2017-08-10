@@ -16,15 +16,16 @@
 
   </head>
 
-  <body layout="column">
+  <body layout="column" ng-controller="nutritionController" md-theme="{{currentTheme}}" md-theme-watch>
 
     <md-toolbar>
-      <div class="md-toolbar-tools">
+      <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
         <div class="md-title">Material Design Data Table</div>
+        <md-button ng-click="switchTheme()">Switch theme!</md-button>
       </div>
     </md-toolbar>
 
-    <md-content laout="column" flex ng-controller="nutritionController">
+    <md-content flex>
 
       <md-card>
         <div layout="row" layout-wrap class="checkboxes">
@@ -43,10 +44,10 @@
 
     </md-content>
 
-    <script type="text/javascript" src="angular/angular.min.js"></script>
-    <script type="text/javascript" src="angular-animate/angular-animate.min.js"></script>
-    <script type="text/javascript" src="angular-aria/angular-aria.min.js"></script>
-    <script type="text/javascript" src="angular-material/angular-material.min.js"></script>
+    <script type="text/javascript" src="angular/angular.js"></script>
+    <script type="text/javascript" src="angular-animate/angular-animate.js"></script>
+    <script type="text/javascript" src="angular-aria/angular-aria.js"></script>
+    <script type="text/javascript" src="angular-material/angular-material.js"></script>
     <script type="text/javascript" src="md-data-table.js"></script>
 
     <script type="text/javascript" src="app.js"></script>

@@ -12,7 +12,7 @@ function mdCell() {
     }
     
     tElement.addClass('md-cell');
-    
+
     return postLink;
   }
   

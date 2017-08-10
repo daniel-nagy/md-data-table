@@ -22,11 +22,12 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-html2js": "^0.3.2",
     "grunt-processhtml": "^0.3.7",
+    "grunt-string-to-js": "0.0.3",
     "jshint-stylish": "^1.0.0",
     "load-grunt-tasks": "^0.6.0"
   },
   "peerDependencies": {
     "angular": "^1.4.0",
-    "angular-material": "^1.0.0"
+    "angular-material": "^1.1.0"
   }
 }

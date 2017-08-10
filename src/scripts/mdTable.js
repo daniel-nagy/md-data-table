@@ -40,6 +40,12 @@ function mdTable($mdTheming) {
         tElement[0].insertBefore(progress[0], body);
       }
     }
+    return function postLink(scope, iElement, iAttrs, $mdThemeController) {
+      if ($mdThemeController) {
+        iElement.data('$mdThemeController', $mdThemeController);
+      }
+      $mdTheming(tElement);
+    };
   }
   
   function Controller($attrs, $element, $q, $scope) {
@@ -177,6 +183,7 @@ function mdTable($mdTheming) {
     controller: Controller,
     controllerAs: '$mdTable',
     restrict: 'A',
+    require: '?^mdTheme',
     scope: {
       progress: '=?mdProgress',
       selected: '=ngModel',

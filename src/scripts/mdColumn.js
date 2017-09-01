@@ -14,7 +14,8 @@ function mdColumn($compile, $mdUtil) {
     var tableCtrl = ctrls.shift();
 
     function attachSortIcon() {
-      var sortIcon = angular.element('<md-icon md-svg-icon="arrow-up.svg">');
+
+      var sortIcon = angular.element('<md-icon md-svg-icon="' + getSortIcon() + '-up.svg">');
 
       $compile(sortIcon.addClass('md-sort-icon').attr('ng-class', 'getDirection()'))(scope);
 
@@ -43,6 +44,10 @@ function mdColumn($compile, $mdUtil) {
 
     function getIndex() {
       return Array.prototype.indexOf.call(element.parent().children(), element[0]);
+    }
+
+    function getSortIcon() {
+      return scope.sortIcon || 'arrow';
     }
 
     function isActive() {
@@ -120,7 +125,8 @@ function mdColumn($compile, $mdUtil) {
     restrict: 'A',
     scope: {
       numeric: '=?mdNumeric',
-      orderBy: '@?mdOrderBy'
+      orderBy: '@?mdOrderBy',
+      sortIcon: '=?mdSortIcon'
     }
   };
 }

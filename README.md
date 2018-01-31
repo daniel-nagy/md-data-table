@@ -403,13 +403,11 @@ ctrl.limitOptions = [5, 10, 15, {
 
 ```html
 <!-- how to change the pagination label -->
-<md-table-pagination md-label="{page: 'Página:', rowsPerPage: 'Filas por página:', of: 'de'}"></md-table-pagination>
+<md-table-pagination md-label="{page: 'Página:', rowsPerPage: 'Linhas por página:', of: 'de'}"></md-table-pagination>
 
 <!-- or if the label is defined on the scope -->
 <md-table-pagination md-label="{{label}}"></md-table-pagination>
 ```
-
-> I used Google translate so if the translations are wrong please fix them and make a pull request.
 
 **Example: Client Side Pagination Using ngRepeat**
 

@@ -312,17 +312,18 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
       template:
         '<md-edit-dialog>' +
           '<div layout="column" class="md-content">' +
-            '<div ng-if="size === \'large\'" class="md-title">{{title || \'Edit\'}}</div>' +
+            '<div ng-if="size === \'large\' || size === \'larger\'" class="md-title">{{title || \'Edit\'}}</div>' +
             '<form name="editDialog" layout="column" ng-submit="submit(model)">' +
               '<md-input-container md-no-float>' +
-                '<input name="input" ng-model="model" md-autofocus placeholder="{{placeholder}} "' + getAttrs() + '>' +
+                '<input ng-if="size === \'large\' || size === \'larger\'" name="input" ng-model="model" md-autofocus placeholder="{{placeholder}} "' + getAttrs() + '>' +
+                '<textarea ng-if="size === \'larger\'" name="input" ng-model="model" md-autofocus placeholder="{{placeholder}} "' + getAttrs() + '/>' +
                 '<div ng-messages="editDialog.input.$error">' +
                   '<div ng-repeat="(key, message) in messages" ng-message="{{key}}">{{message}}</div>' +
                 '</div>' +
               '</md-input-container>' +
             '</form>' +
           '</div>' +
-          '<div ng-if="size === \'large\'" layout="row" layout-align="end" class="md-actions">' +
+          '<div ng-if="size === \'large\' || size === \'larger\'" layout="row" layout-align="end" class="md-actions">' +
             '<md-button class="md-primary" ng-click="dismiss()">{{cancel}}</md-button>' +
             '<md-button class="md-primary" ng-click="submit()">{{ok}}</md-button>' +
           '</div>' +
@@ -381,6 +382,10 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
   
   this.large = function (options) {
     return this.show(angular.extend({}, options, preset('large', options)));
+  }.bind(this);
+  
+  this.larger = function (options) {
+    return this.show(angular.extend({}, options, preset('larger', options)));
   }.bind(this);
   
   return this;

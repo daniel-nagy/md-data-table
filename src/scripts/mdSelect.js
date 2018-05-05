@@ -16,7 +16,7 @@ function mdSelect($compile, $parse) {
 
     self.id = getId(self.model);
 
-    if(tableCtrl.$$rowSelect && self.id) {
+    if(tableCtrl && tableCtrl.$$rowSelect && self.id) {
       if(tableCtrl.$$hash.has(self.id)) {
         var index = tableCtrl.selected.indexOf(tableCtrl.$$hash.get(self.id));
 
@@ -46,15 +46,15 @@ function mdSelect($compile, $parse) {
     }
 
     self.isSelected = function () {
-      if(!tableCtrl.$$rowSelect) {
+      if(tableCtrl && !tableCtrl.$$rowSelect) {
         return false;
       }
 
       if(self.id) {
-        return tableCtrl.$$hash.has(self.id);
+        return tableCtrl && tableCtrl.$$hash.has(self.id);
       }
 
-      return tableCtrl.selected.indexOf(self.model) !== -1;
+      return tableCtrl && tableCtrl.selected.indexOf(self.model) !== -1;
     };
 
     self.select = function () {
@@ -62,9 +62,9 @@ function mdSelect($compile, $parse) {
         return;
       }
 
-      if(tableCtrl.enableMultiSelect()) {
+      if(tableCtrl && tableCtrl.enableMultiSelect()) {
         tableCtrl.selected.push(self.model);
-      } else {
+      } else if(tableCtrl) {
         tableCtrl.selected.splice(0, tableCtrl.selected.length, self.model);
       }
 
@@ -78,7 +78,9 @@ function mdSelect($compile, $parse) {
         return;
       }
 
-      tableCtrl.selected.splice(tableCtrl.selected.indexOf(self.model), 1);
+      if(tableCtrl) {
+        tableCtrl.selected.splice(tableCtrl.selected.indexOf(self.model), 1);
+      }
 
       if(angular.isFunction(self.onDeselect)) {
         self.onDeselect(self.model);
@@ -199,7 +201,7 @@ function mdSelect($compile, $parse) {
     controller: Controller,
     controllerAs: '$mdSelect',
     link: postLink,
-    require: ['mdSelect', '^^mdTable'],
+    require: ['mdSelect', '^?mdTable'],
     restrict: 'A',
     scope: {
       model: '=mdSelect',

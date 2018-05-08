@@ -1,0 +1,28 @@
+[dir=rtl] .md-table-pagination {
+  md-select {
+    .md-select-value {
+      span.md-select-icon {
+        margin-right: 0 !important;
+        margin-left: -6px !important;
+      }
+    }
+  }
+
+  > .buttons:not(:first-child),
+  > .limit-select:not(:first-child) {
+    margin-left: 0;
+    margin-right: 32px;
+  }
+
+  > .buttons {
+    margin-right: 0;
+    margin-left: -16px;
+     > .md-button.md-icon-button {
+        transform: rotateY(180deg);
+    }
+    > .label + .md-button.md-icon-button {
+      margin-left: 0;
+      margin-right: 20px;
+    }
+  }
+}

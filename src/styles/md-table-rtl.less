@@ -1,0 +1,57 @@
+[dir=rtl] table.md-table {
+
+  th.md-column {
+    md-icon {
+      &:not(:first-child) {
+        margin-left: 0px;
+        margin-right: 8px;
+      }
+      
+
+      &:not(:last-child) {
+        margin-right: 0px;
+        margin-eft: 8px;
+      }
+    }
+  }
+
+  
+
+  &.md-row-select td.md-cell,
+  &.md-row-select th.md-column {
+    &:first-child {
+      padding: 0 24px 0 0;
+    }
+   
+    &:nth-child(n+3):nth-last-child(n+2) {
+       padding: 0 0 0 24px;
+    }
+  }
+
+  &:not(.md-row-select) td.md-cell,
+  &:not(.md-row-select) th.md-column {
+    &:nth-child(n+2):nth-last-child(n+2) {
+      padding: 0 24px 0 0;
+    }
+  }
+
+  td.md-cell,
+  th.md-column {
+    text-align: right;
+    &:last-child {
+      padding: 0 0 0 24px;
+    }
+
+    &.md-numeric {
+      text-align: left;
+    }
+
+  }
+
+
+  td.md-cell {
+    md-select > .md-select-value > span.md-select-icon {
+      text-align: left;
+    }
+  }
+}

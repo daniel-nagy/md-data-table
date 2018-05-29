@@ -163,8 +163,11 @@ angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope'
 | `mdOnReorder`  | `mdHead`   | `function`     | A callback function for when the order changes. The callback will receive the new order. |
 | `mdOrder`      | `mdHead`   | `string`       | A variable to bind the sort order to. |
 | `mdOrderBy`    | `mdColumn` | `string`       | The value to bind to the sort order. |
+| `mdCustomSort`    | `mdColumn` | `string`       | The custom function which translates data into values which can be ordered |
 
 When the user clicks the `md-column` element, the value of the `md-order-by` attribute will be bound to the variable provided to the `md-order` attribute on the `md-head` element. If the column is already sorted by that value, a minus sign `-` will be prefixed to the value. For most query languages, this is the universal symbol to sort descending.
+
+If the `md-custom-sort` element is used, the value of the `md-order-by` attribute will be bound to the function provided to `md-custom-sort`which will translate raw values to orderable values
 
 The variable can be used to send a query to the server or as the `orderBy` property of an `ng-repeat` expression.
 

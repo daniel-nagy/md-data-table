@@ -305,6 +305,7 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
         messages: options.messages,
         model: options.modelValue,
         ok: options.ok || 'Save',
+        ariaLabel: options.ariaLabel || options.placeholder,
         placeholder: options.placeholder,
         title: options.title,
         size: size
@@ -313,13 +314,14 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
         '<md-edit-dialog>' +
           '<div layout="column" class="md-content">' +
             '<div ng-if="size === \'large\'" class="md-title">{{title || \'Edit\'}}</div>' +
-            '<form name="editDialog" layout="column" ng-submit="submit(model)">' +
+            '<form name="editDialog" layout="column" ng-submit="submit()">' +
               '<md-input-container md-no-float>' +
-                '<input name="input" ng-model="model" md-autofocus placeholder="{{placeholder}} "' + getAttrs() + '>' +
+                '<input name="input" ng-model="model" md-autofocus placeholder="{{placeholder}} "' + getAttrs() + ' aria-label="{{ariaLabel}}">' +
                 '<div ng-messages="editDialog.input.$error">' +
                   '<div ng-repeat="(key, message) in messages" ng-message="{{key}}">{{message}}</div>' +
                 '</div>' +
               '</md-input-container>' +
+              '<input type="submit" class="ng-hide" />' +
             '</form>' +
           '</div>' +
           '<div ng-if="size === \'large\'" layout="row" layout-align="end" class="md-actions">' +

@@ -31,6 +31,7 @@ function mdHead($compile) {
         'aria-label': 'Select All',
         'ng-click': 'toggleAll()',
         'ng-checked': 'allSelected()',
+        'md-indeterminate': 'someSelected()',
         'ng-disabled': '!getSelectableRows().length'
       });
     }
@@ -61,6 +62,14 @@ function mdHead($compile) {
       var rows = scope.getSelectableRows();
       
       return rows.length && rows.every(function (row) {
+        return row.isSelected();
+      });
+    };
+
+    scope.someSelected = function () {
+      var rows = scope.getSelectableRows();
+
+      return rows.length && !scope.allSelected() && rows.some(function (row) {
         return row.isSelected();
       });
     };

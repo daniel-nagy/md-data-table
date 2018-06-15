@@ -8,6 +8,14 @@
   </md-select>
 </div>
 
+<div class="page-input" ng-if="$pagination.showPageInput()">
+  <div class="label">{{$pagination.label.page}}</div>
+
+  <md-input-container md-no-float md-container-class="md-pagination-input" ng-disabled="$pagination.disabled" aria-label="Page">
+    <input type="number" class="md-page-input" name="mdPageInput" ng-model="$pagination.page" ng-model-options="{ debounce: 150 }" ng-change="$pagination.onPaginationChange()" min="1" max="{{$pagination.pages()}}">
+  </md-input-container>
+</div>
+
 <div class="limit-select" ng-if="$pagination.limitOptions">
   <div class="label">{{$pagination.label.rowsPerPage}}</div>
 

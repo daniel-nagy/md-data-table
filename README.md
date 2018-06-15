@@ -71,19 +71,19 @@ angular.module('myApp', [require('angular-material-data-table')]);
 
 angular.module('demoApp').controller('sampleController', ['$nutrition', '$scope', function ($nutrition, $scope) {
   'use strict';
-  
+
   $scope.selected = [];
-  
+
   $scope.query = {
     order: 'name',
     limit: 5,
     page: 1
   };
-  
+
   function success(desserts) {
     $scope.desserts = desserts;
   }
-  
+
   $scope.getDesserts = function () {
     $scope.promise = $nutrition.desserts.get($scope.query, success).$promise;
   };
@@ -205,14 +205,14 @@ $scope.editComment = function (event, dessert) {
   // if auto selection is enabled you will want to stop the event
   // from propagating and selecting the row
   event.stopPropagation();
-  
-  /* 
+
+  /*
    * messages is commented out because there is a bug currently
    * with ngRepeat and ngMessages were the messages are always
    * displayed even if the error property on the ngModelController
    * is not set, I've included it anyway so you get the idea
    */
-   
+
   var promise = $mdEditDialog.small({
     // messages: {
     //   test: 'I don\'t like tests!'
@@ -376,6 +376,7 @@ You may use Angular's [number](https://docs.angularjs.org/api/ng/filter/number) 
 | `mdOnPaginate`    | `function`     | A callback function for when the page or limit changes. The page is passed as the first argument and the limit is passed as the second argument.    |
 | `mdPage`          | `integer`      | Page number. Pages are not zero indexed. The directive assumes the first page is one. |
 | `mdPageSelect`    | `[expression]` | Display a select dropdown for the page number |
+| `mdPageInput`     | `[expression]` | Display a number input field for the page number |
 | `mdTotal`         | `integer`      | Total number of items. |
 | `ngDisabled`      | `[expression]` | Disable pagination elements. |
 

@@ -88,7 +88,7 @@ function mdTablePagination() {
       }
 
       // find closest page from previous min
-      self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isPositive(newValue) ? newValue : 1));
+      // self.page = Math.floor(((self.page * oldValue - oldValue) + newValue) / (isPositive(newValue) ? newValue : 1));
       self.onPaginationChange();
     });
 

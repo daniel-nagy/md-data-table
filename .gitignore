@@ -5,6 +5,8 @@
 app/app.css
 .temp
 
+package-lock.json
+
 # folders
 bower_components
 node_modules

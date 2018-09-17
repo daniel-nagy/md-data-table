@@ -2,14 +2,14 @@
  * Angular Material Data Table
  * https://github.com/daniel-nagy/md-data-table
  * @license MIT
- * v0.10.9
+ * v0.10.10
  */
 (function (window, angular, undefined) {
 'use strict';
 
 angular.module('md.table.templates', ['md-table-pagination.html', 'md-table-progress.html', 'arrow-up.svg', 'navigate-before.svg', 'navigate-first.svg', 'navigate-last.svg', 'navigate-next.svg']);
 
-angular.module('md-table-pagination.html', []).run(['$templateCache', function($templateCache) {
+angular.module('md-table-pagination.html', []).run(['$templateCache', function ($templateCache) {
   $templateCache.put('md-table-pagination.html',
     '<div class="page-select" ng-if="$pagination.showPageSelect()">\n' +
     '  <div class="label">{{$pagination.label.page}}</div>\n' +
@@ -50,7 +50,7 @@ angular.module('md-table-pagination.html', []).run(['$templateCache', function($
     '</div>');
 }]);
 
-angular.module('md-table-progress.html', []).run(['$templateCache', function($templateCache) {
+angular.module('md-table-progress.html', []).run(['$templateCache', function ($templateCache) {
   $templateCache.put('md-table-progress.html',
     '<tr>\n' +
     '  <th colspan="{{columnCount()}}">\n' +
@@ -59,27 +59,27 @@ angular.module('md-table-progress.html', []).run(['$templateCache', function($te
     '</tr>');
 }]);
 
-angular.module('arrow-up.svg', []).run(['$templateCache', function($templateCache) {
+angular.module('arrow-up.svg', []).run(['$templateCache', function ($templateCache) {
   $templateCache.put('arrow-up.svg',
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></svg>');
 }]);
 
-angular.module('navigate-before.svg', []).run(['$templateCache', function($templateCache) {
+angular.module('navigate-before.svg', []).run(['$templateCache', function ($templateCache) {
   $templateCache.put('navigate-before.svg',
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>');
 }]);
 
-angular.module('navigate-first.svg', []).run(['$templateCache', function($templateCache) {
+angular.module('navigate-first.svg', []).run(['$templateCache', function ($templateCache) {
   $templateCache.put('navigate-first.svg',
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M7 6 v12 h2 v-12 h-2z M17.41 7.41L16 6l-6 6 6 6 1.41-1.41L12.83 12z"/></svg>');
 }]);
 
-angular.module('navigate-last.svg', []).run(['$templateCache', function($templateCache) {
+angular.module('navigate-last.svg', []).run(['$templateCache', function ($templateCache) {
   $templateCache.put('navigate-last.svg',
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15 6 v12 h2 v-12 h-2z M8 6L6.59 7.41 11.17 12l-4.58 4.59L8 18l6-6z"/></svg>');
 }]);
 
-angular.module('navigate-next.svg', []).run(['$templateCache', function($templateCache) {
+angular.module('navigate-next.svg', []).run(['$templateCache', function ($templateCache) {
   $templateCache.put('navigate-next.svg',
     '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>');
 }]);
@@ -327,7 +327,9 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
   /* jshint validthis: true */
   
   var ESCAPE = 27;
-  
+  var TAB = 9;
+  var nextEl = null;
+  var prevEl = null;
   var busy = false;
   var body = angular.element($document.prop('body'));
   
@@ -346,7 +348,8 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     clickOutsideToClose: true,
     disableScroll: true,
     escToClose: true,
-    focusOnOpen: true
+    focusOnOpen: true,
+    tabToNext: true
   };
   
   function build(template, options) {
@@ -379,10 +382,10 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
       });
     }
     
-    if(options.escToClose) {
-      escToClose(element);
+    if(options.escToClose || options.tabToNext) {
+        manageKeyDownEvents(options, element, scope);
     }
-    
+
     element.on('$destroy', function () {
       busy = false;
       backdrop.remove();
@@ -469,18 +472,32 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     busy = false;
     console.error(error);
   }
-  
-  function escToClose(element) {
-    var keyup = function (event) {
-      if(event.keyCode === ESCAPE) {
-        element.remove();
-      }
+  function manageKeyDownEvents(options, element, scope) {
+    var keydown = function (event) {
+        if(options.escToClose) {
+            if(event.keyCode === ESCAPE) {
+                element.remove();
+            }
+        }
+        if (options.tabToNext) {
+            if (event.keyCode === TAB) {
+                event.preventDefault();
+                scope.submit();
+                element.remove();
+                if (event.shiftKey && prevEl) {
+                    prevEl.click();
+                }
+                else if (nextEl) {
+                    nextEl.click();
+                }
+            }
+        }
     };
-    
-    body.on('keyup', keyup);
-    
+
+    body.on('keydown', keydown);
+
     element.on('$destroy', function () {
-      body.off('keyup', keyup);
+      body.off('keydown', keydown);
     });
   }
 
@@ -494,9 +511,25 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     }, false);
   }
 
+  function getClickableSibling(el,prev) {
+      while (el!==null) {
+          if (el.classList) {
+              for (var classnum in el.classList) {
+                  if (el.classList[classnum]==='md-clickable') {
+                      return el;
+                  }
+              }
+          }
+          el = prev===true ? el.previousSibling: el.nextSibling;
+      }
+      return null;
+  }
+
   function positionDialog(element, target) {
     var table = angular.element(target).controller('mdCell').getTable();
-    
+    prevEl = getClickableSibling(target.previousSibling,true);
+    nextEl = getClickableSibling(target.nextSibling,false);
+
     var getHeight = function () {
       return element.prop('clientHeight');
     };

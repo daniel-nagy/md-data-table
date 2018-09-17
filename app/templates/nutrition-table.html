@@ -62,7 +62,7 @@
         <td md-cell>{{dessert.calories.value}}</td>
         <td md-cell>{{dessert.fat.value | number: 2}}</td>
         <!-- <td md-cell>{{dessert.carbs.value}}</td> -->
-        <td md-cell>{{dessert.protein.value | number: 2}}</td>
+        <td md-cell ng-click="editProtein($event, dessert)" ng-class="{'md-placeholder': !dessert.protein}">{{dessert.protein.value | number: 2}}</td>
         <!-- <td md-cell>{{dessert.sodium.value}}</td> -->
         <!-- <td md-cell>{{dessert.calcium.value}}%</td> -->
         <td md-cell hide-sm>{{dessert.iron.value}}%</td>

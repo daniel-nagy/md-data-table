@@ -27,7 +27,9 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
   /* jshint validthis: true */
   
   var ESCAPE = 27;
-  
+  var TAB = 9;
+  var nextEl = null;
+  var prevEl = null;
   var busy = false;
   var body = angular.element($document.prop('body'));
   
@@ -46,7 +48,8 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     clickOutsideToClose: true,
     disableScroll: true,
     escToClose: true,
-    focusOnOpen: true
+    focusOnOpen: true,
+    tabToNext: true
   };
   
   function build(template, options) {
@@ -79,10 +82,10 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
       });
     }
     
-    if(options.escToClose) {
-      escToClose(element);
+    if(options.escToClose || options.tabToNext) {
+        manageKeyDownEvents(options, element, scope);
     }
-    
+
     element.on('$destroy', function () {
       busy = false;
       backdrop.remove();
@@ -169,18 +172,32 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     busy = false;
     console.error(error);
   }
-  
-  function escToClose(element) {
-    var keyup = function (event) {
-      if(event.keyCode === ESCAPE) {
-        element.remove();
-      }
+  function manageKeyDownEvents(options, element, scope) {
+    var keydown = function (event) {
+        if(options.escToClose) {
+            if(event.keyCode === ESCAPE) {
+                element.remove();
+            }
+        }
+        if (options.tabToNext) {
+            if (event.keyCode === TAB) {
+                event.preventDefault();
+                scope.submit();
+                element.remove();
+                if (event.shiftKey && prevEl) {
+                    prevEl.click();
+                }
+                else if (nextEl) {
+                    nextEl.click();
+                }
+            }
+        }
     };
-    
-    body.on('keyup', keyup);
-    
+
+    body.on('keydown', keydown);
+
     element.on('$destroy', function () {
-      body.off('keyup', keyup);
+      body.off('keydown', keydown);
     });
   }
 
@@ -194,9 +211,25 @@ function mdEditDialog($compile, $controller, $document, $mdUtil, $q, $rootScope,
     }, false);
   }
 
+  function getClickableSibling(el,prev) {
+      while (el!==null) {
+          if (el.classList) {
+              for (var classnum in el.classList) {
+                  if (el.classList[classnum]==='md-clickable') {
+                      return el;
+                  }
+              }
+          }
+          el = prev===true ? el.previousSibling: el.nextSibling;
+      }
+      return null;
+  }
+
   function positionDialog(element, target) {
     var table = angular.element(target).controller('mdCell').getTable();
-    
+    prevEl = getClickableSibling(target.previousSibling,true);
+    nextEl = getClickableSibling(target.nextSibling,false);
+
     var getHeight = function () {
       return element.prop('clientHeight');
     };

@@ -125,7 +125,9 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
       title: 'Add a comment',
       validators: {
         'md-maxlength': 30
-      }
+      },
+        escToClose:true,
+        tabToNext:true
     };
 
     var promise = $scope.options.largeEditDialog ? $mdEditDialog.large(dialog) : $mdEditDialog.small(dialog);
@@ -138,6 +140,36 @@ angular.module('nutritionApp').controller('nutritionController', ['$http', '$mdE
       });
     });
   };
+
+    $scope.editProtein = function (event, dessert) {
+        event.stopPropagation();
+
+        var dialog = {
+            // messages: {
+            //   test: 'I don\'t like tests!'
+            // },
+            modelValue: dessert.protein.value,
+            placeholder: 'Add protein amt',
+            save: function (input) {
+                dessert.protein.value = input.$modelValue;
+            },
+            targetEvent: event,
+            title: 'Add a protein amt',
+            validators: {
+                'md-maxlength': 30
+            }
+        };
+
+        var promise = $scope.options.largeEditDialog ? $mdEditDialog.large(dialog) : $mdEditDialog.small(dialog);
+
+        promise.then(function (ctrl) {
+            var input = ctrl.getInput();
+
+            input.$viewChangeListeners.push(function () {
+                input.$setValidity('test', input.$modelValue !== 'test');
+            });
+        });
+    };
 
   $scope.toggleLimitOptions = function () {
     $scope.limitOptions = $scope.limitOptions ? undefined : [5, 10, 15];

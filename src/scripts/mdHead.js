@@ -80,6 +80,7 @@ function mdHead($compile) {
     };
     
     scope.toggleAll = function () {
+      scope.$emit('mdTableOnHeaderSelect', scope.allSelected());
       return scope.allSelected() ? scope.unSelectAll() : scope.selectAll();
     };
     

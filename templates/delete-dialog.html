@@ -6,7 +6,7 @@
       <md-icon>error_outline</md-icon>
       <span>&nbsp; {{error}}</span>
     </p>
-    <form name="authorize.form" ng-submit="ctrl.authorizeUser()">
+    <form name="authorize.form" ng-submit="ctrl.submit()">
       <md-input-container layout="row">
         <label>Secret</label>
         <input name="secret" type="password" ng-model="authorize.secret">
@@ -14,7 +14,7 @@
     </form>
   </md-dialog-content>
   <div class="md-actions">
-    <md-button class="md-primary" ng-click="ctrl.authorizeUser()">Delete</md-button>
+    <md-button class="md-primary" ng-click="ctrl.submit()">Delete</md-button>
     <md-button class="md-primary" ng-click="ctrl.cancel()">Close</md-button>
   </div>
 </md-dialog>

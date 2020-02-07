@@ -18,7 +18,7 @@ function mdColumn($compile, $mdUtil) {
 
       $compile(sortIcon.addClass('md-sort-icon').attr('ng-class', 'getDirection()'))(scope);
 
-      if(element.hasClass('md-numeric')) {
+      if(element.hasClass('md-numeric') || element.hasClass('nn-col')) {
         element.prepend(sortIcon);
       } else {
         element.append(sortIcon);

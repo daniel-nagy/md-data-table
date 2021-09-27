@@ -82,7 +82,6 @@ md-edit-dialog > .md-actions .md-button + .md-button {
 }
 .md-table-pagination md-select .md-select-value span.md-select-icon:after {
   top: initial;
-  transform: scaleY(0.5) scaleX(1);
 }
 .md-table-pagination > * {
   display: -ms-flexbox;

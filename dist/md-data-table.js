@@ -2,7 +2,7 @@
  * Angular Material Data Table
  * https://github.com/daniel-nagy/md-data-table
  * @license MIT
- * v0.10.10
+ * v1.0.2
  */
 (function (window, angular, undefined) {
 'use strict';
@@ -11,43 +11,48 @@ angular.module('md.table.templates', ['md-table-pagination.html', 'md-table-prog
 
 angular.module('md-table-pagination.html', []).run(['$templateCache', function ($templateCache) {
   $templateCache.put('md-table-pagination.html',
-    '<div class="page-select" ng-if="$pagination.showPageSelect()">\n' +
-    '  <div class="label">{{$pagination.label.page}}</div>\n' +
+    '<div class="page-select syn-pagination__select" ng-if="$pagination.showPageSelect()">\n' +
+    '  <div class="label syn-pagination__select--label">{{$pagination.label.page}}</div>\n' +
     '\n' +
-    '  <md-select virtual-page-select total="{{$pagination.pages()}}" class="md-table-select" ng-model="$pagination.page" md-container-class="md-pagination-select" ng-change="$pagination.onPaginationChange()" ng-disabled="$pagination.disabled" aria-label="Page">\n' +
-    '    <md-content>\n' +
-    '      <md-option ng-repeat="page in $pageSelect.pages" ng-value="page">{{page}}</md-option>\n' +
-    '    </md-content>\n' +
-    '  </md-select>\n' +
+    '  <md-input-container md-no-float class="syn-pagination__select__select-input syn-input">\n' +
+    '    <md-select virtual-page-select total="{{$pagination.pages()}}" class="md-table-select syn-input__select" ng-model="$pagination.page" md-container-class="md-pagination-select" ng-change="$pagination.onPaginationChange()" ng-disabled="$pagination.disabled" aria-label="Page">\n' +
+    '      <md-content>\n' +
+    '        <md-option ng-repeat="page in $pageSelect.pages" ng-value="page">{{page}}</md-option>\n' +
+    '      </md-content>\n' +
+    '    </md-select>\n' +
+    '  </md-input-container>\n' +
     '</div>\n' +
     '\n' +
-    '<div class="limit-select" ng-if="$pagination.limitOptions">\n' +
-    '  <div class="label">{{$pagination.label.rowsPerPage}}</div>\n' +
+    '<div class="limit-select syn-pagination__select" ng-if="$pagination.limitOptions">\n' +
+    '  <div class="label syn-pagination__select--label">{{$pagination.label.rowsPerPage}}</div>\n' +
     '\n' +
-    '  <md-select class="md-table-select" ng-model="$pagination.limit" md-container-class="md-pagination-select" ng-disabled="$pagination.disabled" aria-label="Rows" placeholder="{{ $pagination.limitOptions[0] }}">\n' +
-    '    <md-option ng-repeat="option in $pagination.limitOptions" ng-value="option.value ? $pagination.eval(option.value) : option">{{::option.label ? option.label : option}}</md-option>\n' +
-    '  </md-select>\n' +
+    '  <md-input-container md-no-float class="syn-pagination__select__select-input syn-input">\n' +
+    '    <md-select class="md-table-select syn-input__select" ng-model="$pagination.limit" md-container-class="md-pagination-select" ng-disabled="$pagination.disabled" aria-label="Rows" placeholder="{{ $pagination.limitOptions[0] }}">\n' +
+    '      <md-option ng-repeat="option in $pagination.limitOptions" ng-value="option.value ? $pagination.eval(option.value) : option">{{::option.label ? option.label : option}}</md-option>\n' +
+    '    </md-select>\n' +
+    '  </md-input-container>\n' +
     '</div>\n' +
     '\n' +
-    '<div class="buttons">\n' +
-    '  <div class="label">{{$pagination.min()}} - {{$pagination.max()}} {{$pagination.label.of}} {{$pagination.total}}</div>\n' +
+    '<div class="buttons syn-pagination__buttons">\n' +
+    '  <div class="label syn-pagination__buttons--label">{{$pagination.min()}} - {{$pagination.max()}} {{$pagination.label.of}} {{$pagination.total}}</div>\n' +
     '\n' +
-    '  <md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.first()" ng-disabled="$pagination.disabled || !$pagination.hasPrevious()" aria-label="First">\n' +
-    '    <md-icon md-svg-icon="navigate-first.svg"></md-icon>\n' +
+    '  <md-button md-no-ink class="md-icon-button syn-pagination__buttons--button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.first()" ng-disabled="$pagination.disabled || !$pagination.hasPrevious()" aria-label="First">\n' +
+    '    <md-icon><i class="fa-regular fa-arrow-left-to-line"></i></md-icon>\n' +
     '  </md-button>\n' +
     '\n' +
-    '  <md-button class="md-icon-button" type="button" ng-click="$pagination.previous()" ng-disabled="$pagination.disabled || !$pagination.hasPrevious()" aria-label="Previous">\n' +
-    '    <md-icon md-svg-icon="navigate-before.svg"></md-icon>\n' +
+    '  <md-button md-no-ink class="md-icon-button syn-pagination__buttons--button" type="button" ng-click="$pagination.previous()" ng-disabled="$pagination.disabled || !$pagination.hasPrevious()" aria-label="Previous">\n' +
+    '    <md-icon><i class="fa-regular fa-angle-left"></i></md-icon>\n' +
     '  </md-button>\n' +
     '\n' +
-    '  <md-button class="md-icon-button" type="button" ng-click="$pagination.next()" ng-disabled="$pagination.disabled || !$pagination.hasNext()" aria-label="Next">\n' +
-    '    <md-icon md-svg-icon="navigate-next.svg"></md-icon>\n' +
+    '  <md-button md-no-ink class="md-icon-button syn-pagination__buttons--button" type="button" ng-click="$pagination.next()" ng-disabled="$pagination.disabled || !$pagination.hasNext()" aria-label="Next">\n' +
+    '    <md-icon><i class="fa-regular fa-angle-right"></i></md-icon>\n' +
     '  </md-button>\n' +
     '\n' +
-    '  <md-button class="md-icon-button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.last()" ng-disabled="$pagination.disabled || !$pagination.hasNext()" aria-label="Last">\n' +
-    '    <md-icon md-svg-icon="navigate-last.svg"></md-icon>\n' +
+    '  <md-button md-no-ink class="md-icon-button syn-pagination__buttons--button" type="button" ng-if="$pagination.showBoundaryLinks()" ng-click="$pagination.last()" ng-disabled="$pagination.disabled || !$pagination.hasNext()" aria-label="Last">\n' +
+    '    <md-icon><i class="fa-regular fa-arrow-right-to-line"></i></md-icon>\n' +
     '  </md-button>\n' +
-    '</div>');
+    '</div>\n' +
+    '');
 }]);
 
 angular.module('md-table-progress.html', []).run(['$templateCache', function ($templateCache) {

@@ -1,3 +1,5 @@
+‼️ **This repository is archived and no longer maintained.** ‼️
+
 # Material Design Data Table
 
 This module is an effort to implement Material Design data tables in [Angular Material](https://material.angularjs.org/latest/#/). Data tables are used to present raw data sets and usually appear in desktop enterprise applications. Data tables are particularly useful for visualizing and manipulating large data sets.
@@ -17,8 +19,6 @@ Specification for Material Design data tables can be found [here](http://www.goo
 This software is provided free of charge and without restriction under the [MIT License](LICENSE.md)
 
 ## Demo
-
-A live [demo](http://danielnagy.me/md-data-table).
 
 A fork-able [Codepen](http://codepen.io/anon/pen/BjvLVJ?editors=1010). Please use this to reproduce any issues you may be experiencing.
 

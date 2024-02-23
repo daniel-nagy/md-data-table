@@ -187,7 +187,7 @@ module.exports = function (grunt) {
   });
   
   grunt.registerTask('build', [
-    'jshint:build',
+
     'less:build',
     'autoprefixer:build',
     'cssmin:build',

@@ -1,5 +1,7 @@
 ## Change Log
 
+#### Version 1.0.2
+
 #### Version 0.10.10
 ###### December 14, 2016
 

@@ -8,3 +8,5 @@ app/app.css
 # folders
 bower_components
 node_modules
+
+.idea
